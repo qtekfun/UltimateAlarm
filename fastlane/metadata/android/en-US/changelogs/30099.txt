@@ -1,0 +1,1 @@
+Holidays: the evening before, a notice asks whether to skip tomorrow's alarms (they ring if you do not answer). Settings → Holidays: country and region, a public ICS calendar, your own holidays and exceptions.
