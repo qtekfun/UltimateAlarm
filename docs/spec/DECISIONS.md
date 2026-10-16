@@ -68,3 +68,10 @@ one-shot alarms: the spec gives them no "skip tomorrow" (README assumption 3, "a
 "respect holidays" defaults to off. A one-shot with `oneShotDate = null` ("the next time it is HH:MM") is resolved to the
 next occurrence after now; the UI stores the concrete date when the alarm is created. When both a decision for every alarm
 and a decision for one alarm exist for a holiday, the per-alarm one wins.
+
+## D-12 · The whole alarm database lives in device-protected storage
+
+§4 asks for "a minimal copy" of what is needed to ring in device-protected (Direct Boot) storage. Keeping two copies in
+sync is a source of bugs in the one path that must never fail, so the Room database (`alarms.db`: alarms, exceptions,
+skips, vacations, holiday decisions) lives entirely in device-protected storage, like the event log. Its contents are not
+sensitive; secrets (Nextcloud credentials, Phase 10) stay in credential-protected storage encrypted with the Android Keystore.
