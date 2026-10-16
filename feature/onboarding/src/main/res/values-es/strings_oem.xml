@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="oem_coloros_battery">Abre Ajustes > Batería, busca UltimateAlarm y permite la actividad en segundo plano; que el sistema no la optimice ni la restrinja.</string>
+  <string name="oem_coloros_autostart">Abre Ajustes > Aplicaciones > Inicio automático (o Gestión de aplicaciones > Inicio automático) y activa UltimateAlarm.</string>
+  <string name="oem_coloros_recents">Abre la vista de apps recientes, mantén pulsada UltimateAlarm (o desliza hacia abajo sobre ella) y elige «Bloquear» para que el sistema no la cierre.</string>
+  <string name="oem_coloros_fullscreen">Permite las notificaciones a pantalla completa y «Mostrar en la pantalla de bloqueo» para UltimateAlarm, para que la alarma aparezca con el móvil bloqueado.</string>
+  <string name="oem_oneui_battery">Abre Ajustes > Batería > Límites de uso en segundo plano. Quita UltimateAlarm de «Apps en suspensión» y «Apps en suspensión profunda» y añádela a «Apps que nunca se suspenden».</string>
+  <string name="oem_oneui_autostart">Samsung no tiene lista de inicio automático aparte: basta con que UltimateAlarm esté en «Apps que nunca se suspenden».</string>
+  <string name="oem_oneui_recents">En apps recientes, toca el icono de UltimateAlarm y elige «Mantener abierta» para que no se cierre.</string>
+  <string name="oem_oneui_fullscreen">Permite las notificaciones a pantalla completa para UltimateAlarm (ajustes de notificaciones de la app).</string>
+  <string name="oem_hyperos_battery">Abre Ajustes > Aplicaciones > Administrar aplicaciones > UltimateAlarm > Ahorro de batería y elige «Sin restricciones».</string>
+  <string name="oem_hyperos_autostart">Abre Seguridad > Permisos > Inicio automático (o Ajustes de la app > Inicio automático) y activa UltimateAlarm.</string>
+  <string name="oem_hyperos_recents">En apps recientes, mantén pulsada UltimateAlarm y toca el candado para bloquearla.</string>
+  <string name="oem_hyperos_fullscreen">En «Otros permisos» de la app, permite «Mostrar en la pantalla de bloqueo» y «Mostrar ventanas emergentes en segundo plano».</string>
+  <string name="oem_originos_battery">Abre Ajustes > Batería > Consumo en segundo plano (o i Manager > Gestión de energía) y permite a UltimateAlarm un consumo alto en segundo plano.</string>
+  <string name="oem_originos_autostart">Abre i Manager > Gestión de apps > Inicio automático (o Ajustes > Aplicaciones > Permisos > Inicio automático) y activa UltimateAlarm.</string>
+  <string name="oem_originos_recents">En apps recientes, desliza hacia abajo sobre UltimateAlarm para bloquearla.</string>
+  <string name="oem_originos_fullscreen">Permite las notificaciones a pantalla completa y «Mostrar en la pantalla de bloqueo» para UltimateAlarm.</string>
+  <string name="oem_magicos_battery">Abre Ajustes > Batería > Inicio de aplicaciones (o Gestión de energía), busca UltimateAlarm y elige gestionarla manualmente con todo activado.</string>
+  <string name="oem_magicos_autostart">En Inicio de aplicaciones, desactiva «Gestionar automáticamente» para UltimateAlarm y activa inicio automático, inicio secundario y ejecución en segundo plano.</string>
+  <string name="oem_magicos_recents">En apps recientes, desliza hacia abajo sobre UltimateAlarm para bloquearla.</string>
+  <string name="oem_magicos_fullscreen">Permite las notificaciones a pantalla completa y en la pantalla de bloqueo para UltimateAlarm.</string>
+  <string name="oem_stock_battery">Permite que UltimateAlarm ignore la optimización de batería: muestra «Todas las apps», busca UltimateAlarm y elige «No optimizar».</string>
+  <string name="oem_stock_autostart">No hace falta en este móvil: Android no restringe el inicio automático.</string>
+  <string name="oem_stock_recents">No hace falta en este móvil: las alarmas siguen funcionando aunque cierres la app.</string>
+  <string name="oem_stock_fullscreen">Permite las notificaciones a pantalla completa para UltimateAlarm, para que la alarma aparezca sobre el bloqueo (Android 14 y posteriores).</string>
+  <string name="oem_generic_battery">Busca los ajustes de batería o energía, encuentra UltimateAlarm y exclúyela de la optimización de batería y de las restricciones en segundo plano.</string>
+  <string name="oem_generic_autostart">Si tu móvil tiene una lista de inicio automático (a menudo en Seguridad o Aplicaciones), activa UltimateAlarm.</string>
+  <string name="oem_generic_recents">Si tu móvil permite bloquear apps en la vista de recientes, bloquea UltimateAlarm.</string>
+  <string name="oem_generic_fullscreen">Permite que UltimateAlarm muestre notificaciones a pantalla completa y sobre el bloqueo, para que la alarma aparezca con el móvil bloqueado.</string>
+</resources>

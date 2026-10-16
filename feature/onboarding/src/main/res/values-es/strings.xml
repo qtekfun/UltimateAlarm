@@ -11,4 +11,23 @@
   <string name="capability_missing">No disponible</string>
   <string name="capability_fix">Arreglar</string>
   <string name="capability_device">%1$s %2$s · Android %3$s (API %4$d)</string>
+  <string name="onboarding_welcome_title">Una alarma que siempre suena</string>
+  <string name="onboarding_welcome_text">UltimateAlarm lo programa todo en tu móvil. Los móviles ahorran batería de muchas formas y algunas pueden impedir que suene una alarma. En tres pasos cortos nos aseguramos de que la tuya suene.</string>
+  <string name="onboarding_permissions_title">Permisos</string>
+  <string name="onboarding_permissions_text">Permiten que la alarma suene a su hora y se muestre sobre la pantalla de bloqueo. Toca Arreglar en lo que esté en rojo.</string>
+  <string name="onboarding_phone_title">Tu móvil</string>
+  <string name="onboarding_phone_text">Pasos para %1$s. Cada botón abre la pantalla correcta si tu móvil la tiene; si no, sigue el texto.</string>
+  <string name="onboarding_open_settings">Abrir ajustes</string>
+  <string name="onboarding_topic_battery">Batería</string>
+  <string name="onboarding_topic_autostart">Inicio automático</string>
+  <string name="onboarding_topic_recents">Apps recientes</string>
+  <string name="onboarding_topic_fullscreen">Pantalla completa y bloqueo</string>
+  <string name="onboarding_autotest_title">Pruébalo</string>
+  <string name="onboarding_autotest_text">Inicia el autotest, apaga la pantalla y espera un minuto: sonará una alarma real. El resultado está en Diagnóstico.</string>
+  <string name="onboarding_autotest_start">Iniciar autotest (1 min)</string>
+  <string name="onboarding_back">Atrás</string>
+  <string name="onboarding_skip">Omitir</string>
+  <string name="onboarding_next">Siguiente</string>
+  <string name="onboarding_done">Listo</string>
+  <string name="onboarding_generic_phone">tu móvil</string>
 </resources>

@@ -11,6 +11,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.qtekfun.ultimatealarm.feature.alarms.TAG_ADD_ALARM
 import com.qtekfun.ultimatealarm.feature.alarms.TAG_SAVE_ALARM
+import com.qtekfun.ultimatealarm.feature.onboarding.OnboardingStore
 import com.qtekfun.ultimatealarm.feature.ringing.AlarmGraph
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -23,6 +24,11 @@ import org.junit.runner.RunWith
 /** Phase 3 end to end: create an alarm from the list, save it, see its status and find it registered in AlarmManager. */
 @RunWith(AndroidJUnit4::class)
 class AlarmFlowTest {
+    init {
+        // The first-run assistant is covered by OnboardingFlowTest; here the app starts on the alarm list.
+        OnboardingStore.markDone(ApplicationProvider.getApplicationContext())
+    }
+
     @get:Rule
     val compose = createAndroidComposeRule<MainActivity>()
 

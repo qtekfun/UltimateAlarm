@@ -4,6 +4,16 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [0.9.0]
+
+Phase 11: onboarding and polish.
+
+### Added
+- First-run reliability assistant: permissions with their system screens, the steps of your phone's maker (ColorOS, One UI, HyperOS/MIUI, OriginOS/Funtouch, MagicOS, plain Android or generic: battery, auto-start, recent apps, full screen), opening the right screen when the phone has it, and a real one-minute autotest. Also in Settings.
+
+### Fixed
+- An alarm that started ringing right after another one was dismissed could be silenced by the end of the first one.
+
 ## [0.8.1]
 
 Official town calendars.
