@@ -4,6 +4,19 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [0.2.0]
+
+Phase 4: the complete ringing experience.
+
+### Added
+- Gentle volume ramp up to each alarm's maximum volume; the alarm stream is raised while ringing and restored afterwards.
+- Snooze with each alarm's duration and limit, and a "Snoozed until HH:MM" notification that can dismiss the alarm.
+- Backup alarm: if nobody reacts, or after the last allowed snooze, it rings at full volume with continuous vibration, with a safety alarm in case the app was killed.
+- A ring interrupted by a crash or a reboot resumes.
+- Alarm screen: huge time, label, snooze and swipe to dismiss (also available to TalkBack).
+- "Alarm in 1 h" notification with "Skip this" for alarms that ask for it.
+- Settings: what the volume buttons do while ringing and when an unanswered alarm goes quiet.
+
 ## [0.1.0]
 
 Phases 2 and 3: the scheduling engine, alarms stored on the device, the alarm list and the editor.

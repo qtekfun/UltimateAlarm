@@ -1,0 +1,1 @@
+Complete ringing: volume ramp, snooze limits with a dismissable snoozed notice, backup alarm, resume after crashes or reboots, swipe to dismiss, 1 h notice with Skip this, volume button setting.

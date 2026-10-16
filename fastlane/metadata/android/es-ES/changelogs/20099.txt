@@ -1,0 +1,1 @@
+Alarma completa: volumen progresivo, límite de posposiciones con aviso descartable, alarma de respaldo, se reanuda tras cierres o reinicios, deslizar para descartar, aviso 1 h antes con Saltar esta y botones de volumen.

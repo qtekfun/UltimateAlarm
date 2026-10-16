@@ -14,4 +14,6 @@
   <string name="snoozed_until">Pospuesta hasta las %1$s</string>
   <string name="swipe_to_dismiss">Desliza para descartar</string>
   <string name="backup_ringing">Alarma de respaldo</string>
+  <string name="pre_notice_title">Alarma a las %1$s, dentro de 1 h</string>
+  <string name="pre_notice_skip">Saltar esta</string>
 </resources>

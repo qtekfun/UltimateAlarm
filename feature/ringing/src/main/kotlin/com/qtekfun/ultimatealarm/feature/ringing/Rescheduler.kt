@@ -27,6 +27,10 @@ object Rescheduler {
 
         plan.cancel.forEach { AlarmScheduler.cancel(context, it) }
         plan.register.forEach { (id, at) -> AlarmScheduler.schedule(context, id, at) }
+        (alarms.map { it.id } + plan.cancel).forEach { id ->
+            val notice = plan.preNotices[id]
+            if (notice != null) PreNotices.schedule(context, id, notice) else PreNotices.cancel(context, id)
+        }
         plan.missed.forEach { id ->
             repository.markMissed(id)
             alarms.firstOrNull { it.id == id }?.let { Notifications.missed(context, it) }
