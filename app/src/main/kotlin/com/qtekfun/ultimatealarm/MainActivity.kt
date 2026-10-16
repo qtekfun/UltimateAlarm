@@ -20,9 +20,11 @@ import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -68,7 +70,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             UltimateAlarmTheme {
                 // Test tags as resource ids: lets UI Automator (store screenshots, scripts/screenshots.sh) find buttons.
-                Box(Modifier.semantics { testTagsAsResourceId = true }) { AppNavHost() }
+                // A themed surface under every screen: without it, screens with no Scaffold showed the dark window background.
+                Surface(Modifier.fillMaxSize().semantics { testTagsAsResourceId = true }, color = MaterialTheme.colorScheme.background) { AppNavHost() }
             }
         }
     }
