@@ -1,0 +1,1 @@
+Copia de seguridad: exportar e importar (reemplazar o añadir), audios y cuenta de Nextcloud cifrada opcionales, copias automáticas en tu Nextcloud con rotación y restauración desde la lista.

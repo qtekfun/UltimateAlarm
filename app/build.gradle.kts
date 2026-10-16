@@ -113,6 +113,8 @@ android {
         resources {
             // Debug probes of kotlinx.coroutines, only read by the debugger agent.
             excludes += "DebugProbesKt.bin"
+            // Bouncy Castle message tables: unused, R8 strips the code but not these resources.
+            excludes += "org/bouncycastle/**"
         }
     }
 }
@@ -128,6 +130,8 @@ licensee {
     allow("Apache-2.0")
     allow("MIT")
     allow("BSD-3-Clause")
+    // Bouncy Castle: MIT-style licence without an SPDX id in its POM; only Argon2id is used (backup encryption).
+    allowUrl("https://www.bouncycastle.org/licence.html")
 }
 
 dependencies {
