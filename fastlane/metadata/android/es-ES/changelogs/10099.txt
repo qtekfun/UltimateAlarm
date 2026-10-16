@@ -1,0 +1,1 @@
+Lista y editor de alarmas: días de repetición, alarmas de un solo uso que se borran solas, saltar la próxima con deshacer, volumen, posponer y respaldo por alarma. Sobreviven a reinicios y cambios de hora.

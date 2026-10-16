@@ -16,4 +16,8 @@
   <string name="diag_force_media">Forzar el tipo de servicio mediaPlayback</string>
   <string name="diag_event_log">Registro de eventos</string>
   <string name="diag_export">Exportar registro de eventos</string>
+  <string name="diagnostics">Diagnóstico</string>
+  <string name="back">Atrás</string>
+  <string name="permission_banner">Las alarmas podrían no sonar o no mostrarse: falta un permiso.</string>
+  <string name="permission_banner_fix">Arreglar</string>
 </resources>

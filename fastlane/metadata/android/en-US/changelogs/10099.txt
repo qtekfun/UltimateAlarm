@@ -1,0 +1,1 @@
+Alarm list and editor: repeat days, one-time alarms that delete themselves, skip next with undo, per-alarm volume, snooze and backup settings. Alarms survive reboots and time changes.

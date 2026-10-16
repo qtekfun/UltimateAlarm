@@ -17,4 +17,8 @@
   <string name="diag_force_media">Force the mediaPlayback service type</string>
   <string name="diag_event_log">Event log</string>
   <string name="diag_export">Export event log</string>
+  <string name="diagnostics">Diagnostics</string>
+  <string name="back">Back</string>
+  <string name="permission_banner">Alarms may not ring or show: a permission is missing.</string>
+  <string name="permission_banner_fix">Fix</string>
 </resources>
