@@ -52,9 +52,16 @@ class RingingService : Service() {
     /** The ring in progress. [alarm] is `null` until loaded (or for the autotest). */
     private data class Session(val state: RingState, val alarm: Alarm?, val mode: RingMode)
 
+    /**
+     * The newest start command. Stopping with it (instead of a bare stopSelf) never kills a service that has just been asked
+     * to ring again: an alarm firing right after another was dismissed must keep ringing.
+     */
+    private var lastStartId = 0
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        lastStartId = startId
         val alarmId = intent?.getLongExtra(EXTRA_ALARM_ID, AlarmScheduler.AUTOTEST_ID) ?: AlarmScheduler.AUTOTEST_ID
         when (intent?.action) {
             ACTION_DISMISS -> dismiss(alarmId)
@@ -254,7 +261,7 @@ class RingingService : Service() {
     private fun stopIfIdle() {
         if (session != null) return
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
-        stopSelf()
+        stopSelf(lastStartId)
     }
 
     /** The software gain does the volume (max volume, ramp); the stream itself goes to its maximum while ringing. */

@@ -46,6 +46,7 @@ import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorViewModel
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmListScreen
 import com.qtekfun.ultimatealarm.feature.alarms.ExceptionsScreen
 import com.qtekfun.ultimatealarm.feature.alarms.VacationsScreen
+import com.qtekfun.ultimatealarm.feature.backup.BackupScreen
 import com.qtekfun.ultimatealarm.feature.clock.StopwatchScreen
 import com.qtekfun.ultimatealarm.feature.clock.TimerScreen
 import com.qtekfun.ultimatealarm.settings.HolidaySettingsScreen
@@ -72,6 +73,7 @@ private object Routes {
     const val SETTINGS = "settings"
     const val HOLIDAYS = "settings/holidays"
     const val VACATIONS = "vacations"
+    const val BACKUP = "settings/backup"
     const val EXCEPTIONS = "exceptions/{${AlarmEditorViewModel.ARG_ALARM_ID}}"
 
     fun exceptions(id: Long) = "exceptions/$id"
@@ -97,7 +99,7 @@ private fun AppNavHost() {
         composable(Routes.SETTINGS) {
             BackScaffold(stringResource(R.string.settings), onBack = {
                 nav.popBackStack()
-            }) { SettingsScreen(onHolidays = { nav.navigate(Routes.HOLIDAYS) }, modifier = it) }
+            }) { SettingsScreen(onHolidays = { nav.navigate(Routes.HOLIDAYS) }, onBackup = { nav.navigate(Routes.BACKUP) }, modifier = it) }
         }
         composable(Routes.HOLIDAYS) {
             BackScaffold(stringResource(R.string.settings_holidays), onBack = { nav.popBackStack() }) { HolidaySettingsScreen(it) }
@@ -106,6 +108,9 @@ private fun AppNavHost() {
             BackScaffold(stringResource(com.qtekfun.ultimatealarm.feature.alarms.R.string.exceptions_open), onBack = {
                 nav.popBackStack()
             }) { ExceptionsScreen(it) }
+        }
+        composable(Routes.BACKUP) {
+            BackScaffold(stringResource(R.string.settings_backup), onBack = { nav.popBackStack() }) { BackupScreen(it) }
         }
         composable(Routes.VACATIONS) {
             BackScaffold(stringResource(com.qtekfun.ultimatealarm.feature.alarms.R.string.vacations), onBack = { nav.popBackStack() }) { VacationsScreen(it) }

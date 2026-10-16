@@ -2,6 +2,7 @@ package com.qtekfun.ultimatealarm.feature.ringing
 
 import android.content.Context
 import com.qtekfun.ultimatealarm.core.data.AlarmRepository
+import com.qtekfun.ultimatealarm.core.data.BackupStore
 import com.qtekfun.ultimatealarm.core.data.HolidayRepository
 import com.qtekfun.ultimatealarm.core.data.db.AlarmDatabase
 
@@ -26,6 +27,11 @@ object AlarmGraph {
     fun holidayRepository(context: Context): HolidayRepository = holidays ?: synchronized(this) {
         val app = context.applicationContext
         holidays ?: HolidayRepository(database(app), listener = { reason -> Rescheduler.rescheduleAll(app, reason) }).also { holidays = it }
+    }
+
+    fun backupStore(context: Context): BackupStore {
+        val app = context.applicationContext
+        return BackupStore(database(app), listener = { reason -> Rescheduler.rescheduleAll(app, reason) })
     }
 
     fun repository(context: Context): AlarmRepository = repository ?: synchronized(this) {

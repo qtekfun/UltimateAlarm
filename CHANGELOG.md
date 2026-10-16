@@ -4,6 +4,15 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [0.8.0]
+
+Phase 10: backup.
+
+### Added
+- Export to a file and import from it: alarms, schedules, exceptions, vacations, your holidays and cancellations, and settings; optionally your own audio files. Import replaces what you have or adds to it, then every alarm is re-scheduled.
+- The Nextcloud account can travel in the file, encrypted with a password you choose (AES-GCM, Argon2id).
+- Automatic backups to your own Nextcloud (WebDAV, https only): one minute after a change and daily, keeping the last N copies (10 by default); restore from the list of copies with a preview. The app password is stored encrypted with the Android Keystore.
+
 ## [0.7.0]
 
 Phase 9: clock.

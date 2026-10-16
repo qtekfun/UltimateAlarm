@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="backup_file">Copia en archivo</string>
+  <string name="backup_file_help">Alarmas, programaciones, excepciones, vacaciones, tus festivos y ajustes en un archivo.</string>
+  <string name="backup_include_audio">Incluir mis archivos de audio</string>
+  <string name="backup_export_password">Contraseña para la cuenta de Nextcloud (opcional)</string>
+  <string name="backup_export_password_help">Con contraseña, tu cuenta de Nextcloud va en el archivo, cifrada. Sin ella, no se incluye.</string>
+  <string name="backup_export">Exportar…</string>
+  <string name="backup_import">Importar…</string>
+  <string name="backup_exported">Copia guardada</string>
+  <string name="backup_restored">Copia restaurada: %1$d alarmas</string>
+  <string name="backup_nextcloud">Nextcloud</string>
+  <string name="backup_nextcloud_help">Copias automáticas en tu propio Nextcloud (WebDAV). Usa una contraseña de aplicación de Nextcloud → Ajustes → Seguridad.</string>
+  <string name="backup_server">Servidor (https://…)</string>
+  <string name="backup_user">Usuario</string>
+  <string name="backup_app_password">Contraseña de aplicación</string>
+  <string name="backup_folder">Carpeta</string>
+  <string name="backup_keep">Conservar las últimas %1$d copias</string>
+  <string name="backup_auto">Copia automática (tras cambios y a diario)</string>
+  <string name="backup_last_error">Falló la última copia automática: %1$s</string>
+  <string name="backup_last">Última copia: %1$s</string>
+  <string name="backup_save">Guardar</string>
+  <string name="backup_test">Probar conexión</string>
+  <string name="backup_now">Hacer copia ahora</string>
+  <string name="backup_restore_remote">Restaurar…</string>
+  <string name="backup_connection_ok">La conexión funciona</string>
+  <string name="backup_uploaded">Subida %1$s</string>
+  <string name="backup_remote_list">Copias en Nextcloud</string>
+  <string name="backup_remote_empty">Aún no hay copias</string>
+  <string name="backup_cancel">Cancelar</string>
+  <string name="backup_restore_title">Restaurar copia</string>
+  <string name="backup_preview">Copia del %1$s con %2$d alarmas.</string>
+  <string name="backup_replace">Reemplazar lo que tengo</string>
+  <string name="backup_merge">Añadir a lo que tengo</string>
+  <string name="backup_import_password">Contraseña de la cuenta de Nextcloud (opcional)</string>
+  <string name="backup_restore">Restaurar</string>
+  <string name="backup_wrong_password">Contraseña incorrecta o archivo alterado.</string>
+  <string name="backup_invalid">No es una copia válida de UltimateAlarm.</string>
+  <string name="backup_error_auth">Nextcloud rechazó el usuario o la contraseña de aplicación.</string>
+  <string name="backup_error_https">Solo se permiten direcciones https.</string>
+  <string name="backup_error_tls">Falló la conexión segura (certificado).</string>
+  <string name="backup_error_network">Sin conexión con el servidor.</string>
+  <string name="backup_error_server">El servidor respondió con un error.</string>
+</resources>

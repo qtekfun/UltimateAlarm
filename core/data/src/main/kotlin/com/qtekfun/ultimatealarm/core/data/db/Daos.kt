@@ -9,6 +9,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AlarmDao {
+    @Query("DELETE FROM alarm")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM alarm ORDER BY timeOfDay, id")
     fun observeAll(): Flow<List<AlarmEntity>>
 
@@ -39,6 +42,9 @@ interface AlarmDao {
 
 @Dao
 interface OverrideDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(rows: List<DayOverrideEntity>)
+
     @Query("SELECT * FROM day_override")
     fun observeOverrides(): Flow<List<DayOverrideEntity>>
 
@@ -54,6 +60,9 @@ interface OverrideDao {
 
 @Dao
 interface SkipDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(rows: List<SkipEntity>)
+
     @Query("SELECT * FROM skip_next")
     fun observeSkips(): Flow<List<SkipEntity>>
 
@@ -69,6 +78,9 @@ interface SkipDao {
 
 @Dao
 interface VacationDao {
+    @Query("DELETE FROM vacation")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM vacation ORDER BY start")
     fun observeVacations(): Flow<List<VacationEntity>>
 
@@ -96,6 +108,12 @@ interface VacationDao {
 
 @Dao
 interface DecisionDao {
+    @Query("DELETE FROM holiday_decision")
+    suspend fun deleteAll()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(rows: List<HolidayDecisionEntity>)
+
     @Query("SELECT * FROM holiday_decision")
     fun observeDecisions(): Flow<List<HolidayDecisionEntity>>
 
@@ -133,6 +151,12 @@ interface HolidayDao {
 /** Holidays the user added or cancelled. */
 @Dao
 interface UserHolidayDao {
+    @Query("DELETE FROM manual_holiday")
+    suspend fun deleteAllManual()
+
+    @Query("DELETE FROM holiday_override")
+    suspend fun deleteAllOverrides()
+
     @Query("SELECT * FROM manual_holiday ORDER BY date")
     fun observeManual(): Flow<List<ManualHolidayEntity>>
 

@@ -27,9 +27,16 @@ class TimerService : Service() {
     private var player: TonePlayer? = null
     private val ringing = mutableSetOf<Long>()
 
+    /**
+     * The newest start command. Stopping with it (instead of a bare stopSelf) never kills a service that has just been asked
+     * to ring again: an alarm firing right after another was dismissed must keep ringing.
+     */
+    private var lastStartId = 0
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        lastStartId = startId
         val id = intent?.getLongExtra(EXTRA_ID, 0) ?: 0
         when (intent?.action) {
             ACTION_STOP -> stop(id, plusMinute = false)
@@ -69,7 +76,7 @@ class TimerService : Service() {
             player?.stop()
             player = null
             ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
-            stopSelf()
+            stopSelf(lastStartId)
         }
     }
 
