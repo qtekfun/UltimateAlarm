@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Alarm
-import androidx.compose.material.icons.outlined.Celebration
 import androidx.compose.material.icons.outlined.HourglassEmpty
 import androidx.compose.material.icons.outlined.MonitorHeart
 import androidx.compose.material.icons.outlined.Settings
@@ -44,6 +43,7 @@ import com.qtekfun.ultimatealarm.diagnostics.DiagnosticsScreen
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorScreen
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorViewModel
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmListScreen
+import com.qtekfun.ultimatealarm.settings.HolidaySettingsScreen
 import com.qtekfun.ultimatealarm.settings.SettingsScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -65,6 +65,7 @@ private object Routes {
     const val EDITOR = "editor/{${AlarmEditorViewModel.ARG_ALARM_ID}}"
     const val DIAGNOSTICS = "diagnostics"
     const val SETTINGS = "settings"
+    const val HOLIDAYS = "settings/holidays"
 
     fun editor(id: Long) = "editor/$id"
 }
@@ -84,7 +85,12 @@ private fun AppNavHost() {
             AlarmEditorScreen(onDone = { _, _ -> nav.popBackStack() }, onBack = { nav.popBackStack() })
         }
         composable(Routes.SETTINGS) {
-            BackScaffold(stringResource(R.string.settings), onBack = { nav.popBackStack() }) { SettingsScreen(it) }
+            BackScaffold(stringResource(R.string.settings), onBack = {
+                nav.popBackStack()
+            }) { SettingsScreen(onHolidays = { nav.navigate(Routes.HOLIDAYS) }, modifier = it) }
+        }
+        composable(Routes.HOLIDAYS) {
+            BackScaffold(stringResource(R.string.settings_holidays), onBack = { nav.popBackStack() }) { HolidaySettingsScreen(it) }
         }
         composable(Routes.DIAGNOSTICS) {
             BackScaffold(stringResource(R.string.diagnostics), onBack = { nav.popBackStack() }) { DiagnosticsScreen(it) }
@@ -92,12 +98,11 @@ private fun AppNavHost() {
     }
 }
 
-/** The four top-level destinations of the bottom navigation (docs/spec/02-diseno.md §10). */
+/** Top-level destinations of the bottom navigation (§10; holidays live in Settings, D-14). */
 private enum class Destination(@StringRes val label: Int, val icon: ImageVector) {
     ALARMS(R.string.nav_alarms, Icons.Outlined.Alarm),
     TIMER(R.string.nav_timer, Icons.Outlined.HourglassEmpty),
-    STOPWATCH(R.string.nav_stopwatch, Icons.Outlined.Timer),
-    HOLIDAYS(R.string.nav_holidays, Icons.Outlined.Celebration)
+    STOPWATCH(R.string.nav_stopwatch, Icons.Outlined.Timer)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
