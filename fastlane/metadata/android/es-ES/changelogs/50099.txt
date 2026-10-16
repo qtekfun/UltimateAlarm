@@ -1,0 +1,1 @@
+Turnos (4×4, 5×2, semanas alternas o a medida), calendario de excepciones por alarma y vacaciones que pausan todas o algunas alarmas.

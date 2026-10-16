@@ -4,6 +4,15 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [0.5.0]
+
+Phase 7: advanced scheduling.
+
+### Added
+- Shift patterns in the editor: presets 4×4, 5×2, 6×3, 2×2 and alternate weeks, or any cycle of 2–28 days; choose day 1 of the cycle and see the next days it rings.
+- Exceptions calendar per alarm: a month view showing which days ring; tap a day to force it to ring or not to ring.
+- Vacations: date ranges that pause every alarm or the ones you pick; editable, deletable, past ones kept apart.
+
 ## [0.4.1]
 
 Local holidays.
