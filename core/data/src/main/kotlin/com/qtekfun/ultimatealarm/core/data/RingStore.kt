@@ -58,6 +58,15 @@ class RingStore(context: Context) {
         get() = prefs.getString(KEY_BACKUP_SOUND, null)
         set(value) = prefs.edit { putString(KEY_BACKUP_SOUND, value) }
 
+    /** RF-E1: bedtime reminder before the first alarm of the next day. */
+    var bedtimeEnabled: Boolean
+        get() = prefs.getBoolean(KEY_BEDTIME, true)
+        set(value) = prefs.edit { putBoolean(KEY_BEDTIME, value) }
+
+    var bedtimeHours: Int
+        get() = prefs.getInt(KEY_BEDTIME_HOURS, DEFAULT_BEDTIME_HOURS)
+        set(value) = prefs.edit { putInt(KEY_BEDTIME_HOURS, value) }
+
     /** RF-R8: minutes after which a ring silences itself; `null` = the default of [RingPolicy.silenceAt]. */
     var silenceAfterMinutes: Int?
         get() = prefs.getInt(KEY_SILENCE, -1).takeIf { it > 0 }
@@ -74,6 +83,9 @@ class RingStore(context: Context) {
         const val KEY_VOLUME_BUTTONS = "volume_buttons"
         const val KEY_SILENCE = "silence_after"
         const val KEY_BACKUP_SOUND = "backup_sound"
+        const val KEY_BEDTIME = "bedtime"
+        const val KEY_BEDTIME_HOURS = "bedtime_hours"
+        const val DEFAULT_BEDTIME_HOURS = 8
     }
 }
 

@@ -36,4 +36,7 @@
   <string name="challenge_math_progress">Problem %1$d of %2$d</string>
   <string name="challenge_answer">Answer</string>
   <string name="challenge_check">Check</string>
+  <string name="bedtime_channel">Bedtime</string>
+  <string name="bedtime_title">Time to go to bed</string>
+  <string name="bedtime_text">Your first alarm rings at %1$s.</string>
 </resources>

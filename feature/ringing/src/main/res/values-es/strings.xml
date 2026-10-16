@@ -37,4 +37,7 @@
   <string name="challenge_math_progress">Operación %1$d de %2$d</string>
   <string name="challenge_answer">Resultado</string>
   <string name="challenge_check">Comprobar</string>
+  <string name="bedtime_channel">Hora de dormir</string>
+  <string name="bedtime_title">Es hora de ir a dormir</string>
+  <string name="bedtime_text">Tu primera alarma suena a las %1$s.</string>
 </resources>

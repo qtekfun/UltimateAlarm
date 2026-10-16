@@ -14,11 +14,14 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,15 +32,20 @@ import androidx.compose.ui.unit.dp
 import com.qtekfun.ultimatealarm.R
 import com.qtekfun.ultimatealarm.core.data.RingStore
 import com.qtekfun.ultimatealarm.core.data.VolumeButtonAction
+import com.qtekfun.ultimatealarm.feature.ringing.Rescheduler
 import com.qtekfun.ultimatealarm.feature.sounds.SoundCatalog
 import com.qtekfun.ultimatealarm.feature.sounds.SoundPickerDialog
 import com.qtekfun.ultimatealarm.feature.sounds.SoundRef
 import com.qtekfun.ultimatealarm.feature.sounds.soundName
+import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 /** Global ringing settings: volume buttons (RF-R7) and auto-silence (RF-R8). More sections arrive with their phases. */
 @Composable
 fun SettingsScreen(onHolidays: () -> Unit, modifier: Modifier = Modifier) {
-    val store = RingStore(LocalContext.current)
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val store = RingStore(context)
     var volume by remember { mutableStateOf(store.volumeButtons) }
     var silence by remember { mutableStateOf(store.silenceAfterMinutes) }
     Column(modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -69,6 +77,31 @@ fun SettingsScreen(onHolidays: () -> Unit, modifier: Modifier = Modifier) {
                 },
                 onDismiss = { pickingBackup = false }
             )
+        }
+        var bedtime by remember { mutableStateOf(store.bedtimeEnabled) }
+        var bedtimeHours by remember { mutableStateOf(store.bedtimeHours) }
+        Group(stringResource(R.string.settings_bedtime)) {
+            Row(Modifier.fillMaxWidth().heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.settings_bedtime_enabled), Modifier.weight(1f))
+                Switch(checked = bedtime, onCheckedChange = {
+                    bedtime = it
+                    store.bedtimeEnabled = it
+                    scope.launch { Rescheduler.rescheduleAll(context, "settings") }
+                })
+            }
+            if (bedtime) {
+                Text(stringResource(R.string.settings_bedtime_hours, bedtimeHours))
+                Slider(
+                    value = bedtimeHours.toFloat(),
+                    onValueChange = { bedtimeHours = it.roundToInt() },
+                    onValueChangeFinished = {
+                        store.bedtimeHours = bedtimeHours
+                        scope.launch { Rescheduler.rescheduleAll(context, "settings") }
+                    },
+                    valueRange = 6f..10f,
+                    steps = 3
+                )
+            }
         }
         Group(stringResource(R.string.settings_volume_buttons)) {
             listOf(

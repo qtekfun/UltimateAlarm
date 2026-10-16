@@ -46,6 +46,8 @@ import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorViewModel
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmListScreen
 import com.qtekfun.ultimatealarm.feature.alarms.ExceptionsScreen
 import com.qtekfun.ultimatealarm.feature.alarms.VacationsScreen
+import com.qtekfun.ultimatealarm.feature.clock.StopwatchScreen
+import com.qtekfun.ultimatealarm.feature.clock.TimerScreen
 import com.qtekfun.ultimatealarm.settings.HolidaySettingsScreen
 import com.qtekfun.ultimatealarm.settings.SettingsScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -157,9 +159,8 @@ private fun MainScreen(onEdit: (Long) -> Unit, onDiagnostics: () -> Unit, onSett
             PermissionBanner(onFix = onDiagnostics)
             when (current) {
                 Destination.ALARMS -> AlarmListScreen(onEdit = onEdit)
-                else -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.coming_soon))
-                }
+                Destination.TIMER -> TimerScreen()
+                Destination.STOPWATCH -> StopwatchScreen()
             }
         }
     }

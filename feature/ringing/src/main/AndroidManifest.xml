@@ -65,6 +65,11 @@
             android:directBootAware="true"
             android:exported="false" />
 
+        <receiver
+            android:name=".BedtimeReceiver"
+            android:directBootAware="true"
+            android:exported="false" />
+
         <service
             android:name=".RingingService"
             android:directBootAware="true"
