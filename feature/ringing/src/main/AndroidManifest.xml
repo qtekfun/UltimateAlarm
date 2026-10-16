@@ -40,6 +40,16 @@
             android:directBootAware="true"
             android:exported="false" />
 
+        <receiver
+            android:name=".PreNoticeReceiver"
+            android:directBootAware="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".SkipThisReceiver"
+            android:directBootAware="true"
+            android:exported="false" />
+
         <service
             android:name=".RingingService"
             android:directBootAware="true"

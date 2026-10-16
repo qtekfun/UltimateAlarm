@@ -24,6 +24,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val delay = if (scheduledAt > 0) "${firedAt - scheduledAt}ms" else "unknown"
         DiagnosticLog.log(context, "FIRED", "${purpose.path} delay=$delay ${deviceState(context)}", alarmId)
         if (purpose != AlarmPurpose.OCCURRENCE) return
+        PreNotices.dismissNotification(context, alarmId)
         doAsync {
             if (alarmId == AlarmScheduler.AUTOTEST_ID) {
                 DiagnosticsStore(context).autotestAt = 0
