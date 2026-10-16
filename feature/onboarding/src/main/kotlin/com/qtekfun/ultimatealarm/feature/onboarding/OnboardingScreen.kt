@@ -62,45 +62,50 @@ fun OnboardingScreen(onStartAutotest: () -> Unit, onFinish: () -> Unit, modifier
     val (guide, topics) = remember { OemGuideLauncher.topics(context) }
     val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { refresh++ }
 
-    Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    // The step scrolls; Back/Next stay fixed below it so they are reachable on long steps and small screens.
+    Column(modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         LinearProgressIndicator(progress = { (step + 1) / STEPS.toFloat() }, modifier = Modifier.fillMaxWidth())
-        when (step) {
-            0 -> {
-                Text(stringResource(R.string.onboarding_welcome_title), style = MaterialTheme.typography.headlineSmall)
-                Text(stringResource(R.string.onboarding_welcome_text))
-            }
-            1 -> {
-                Text(stringResource(R.string.onboarding_permissions_title), style = MaterialTheme.typography.headlineSmall)
-                Text(stringResource(R.string.onboarding_permissions_text))
-                CapabilityList(capabilities, onFix = { capability ->
-                    val runtime = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                        context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-                    if (capability == Capability.NOTIFICATIONS && runtime) {
-                        notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    } else {
-                        CapabilitySettings.open(context, capability)
-                    }
-                })
-            }
-            2 -> {
-                Text(stringResource(R.string.onboarding_phone_title), style = MaterialTheme.typography.headlineSmall)
-                Text(stringResource(R.string.onboarding_phone_text, guideName(guide.id)))
-                topics.forEach { topic ->
-                    Card(Modifier.fillMaxWidth()) {
-                        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(stringResource(topicTitle(topic.topic)), style = MaterialTheme.typography.titleMedium)
-                            Text(stringResource(OemGuideLauncher.textId(context, topic)))
-                            if (topic.intents.isNotEmpty()) {
-                                OutlinedButton(onClick = { OemGuideLauncher.open(context, topic) }) { Text(stringResource(R.string.onboarding_open_settings)) }
+        Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            when (step) {
+                0 -> {
+                    Text(stringResource(R.string.onboarding_welcome_title), style = MaterialTheme.typography.headlineSmall)
+                    Text(stringResource(R.string.onboarding_welcome_text))
+                }
+                1 -> {
+                    Text(stringResource(R.string.onboarding_permissions_title), style = MaterialTheme.typography.headlineSmall)
+                    Text(stringResource(R.string.onboarding_permissions_text))
+                    CapabilityList(capabilities, onFix = { capability ->
+                        val runtime = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                            context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                        if (capability == Capability.NOTIFICATIONS && runtime) {
+                            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        } else {
+                            CapabilitySettings.open(context, capability)
+                        }
+                    })
+                }
+                2 -> {
+                    Text(stringResource(R.string.onboarding_phone_title), style = MaterialTheme.typography.headlineSmall)
+                    Text(stringResource(R.string.onboarding_phone_text, guideName(guide.id)))
+                    topics.forEach { topic ->
+                        Card(Modifier.fillMaxWidth()) {
+                            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text(stringResource(topicTitle(topic.topic)), style = MaterialTheme.typography.titleMedium)
+                                Text(stringResource(OemGuideLauncher.textId(context, topic)))
+                                if (topic.intents.isNotEmpty()) {
+                                    OutlinedButton(onClick = {
+                                        OemGuideLauncher.open(context, topic)
+                                    }) { Text(stringResource(R.string.onboarding_open_settings)) }
+                                }
                             }
                         }
                     }
                 }
-            }
-            else -> {
-                Text(stringResource(R.string.onboarding_autotest_title), style = MaterialTheme.typography.headlineSmall)
-                Text(stringResource(R.string.onboarding_autotest_text))
-                Button(onClick = onStartAutotest, modifier = Modifier.heightIn(min = 48.dp)) { Text(stringResource(R.string.onboarding_autotest_start)) }
+                else -> {
+                    Text(stringResource(R.string.onboarding_autotest_title), style = MaterialTheme.typography.headlineSmall)
+                    Text(stringResource(R.string.onboarding_autotest_text))
+                    Button(onClick = onStartAutotest, modifier = Modifier.heightIn(min = 48.dp)) { Text(stringResource(R.string.onboarding_autotest_start)) }
+                }
             }
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
