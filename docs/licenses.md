@@ -3,6 +3,9 @@
 - **App code**: GPL-3.0-or-later (`LICENSE`).
 - **Sounds**: 13 tones synthesised by `tools/sounds/generate.py`, project's own work, GPL-3.0-or-later
   (`feature/sounds/src/main/assets/sounds/LICENSES.md`, checked by CI).
+- **Fonts** (bundled in `core/designsystem/src/main/res/font`, licence texts in its `assets/licenses`): Bricolage
+  Grotesque (The Bricolage Grotesque Project Authors) and DM Sans (The DM Sans Project Authors), both SIL Open Font
+  License 1.1, compatible with GPL-3.0-or-later distribution.
 - **Icon and screenshots**: project's own work, GPL-3.0-or-later.
 - **Holiday data** (downloaded at runtime or embedded):
   - Nager.Date API (https://date.nager.at): public holiday data; the embedded snapshot `assets/holidays/ES-*.json` is the
