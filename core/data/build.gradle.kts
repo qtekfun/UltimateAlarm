@@ -5,3 +5,9 @@ plugins {
 android {
     namespace = "com.qtekfun.ultimatealarm.core.data"
 }
+
+dependencies {
+    implementation(libs.androidx.core.ktx)
+
+    testImplementation(libs.junit)
+}
