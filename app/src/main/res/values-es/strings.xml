@@ -79,4 +79,6 @@
   <string name="settings_backup">Copia de seguridad</string>
   <string name="settings_backup_summary">Exportar, importar y copias automáticas en tu Nextcloud</string>
   <string name="holidays_official_source">Calendario oficial de tu municipio: %1$s</string>
+  <string name="settings_assistant">Asistente de fiabilidad</string>
+  <string name="settings_assistant_summary">Permisos, ajustes de batería de tu móvil y una alarma de prueba</string>
 </resources>
