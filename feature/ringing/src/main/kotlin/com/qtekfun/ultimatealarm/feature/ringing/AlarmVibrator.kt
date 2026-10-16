@@ -12,9 +12,11 @@ import android.os.VibratorManager
 internal class AlarmVibrator(context: Context) {
     private val vibrator: Vibrator = context.getSystemService(VibratorManager::class.java).defaultVibrator
 
-    fun start() {
+    /** [continuous]: the backup alarm's insistent pattern (RF-R4). */
+    fun start(continuous: Boolean = false) {
         if (!vibrator.hasVibrator()) return
-        val effect = VibrationEffect.createWaveform(PATTERN, 0)
+        vibrator.cancel()
+        val effect = VibrationEffect.createWaveform(if (continuous) CONTINUOUS else PATTERN, 0)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             vibrator.vibrate(effect, VibrationAttributes.createForUsage(VibrationAttributes.USAGE_ALARM))
         } else {
@@ -29,5 +31,6 @@ internal class AlarmVibrator(context: Context) {
 
     private companion object {
         val PATTERN = longArrayOf(0, 800, 600)
+        val CONTINUOUS = longArrayOf(0, 1_000, 150)
     }
 }
