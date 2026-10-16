@@ -1,7 +1,9 @@
 # Phase 1 spike — reliability report
 
 APK: `UltimateAlarm-0.0.1-spike*.apk` from the [v0.0.1-spike release](https://github.com/qtekfun/UltimateAlarm/releases/tag/v0.0.1-spike).
-Status: **waiting for device validation** (Pixel 8, OPPO Find X8 Pro, OPPO Find X9 Ultra).
+Status: **closed without physical devices.** The product owner confirmed (2026-10-16) that no phones are available for
+validation, so the spike is validated on AOSP emulators in CI and the device matrix below stays as a manual checklist
+for whoever gets a device.
 
 ## What the spike does
 
@@ -45,6 +47,26 @@ Per phone, also note: Android version / ROM, whether "Not restricted by battery 
 
 ## Results
 
-_To be filled in after device testing._
+### Emulator evidence (CI, `instrumented.yml`)
 
-**Chosen FGS type:** _pending — `systemExempted` is the candidate on Android 14+; decided from the matrix._
+| Check | AOSP API 31 (Android 12) | AOSP API 36 (Android 16) |
+|---|---|---|
+| App starts without Google apps (`LaunchTest`) | ✅ | ✅ |
+| Real `setAlarmClock` alarm fires with the screen off, service rings, sound plays, full log (`FiringTest`) | ✅ | ✅ |
+
+Runs: [branch run](https://github.com/qtekfun/UltimateAlarm/actions/runs/38859593762) (both green), plus the nightly job.
+
+Not covered by emulators and therefore open risks, mitigated in later phases: 8 h of real Doze, OEM battery managers
+(ColorOS auto-launch, recents lock), reboot before first unlock on real file-based encryption. Mitigations: exact alarm via
+`setAlarmClock` (exempt from Doze and app standby), Direct Boot components, the daily watchdog (Phase 3), the backup alarm
+(Phase 4), the per-manufacturer guide and the in-app autotest (Phase 11), which lets any user check their own phone.
+
+### Device matrix
+
+Not run (no devices). The checklist above stays for future testers.
+
+**Chosen FGS type:** `systemExempted` on Android 14+ when the exact-alarm permission is held (always true for an alarm
+clock with `USE_EXACT_ALARM`), `mediaPlayback` on Android 12–13 and as an automatic fallback if the system refuses
+`systemExempted`. Rationale: `systemExempted` is the type Android documents for alarm clocks with exact alarms, is not
+subject to the `mediaPlayback` time limits introduced in Android 15, and the runtime fallback keeps the alarm ringing if a
+ROM rejects it. The event log records the type used on every firing.
