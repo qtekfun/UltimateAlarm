@@ -16,4 +16,14 @@
   <string name="backup_ringing">Alarma de respaldo</string>
   <string name="pre_notice_title">Alarma a las %1$s, dentro de 1 h</string>
   <string name="pre_notice_skip">Saltar esta</string>
+  <string name="eve_channel">Víspera de festivo</string>
+  <string name="eve_title">Mañana es festivo (%1$s)</string>
+  <string name="eve_unnamed">festivo</string>
+  <string name="eve_skip_all">Saltarlas</string>
+  <string name="eve_keep">Mantenerlas</string>
+  <plurals name="eve_text">
+    <item quantity="one">Tienes %1$d alarma. Si no respondes, sonará.</item>
+    <item quantity="many">Tienes %1$d alarmas. Si no respondes, sonarán.</item>
+    <item quantity="other">Tienes %1$d alarmas. Si no respondes, sonarán.</item>
+  </plurals>
 </resources>

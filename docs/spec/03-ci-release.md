@@ -27,8 +27,8 @@ Si no existen, `release.yml` firma con debug y marca la release como **pre-relea
 | 1 (spike) | 0.0.1-spike (pre-release) |
 | 3 | 0.1.0 |
 | 4 | 0.2.0 |
-| 5 | 0.3.0 |
-| 6 | 0.4.0 |
+| 6 (festivos, adelantada, D-14) | 0.3.0 |
+| 5 (sonidos) | 0.4.0 |
 | 7 | 0.5.0 |
 | 8 | 0.6.0 |
 | 9 | 0.7.0 |

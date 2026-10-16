@@ -16,4 +16,13 @@
   <string name="backup_ringing">Backup alarm</string>
   <string name="pre_notice_title">Alarm at %1$s, in 1 h</string>
   <string name="pre_notice_skip">Skip this</string>
+  <string name="eve_channel">Holiday eve</string>
+  <string name="eve_title">Tomorrow is a holiday (%1$s)</string>
+  <string name="eve_unnamed">holiday</string>
+  <string name="eve_skip_all">Skip them</string>
+  <string name="eve_keep">Keep them</string>
+  <plurals name="eve_text">
+    <item quantity="one">You have %1$d alarm. If you do not answer, it rings.</item>
+    <item quantity="other">You have %1$d alarms. If you do not answer, they ring.</item>
+  </plurals>
 </resources>

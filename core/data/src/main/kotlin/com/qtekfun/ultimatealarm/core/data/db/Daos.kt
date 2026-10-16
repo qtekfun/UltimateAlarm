@@ -108,3 +108,52 @@ interface DecisionDao {
     @Query("DELETE FROM holiday_decision WHERE date < :before")
     suspend fun deleteDecisionsBefore(before: Long)
 }
+
+@Dao
+interface HolidayDao {
+    @Query("SELECT * FROM holiday ORDER BY date")
+    fun observeHolidays(): Flow<List<HolidayEntity>>
+
+    @Query("SELECT * FROM holiday")
+    suspend fun holidays(): List<HolidayEntity>
+
+    @Query("SELECT COUNT(*) FROM holiday WHERE source = :source AND date BETWEEN :from AND :to")
+    suspend fun count(source: String, from: Long, to: Long): Int
+
+    @Query("DELETE FROM holiday WHERE source = :source AND date BETWEEN :from AND :to")
+    suspend fun deleteRange(source: String, from: Long, to: Long)
+
+    @Query("DELETE FROM holiday WHERE source = :source")
+    suspend fun deleteSource(source: String)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(rows: List<HolidayEntity>)
+}
+
+/** Holidays the user added or cancelled. */
+@Dao
+interface UserHolidayDao {
+    @Query("SELECT * FROM manual_holiday ORDER BY date")
+    fun observeManual(): Flow<List<ManualHolidayEntity>>
+
+    @Query("SELECT * FROM manual_holiday")
+    suspend fun manual(): List<ManualHolidayEntity>
+
+    @Upsert
+    suspend fun upsertManual(row: ManualHolidayEntity): Long
+
+    @Query("DELETE FROM manual_holiday WHERE id = :id")
+    suspend fun deleteManual(id: Long)
+
+    @Query("SELECT * FROM holiday_override")
+    fun observeOverrides(): Flow<List<HolidayOverrideEntity>>
+
+    @Query("SELECT * FROM holiday_override")
+    suspend fun overrides(): List<HolidayOverrideEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun putOverride(row: HolidayOverrideEntity)
+
+    @Query("DELETE FROM holiday_override WHERE date = :date")
+    suspend fun deleteOverride(date: Long)
+}
