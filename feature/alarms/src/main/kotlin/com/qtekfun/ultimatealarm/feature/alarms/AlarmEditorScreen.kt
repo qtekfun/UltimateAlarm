@@ -155,6 +155,9 @@ fun AlarmEditorScreen(
                     }
                 }
             }
+            Section(stringResource(R.string.section_challenge)) {
+                ChallengeSection(draft.challenge) { encoded -> viewModel.edit { it.copy(challenge = encoded) } }
+            }
             Section(stringResource(R.string.section_backup)) {
                 val backup = draft.backupAfterMinutes
                 SwitchRow(stringResource(R.string.backup_enabled), backup != null) { on ->

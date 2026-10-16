@@ -5,10 +5,12 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.qtekfun.ultimatealarm.core.data.Alarm
+import com.qtekfun.ultimatealarm.core.data.Challenge
 import com.qtekfun.ultimatealarm.core.data.DiagnosticLog
 import com.qtekfun.ultimatealarm.core.data.RingMode
 import com.qtekfun.ultimatealarm.core.data.RingStore
 import com.qtekfun.ultimatealarm.core.scheduling.AlarmKind
+import com.qtekfun.ultimatealarm.feature.ringing.challenge.hasNfc
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlinx.coroutines.runBlocking
@@ -102,6 +104,14 @@ class RingingFlowTest {
             waitFor(15_000) { DiagnosticLog.get(context).read().lastOrNull { it.type == "SOUND" && it.alarmId == id && it.detail.contains("fallback") } }
         assertNotNull("no fallback logged: ${DiagnosticLog.get(context).read().filter { it.type == "SOUND" }}", sound)
         assertTrue(sound!!.detail, sound.detail.startsWith("fallback bundled:dawn_marimba"))
+    }
+
+    @Test
+    fun challengeIsExposedAndDegradesWithoutHardware() = runBlocking {
+        val id = repository.save(Alarm(time = LocalTime.of(3, 0), challenge = Challenge.Nfc("04AABB").encode(), backupAfterMinutes = null))
+        ring(id)
+        val expected = if (hasNfc(context)) Challenge.Nfc("04AABB") else Challenge.Math()
+        assertEquals(expected, RingingState.current.value?.challenge)
     }
 
     private fun ring(id: Long) {
