@@ -29,3 +29,26 @@ module (no Android plugin) with Kover enforcing ≥ 90 % line coverage as part o
 
 As in UltimateGallery/UltimatePhone: `(MAJOR*10000 + MINOR*100 + PATCH) * 100 + suffix`, where the suffix is `N` for `-rcN`,
 `1` for `-spike` and `99` for a final version. `0.0.1-spike` is therefore `101`, `0.1.0` is `10099`, `1.0.0-rc1` is `1000001`.
+
+## D-6 · One universal APK per release, no per-ABI splits
+
+`03-ci-release.md` asks for an APK per ABI plus a universal one. Until now the app has no native code, so every per-ABI APK
+would be identical to the universal one. Releases ship one universal `UltimateAlarm-X.Y.Z.apk` plus `SHA256SUMS.txt`, as
+UltimateGallery and UltimatePhone do. CameraX (Phase 8, QR challenge) brings a small JNI library: ABI splits are added then.
+
+## D-7 · F-Droid changelogs are committed in the phase's last PR, not written by `release.yml`
+
+`release.yml` cannot push to `master` (no direct pushes). The `fastlane/.../changelogs/<versionCode>.txt` files are written
+in the same PR that updates `CHANGELOG.md`; CI and `release.yml` run `scripts/release-notes.sh`, which fails if they are
+missing. Same model as UltimateGallery.
+
+## D-8 · Release labels
+
+A version with a suffix (`-rcN`, `-spike`) is a GitHub pre-release; a final version (`0.1.0`…) is a normal release.
+Without the four `UG_*` secrets the build is debug-signed, the APK is named `…-UNSIGNED-DEBUG.apk`, the title says
+`(UNSIGNED-DEBUG)` and the release is always a pre-release. Phase 0's acceptance tag is `v0.0.0-rc1`.
+
+## D-9 · Instrumented tests are nightly and manual
+
+`instrumented.yml` runs on AOSP images without Google apps (API 31 and 36), nightly and on demand, not on every PR (an
+emulator boot takes several minutes). The screen-off firing test arrives with the spike (Phase 1).

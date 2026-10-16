@@ -1,0 +1,1 @@
+First test build: project skeleton, CI and release pipeline. No alarms yet.

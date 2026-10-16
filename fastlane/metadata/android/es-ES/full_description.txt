@@ -1,0 +1,12 @@
+UltimateAlarm es un despertador que sabe qué días son festivo, te pregunta la víspera y te deja decidir. Todo funciona en tu móvil: las alarmas se programan en local y suenan con la pantalla apagada, tras reiniciar y con los cambios de hora.
+
+• Programación flexible: días de la semana, turnos (4×4, semanas alternas…), excepciones por día y vacaciones
+• Festivos de tu país y comunidad, más tus festivos locales; la víspera una notificación te pregunta si saltar la alarma
+• Alarmas de un solo uso que se borran al descartarlas y "saltar mañana" por alarma
+• Volumen progresivo, vibración, posponer y alarma de respaldo si no reaccionas
+• Retos para apagar: matemáticas, código QR/de barras o etiqueta NFC
+• Sonidos incluidos con licencia libre, tonos del sistema o tus propios ficheros
+• Temporizador, cronómetro y recordatorio de acostarse
+• Copia de seguridad en fichero y automática en tu Nextcloud (WebDAV)
+
+Funciona en Android 12 o superior, con o sin servicios de Google y de cualquier fabricante. Sin analítica, sin rastreadores, sin dependencias de Google. Software libre, GPL-3.0.
