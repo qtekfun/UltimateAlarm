@@ -1,0 +1,82 @@
+package com.qtekfun.ultimatealarm.settings
+
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
+import com.qtekfun.ultimatealarm.R
+import com.qtekfun.ultimatealarm.core.data.RingStore
+import com.qtekfun.ultimatealarm.core.data.VolumeButtonAction
+
+/** Global ringing settings: volume buttons (RF-R7) and auto-silence (RF-R8). More sections arrive with their phases. */
+@Composable
+fun SettingsScreen(modifier: Modifier = Modifier) {
+    val store = RingStore(LocalContext.current)
+    var volume by remember { mutableStateOf(store.volumeButtons) }
+    var silence by remember { mutableStateOf(store.silenceAfterMinutes) }
+    Column(modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Group(stringResource(R.string.settings_volume_buttons)) {
+            listOf(
+                VolumeButtonAction.SNOOZE to R.string.settings_volume_snooze,
+                VolumeButtonAction.DISMISS to R.string.settings_volume_dismiss,
+                VolumeButtonAction.NOTHING to R.string.settings_volume_nothing
+            ).forEach { (action, label) ->
+                Choice(label, selected = volume == action) {
+                    volume = action
+                    store.volumeButtons = action
+                }
+            }
+        }
+        Group(stringResource(R.string.settings_silence_after)) {
+            SILENCE_CHOICES.forEach { minutes ->
+                val label = if (minutes == null) R.string.settings_silence_default else R.string.settings_silence_minutes
+                Choice(label, selected = silence == minutes, arg = minutes) {
+                    silence = minutes
+                    store.silenceAfterMinutes = minutes
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Group(title: String, content: @Composable () -> Unit) {
+    Column(Modifier.selectableGroup()) {
+        Text(title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 4.dp))
+        content()
+    }
+}
+
+@Composable
+private fun Choice(@StringRes label: Int, selected: Boolean, arg: Int? = null, onSelect: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).selectable(selected = selected, onClick = onSelect, role = Role.RadioButton),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(selected = selected, onClick = null)
+        Text(if (arg == null) stringResource(label) else stringResource(label, arg), Modifier.padding(start = 12.dp))
+    }
+}
+
+private val SILENCE_CHOICES = listOf(null, 5, 10, 15, 30)

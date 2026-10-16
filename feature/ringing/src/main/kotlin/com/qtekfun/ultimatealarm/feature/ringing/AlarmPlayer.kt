@@ -17,7 +17,8 @@ import kotlin.math.sin
  * system alarm tone cannot be played or does not start within [START_TIMEOUT_MS] (e.g. media storage not available
  * before the first unlock), a generated beep takes over. The bundled pack joins the chain in Phase 5.
  */
-internal class AlarmPlayer(private val context: Context, private val onSource: (String) -> Unit) {
+internal class AlarmPlayer(private val context: Context, initialGain: Float, private val onSource: (String) -> Unit) {
+    private var gain = initialGain
     private val handler = Handler(Looper.getMainLooper())
     private var mediaPlayer: MediaPlayer? = null
     private var beep: AudioTrack? = null
@@ -41,6 +42,7 @@ internal class AlarmPlayer(private val context: Context, private val onSource: (
                 isLooping = true
                 setOnPreparedListener { player ->
                     if (!stopped && !started) {
+                        player.setVolume(gain, gain)
                         player.start()
                         started = true
                         onSource("system:$uri")
@@ -63,10 +65,22 @@ internal class AlarmPlayer(private val context: Context, private val onSource: (
         mediaPlayer?.release()
         mediaPlayer = null
         started = true
-        beep = runCatching { generatedBeep().also { it.play() } }
+        beep = runCatching {
+            generatedBeep().also {
+                it.setVolume(gain)
+                it.play()
+            }
+        }
             .onSuccess { onSource("beep ($reason)") }
             .onFailure { onSource("NOTHING: beep failed ${it.javaClass.simpleName}: ${it.message} ($reason)") }
             .getOrNull()
+    }
+
+    /** Software volume 0..1 on top of the alarm stream (ramp, max volume). */
+    fun setGain(value: Float) {
+        gain = value.coerceIn(0f, 1f)
+        mediaPlayer?.runCatching { setVolume(gain, gain) }
+        beep?.runCatching { setVolume(gain) }
     }
 
     fun stop() {

@@ -37,6 +37,17 @@ class RingStore(context: Context) {
         if (count == null) remove("$KEY_SNOOZED_PREFIX$alarmId") else putInt("$KEY_SNOOZED_PREFIX$alarmId", count)
     }
 
+    /** Snoozed alarms → epoch millis their snooze ends, so a reboot can register them again. */
+    val snoozedUntil: Map<Long, Long>
+        get() = prefs.all.mapNotNull { (key, value) ->
+            val id = key.removePrefix(KEY_UNTIL_PREFIX).takeIf { key.startsWith(KEY_UNTIL_PREFIX) }?.toLongOrNull() ?: return@mapNotNull null
+            (value as? Long)?.let { id to it }
+        }.toMap()
+
+    fun setSnoozedUntil(alarmId: Long, until: Long?) = prefs.edit(commit = true) {
+        if (until == null) remove("$KEY_UNTIL_PREFIX$alarmId") else putLong("$KEY_UNTIL_PREFIX$alarmId", until)
+    }
+
     /** RF-R7: what the volume buttons do while ringing. */
     var volumeButtons: VolumeButtonAction
         get() = VolumeButtonAction.entries.firstOrNull { it.name == prefs.getString(KEY_VOLUME_BUTTONS, null) } ?: VolumeButtonAction.SNOOZE
@@ -54,6 +65,7 @@ class RingStore(context: Context) {
         const val KEY_SNOOZES = "ring_snoozes"
         const val KEY_BACKUP = "ring_backup"
         const val KEY_SNOOZED_PREFIX = "snoozed_"
+        const val KEY_UNTIL_PREFIX = "snoozed_until_"
         const val KEY_VOLUME_BUTTONS = "volume_buttons"
         const val KEY_SILENCE = "silence_after"
     }

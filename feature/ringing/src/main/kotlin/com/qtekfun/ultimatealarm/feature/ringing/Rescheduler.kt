@@ -3,6 +3,8 @@ package com.qtekfun.ultimatealarm.feature.ringing
 import android.content.Context
 import com.qtekfun.ultimatealarm.core.data.DiagnosticLog
 import com.qtekfun.ultimatealarm.core.data.DiagnosticsStore
+import com.qtekfun.ultimatealarm.core.data.RingPolicy
+import com.qtekfun.ultimatealarm.core.data.RingStore
 import java.time.Instant
 import java.time.ZonedDateTime
 import kotlinx.coroutines.sync.Mutex
@@ -33,6 +35,17 @@ object Rescheduler {
         if (plan.staleSkips.isNotEmpty()) repository.dropSkips(plan.staleSkips)
         store.registered = plan.register
 
+        // Snoozes and an interrupted ring do not survive a reboot in AlarmManager: register them again.
+        val ringStore = RingStore(context)
+        ringStore.snoozedUntil.forEach { (id, until) ->
+            if (until > System.currentTimeMillis()) AlarmScheduler.schedule(context, id, until, AlarmPurpose.SNOOZE) else ringStore.setSnoozedUntil(id, null)
+        }
+        ringStore.state?.let { ring ->
+            if (reason in BOOT_REASONS && RingPolicy.isResumable(ring, System.currentTimeMillis())) {
+                AlarmScheduler.schedule(context, ring.alarmId, System.currentTimeMillis() + RESUME_DELAY_MS, AlarmPurpose.RESUME)
+            }
+        }
+
         val autotestAt = store.autotestAt
         if (autotestAt > System.currentTimeMillis()) AlarmScheduler.schedule(context, AlarmScheduler.AUTOTEST_ID, autotestAt)
 
@@ -54,4 +67,6 @@ object Rescheduler {
     }
 
     private const val AUTOTEST_DELAY_MS = 60_000L
+    private const val RESUME_DELAY_MS = 1_000L
+    private val BOOT_REASONS = setOf("locked_boot", "boot")
 }

@@ -11,4 +11,7 @@
   <string name="deleted_title">%1$s deleted</string>
   <string name="undo">Undo</string>
   <string name="alarm_default_label">Alarm</string>
+  <string name="snoozed_until">Snoozed until %1$s</string>
+  <string name="swipe_to_dismiss">Swipe to dismiss</string>
+  <string name="backup_ringing">Backup alarm</string>
 </resources>
