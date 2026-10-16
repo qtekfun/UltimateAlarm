@@ -41,6 +41,7 @@ class FiringTest {
         assertTrue(types!!.containsAll(listOf("SCHEDULED", "FIRED", "FGS_STARTED", "SOUND")))
         val sound = DiagnosticLog.get(context).read().last { it.type == "SOUND" }
         assertTrue("nothing played: ${sound.detail}", !sound.detail.startsWith("NOTHING"))
+        assertTrue("not the pack tone: ${sound.detail}", sound.detail.startsWith("bundled:dawn_marimba"))
     }
 
     private fun <T> waitFor(timeoutMs: Long, probe: () -> T?): T? {

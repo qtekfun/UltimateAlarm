@@ -36,7 +36,6 @@
   <string name="max_volume">Maximum volume: %1$d %%</string>
   <string name="ramp_seconds">Volume ramp: %1$d s</string>
   <string name="vibrate">Vibrate</string>
-  <string name="sound_default">Sound: default tone</string>
   <string name="section_snooze">Snooze</string>
   <string name="snooze_minutes">Snooze for %1$d min</string>
   <string name="snooze_unlimited">Unlimited snoozes</string>

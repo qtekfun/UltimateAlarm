@@ -36,7 +36,6 @@
   <string name="max_volume">Volumen máximo: %1$d %%</string>
   <string name="ramp_seconds">Volumen progresivo: %1$d s</string>
   <string name="vibrate">Vibrar</string>
-  <string name="sound_default">Tono: predeterminado</string>
   <string name="section_snooze">Posponer</string>
   <string name="snooze_minutes">Posponer %1$d min</string>
   <string name="snooze_unlimited">Posponer sin límite</string>

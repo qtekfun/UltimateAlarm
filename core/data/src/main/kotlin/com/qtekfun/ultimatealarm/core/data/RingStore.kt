@@ -53,6 +53,11 @@ class RingStore(context: Context) {
         get() = VolumeButtonAction.entries.firstOrNull { it.name == prefs.getString(KEY_VOLUME_BUTTONS, null) } ?: VolumeButtonAction.SNOOZE
         set(value) = prefs.edit { putString(KEY_VOLUME_BUTTONS, value.name) }
 
+    /** RF-S5: global backup tone (encoded SoundRef), `null` = the pack's. */
+    var backupSound: String?
+        get() = prefs.getString(KEY_BACKUP_SOUND, null)
+        set(value) = prefs.edit { putString(KEY_BACKUP_SOUND, value) }
+
     /** RF-R8: minutes after which a ring silences itself; `null` = the default of [RingPolicy.silenceAt]. */
     var silenceAfterMinutes: Int?
         get() = prefs.getInt(KEY_SILENCE, -1).takeIf { it > 0 }
@@ -68,6 +73,7 @@ class RingStore(context: Context) {
         const val KEY_UNTIL_PREFIX = "snoozed_until_"
         const val KEY_VOLUME_BUTTONS = "volume_buttons"
         const val KEY_SILENCE = "silence_after"
+        const val KEY_BACKUP_SOUND = "backup_sound"
     }
 }
 

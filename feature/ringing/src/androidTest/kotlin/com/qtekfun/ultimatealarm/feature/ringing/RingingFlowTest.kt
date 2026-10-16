@@ -93,6 +93,17 @@ class RingingFlowTest {
         assertEquals(ringing, RingingState.current.value?.alarmId)
     }
 
+    @Test
+    fun missingOwnFileFallsBackToThePackTone() = runBlocking {
+        DiagnosticLog.get(context).clear()
+        val id = repository.save(Alarm(time = LocalTime.of(3, 0), sound = "file:content://com.example.gone/tone.mp3", backupAfterMinutes = null))
+        ring(id)
+        val sound =
+            waitFor(15_000) { DiagnosticLog.get(context).read().lastOrNull { it.type == "SOUND" && it.alarmId == id && it.detail.contains("fallback") } }
+        assertNotNull("no fallback logged: ${DiagnosticLog.get(context).read().filter { it.type == "SOUND" }}", sound)
+        assertTrue(sound!!.detail, sound.detail.startsWith("fallback bundled:dawn_marimba"))
+    }
+
     private fun ring(id: Long) {
         context.startForegroundService(RingingService.startIntent(context, id, System.currentTimeMillis()))
         assertNotNull("did not ring", waitFor(10_000) { RingingState.current.value?.takeIf { it.alarmId == id && it.title.isNotEmpty() } })
