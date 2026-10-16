@@ -1,0 +1,1 @@
+Nuevo aspecto: modo claro y oscuro, color a elegir, la próxima alarma en grande, ruedas para la hora y pantalla de alarma con amanecer.
