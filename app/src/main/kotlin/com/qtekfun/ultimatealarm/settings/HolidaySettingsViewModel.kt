@@ -79,7 +79,9 @@ class HolidaySettingsViewModel @Inject constructor(application: Application, pri
     /** D-16: provinces and municipalities of the chosen Spanish region, loaded from the network for the pickers. */
     val provinces = MutableStateFlow<List<LocalHolidays.Place>>(emptyList())
     val municipalities = MutableStateFlow<List<LocalHolidays.Place>>(emptyList())
-    val placesError = MutableStateFlow(false)
+
+    /** Why the last list failed to load; null when it loaded. */
+    val placesError = MutableStateFlow<Throwable?>(null)
 
     fun loadProvinces() {
         val community = LocalHolidays.communitySlug[settings.subdivision] ?: return
@@ -87,8 +89,8 @@ class HolidaySettingsViewModel @Inject constructor(application: Application, pri
             runCatching { refresher().provinces(community) }
                 .onSuccess {
                     provinces.value = it
-                    placesError.value = false
-                }.onFailure { placesError.value = true }
+                    placesError.value = null
+                }.onFailure { placesError.value = it }
         }
     }
 
@@ -99,8 +101,8 @@ class HolidaySettingsViewModel @Inject constructor(application: Application, pri
             runCatching { refresher().municipalities(community, province) }
                 .onSuccess {
                     municipalities.value = it
-                    placesError.value = false
-                }.onFailure { placesError.value = true }
+                    placesError.value = null
+                }.onFailure { placesError.value = it }
         }
     }
 

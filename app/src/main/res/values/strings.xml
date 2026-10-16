@@ -69,6 +69,8 @@
   <string name="holidays_municipality">Municipality</string>
   <string name="holidays_choose">Choose…</string>
   <string name="holidays_remove">Remove</string>
+  <string name="holidays_no_internet">UltimateAlarm cannot reach the internet. If your phone is online, check that the app is allowed to use the network in its settings (the Network permission on GrapheneOS, Data usage on other phones) and that no VPN or private DNS is blocking it.</string>
+  <string name="holidays_open_app_settings">Open app settings</string>
   <string name="holidays_places_error">Could not load the list. Check the connection.</string>
   <string name="holidays_local_attribution">Local holidays: Calendarios Nacionales (calendariosnacionales.com)</string>
   <string name="holidays_search">Search</string>
