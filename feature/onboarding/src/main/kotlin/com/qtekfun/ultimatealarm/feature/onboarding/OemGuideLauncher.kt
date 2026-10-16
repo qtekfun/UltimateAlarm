@@ -37,6 +37,20 @@ object OemGuideLauncher {
         }
     }
 
-    fun textId(context: Context, topic: ResolvedTopic): Int = context.resources.getIdentifier(topic.textKey, "string", context.packageName).takeIf { it != 0 }
-        ?: context.resources.getIdentifier("oem_generic_${topic.topic}", "string", context.packageName)
+    /**
+     * The text of [topic]. Guide texts are looked up by name from the JSON; when that name is missing from this build the
+     * generic text is used, referenced directly so it always exists (a missing resource must never crash the assistant).
+     */
+    fun textId(context: Context, topic: ResolvedTopic): Int {
+        // The resource package, not the application id: a debug build adds a suffix to the latter.
+        val resourcePackage = context.resources.getResourcePackageName(R.string.oem_generic_battery)
+        return context.resources.getIdentifier(topic.textKey, "string", resourcePackage).takeIf { it != 0 } ?: genericText(topic.topic)
+    }
+
+    private fun genericText(topic: String): Int = when (topic) {
+        GuideTopics.BATTERY -> R.string.oem_generic_battery
+        GuideTopics.AUTOSTART -> R.string.oem_generic_autostart
+        GuideTopics.RECENTS -> R.string.oem_generic_recents
+        else -> R.string.oem_generic_fullscreen
+    }
 }

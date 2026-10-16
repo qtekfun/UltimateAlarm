@@ -4,6 +4,13 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [1.0.0-rc2]
+
+Second release candidate.
+
+### Fixed
+- The first-run assistant closed the app on the "Your phone" step: the release build had dropped the manufacturer guide texts.
+
 ## [1.0.0-rc1]
 
 Phase 12: ready for F-Droid (release candidate).
