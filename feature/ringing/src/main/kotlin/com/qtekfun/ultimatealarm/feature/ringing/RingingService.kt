@@ -18,6 +18,7 @@ import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.qtekfun.ultimatealarm.core.data.Alarm
+import com.qtekfun.ultimatealarm.core.data.Challenge
 import com.qtekfun.ultimatealarm.core.data.DiagnosticLog
 import com.qtekfun.ultimatealarm.core.data.DiagnosticsStore
 import com.qtekfun.ultimatealarm.core.data.RingMode
@@ -25,6 +26,8 @@ import com.qtekfun.ultimatealarm.core.data.RingPolicy
 import com.qtekfun.ultimatealarm.core.data.RingState
 import com.qtekfun.ultimatealarm.core.data.RingStore
 import com.qtekfun.ultimatealarm.core.scheduling.AlarmKind
+import com.qtekfun.ultimatealarm.feature.ringing.challenge.hasCamera
+import com.qtekfun.ultimatealarm.feature.ringing.challenge.hasNfc
 import com.qtekfun.ultimatealarm.feature.sounds.SoundCatalog
 import com.qtekfun.ultimatealarm.feature.sounds.SoundRef
 import com.qtekfun.ultimatealarm.feature.sounds.TonePlayer
@@ -137,8 +140,9 @@ class RingingService : Service() {
             session = current.copy(alarm = alarm, mode = mode)
             val title = if (alarm == null) getString(R.string.ringing_title_autotest) else Notifications.label(this, alarm)
             val canSnooze = RingPolicy.canSnooze(current.state.snoozeCount, settings.maxSnoozes)
-            RingingState.set(Ringing(alarmId, current.state.firedAt, title, canSnooze, mode))
-            getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification(alarmId, title, canSnooze))
+            val challenge = Challenge.effective(Challenge.decode(alarm?.challenge), hasCamera(this), hasNfc(this))
+            RingingState.set(Ringing(alarmId, current.state.firedAt, title, canSnooze, mode, challenge))
+            getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification(alarmId, title, canSnooze, canDismiss = challenge == null))
 
             handler.removeCallbacksAndMessages(null)
             if (mode == RingMode.BACKUP) {
@@ -218,7 +222,7 @@ class RingingService : Service() {
         DiagnosticLog.log(this, "SNOOZED", "minutes=$minutes count=${count + 1}", alarmId)
         val label = alarm?.let { Notifications.label(this, it) } ?: getString(R.string.ringing_title_autotest)
         finishSession()
-        SnoozeNotifications.show(this, alarmId, label, until)
+        SnoozeNotifications.show(this, alarmId, label, until, canDismiss = Challenge.decode(alarm?.challenge) == null)
         stopIfIdle()
     }
 
@@ -302,7 +306,8 @@ class RingingService : Service() {
     private fun canUseFullScreenIntent(): Boolean = Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE ||
         getSystemService(NotificationManager::class.java).canUseFullScreenIntent()
 
-    private fun notification(alarmId: Long, title: String, canSnooze: Boolean): Notification {
+    /** Without [canDismiss] (a challenge is set) the notification only offers Snooze; dismissing goes through the screen. */
+    private fun notification(alarmId: Long, title: String, canSnooze: Boolean, canDismiss: Boolean = true): Notification {
         ensureChannel(this)
         val screen = PendingIntent.getActivity(
             this,
@@ -321,7 +326,8 @@ class RingingService : Service() {
             .setFullScreenIntent(screen, true)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
         if (canSnooze) builder.addAction(0, getString(R.string.ringing_snooze), actionIntent(this, ACTION_SNOOZE, alarmId))
-        return builder.addAction(0, getString(R.string.ringing_dismiss), actionIntent(this, ACTION_DISMISS, alarmId)).build()
+        if (canDismiss) builder.addAction(0, getString(R.string.ringing_dismiss), actionIntent(this, ACTION_DISMISS, alarmId))
+        return builder.build()
     }
 
     private fun acquireWakeLock() {

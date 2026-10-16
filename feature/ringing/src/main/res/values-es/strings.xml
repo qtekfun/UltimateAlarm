@@ -26,4 +26,15 @@
     <item quantity="many">Tienes %1$d alarmas. Si no respondes, sonarán.</item>
     <item quantity="other">Tienes %1$d alarmas. Si no respondes, sonarán.</item>
   </plurals>
+  <string name="challenge_camera_needed">Hace falta el permiso de cámara para escanear el código.</string>
+  <string name="challenge_scan">Escanea %1$s para descartar</string>
+  <string name="challenge_registered_code">el código registrado</string>
+  <string name="challenge_wrong_code">Ese no es el código registrado.</string>
+  <string name="challenge_nfc">Acerca %1$s al móvil para descartar</string>
+  <string name="challenge_registered_tag">la etiqueta registrada</string>
+  <string name="challenge_wrong_tag">Esa no es la etiqueta registrada.</string>
+  <string name="challenge_back">Volver</string>
+  <string name="challenge_math_progress">Operación %1$d de %2$d</string>
+  <string name="challenge_answer">Resultado</string>
+  <string name="challenge_check">Comprobar</string>
 </resources>

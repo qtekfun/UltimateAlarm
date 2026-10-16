@@ -25,4 +25,15 @@
     <item quantity="one">You have %1$d alarm. If you do not answer, it rings.</item>
     <item quantity="other">You have %1$d alarms. If you do not answer, they ring.</item>
   </plurals>
+  <string name="challenge_camera_needed">The camera permission is needed to scan the code.</string>
+  <string name="challenge_scan">Scan %1$s to dismiss</string>
+  <string name="challenge_registered_code">the registered code</string>
+  <string name="challenge_wrong_code">That is not the registered code.</string>
+  <string name="challenge_nfc">Hold %1$s to the phone to dismiss</string>
+  <string name="challenge_registered_tag">the registered tag</string>
+  <string name="challenge_wrong_tag">That is not the registered tag.</string>
+  <string name="challenge_back">Back</string>
+  <string name="challenge_math_progress">Problem %1$d of %2$d</string>
+  <string name="challenge_answer">Answer</string>
+  <string name="challenge_check">Check</string>
 </resources>
