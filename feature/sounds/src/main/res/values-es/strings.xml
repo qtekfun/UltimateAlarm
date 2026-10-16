@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="sound_dawn_marimba">Marimba del alba</string>
+  <string name="sound_morning_bells">Campanas de la mañana</string>
+  <string name="sound_soft_pad">Colchón suave</string>
+  <string name="sound_music_box">Caja de música</string>
+  <string name="sound_gentle_chimes">Carillón suave</string>
+  <string name="sound_bright_marimba">Marimba brillante</string>
+  <string name="sound_sunrise_arpeggio">Arpegio del amanecer</string>
+  <string name="sound_wake_pluck">Cuerdas de despertar</string>
+  <string name="sound_rise_bells">Campanas ascendentes</string>
+  <string name="sound_backup_pulse">Pulsos de respaldo</string>
+  <string name="sound_backup_two_tone">Respaldo a dos tonos</string>
+  <string name="sound_eve_chime">Carillón de víspera</string>
+  <string name="sound_timer_done">Fin del temporizador</string>
+  <string name="category_gentle">Despertar suave</string>
+  <string name="category_energetic">Despertar enérgico</string>
+  <string name="category_backup">Respaldo</string>
+  <string name="category_notification">Notificación</string>
+  <string name="sound_default">Predeterminado (%1$s)</string>
+  <string name="sound_system">Tono del sistema…</string>
+  <string name="sound_file">Tu propio archivo…</string>
+  <string name="sound_preview">Escuchar</string>
+  <string name="sound_stop">Parar</string>
+  <string name="sound_title">Sonido</string>
+  <string name="sound_backup_title">Tono de respaldo</string>
+  <string name="sound_backup_global">El tono de respaldo general</string>
+  <string name="sound_system_chosen">Tono del sistema</string>
+  <string name="sound_file_chosen">Tu archivo</string>
+</resources>

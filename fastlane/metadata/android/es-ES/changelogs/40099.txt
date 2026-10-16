@@ -1,0 +1,1 @@
+Sonidos: 13 tonos originales (suaves, enérgicos, respaldo), selector con vista previa y rampa, tonos del sistema o tus archivos, tono de respaldo general y por alarma, fallbacks seguros.

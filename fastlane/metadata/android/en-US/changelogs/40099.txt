@@ -1,0 +1,1 @@
+Sounds: 13 original tones (gentle, energetic, backup), picker with preview and ramp, system tones or your own files, general and per-alarm backup tone, safe fallbacks.

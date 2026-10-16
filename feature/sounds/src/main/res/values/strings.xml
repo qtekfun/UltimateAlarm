@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="sound_dawn_marimba">Dawn marimba</string>
+  <string name="sound_morning_bells">Morning bells</string>
+  <string name="sound_soft_pad">Soft pad</string>
+  <string name="sound_music_box">Music box</string>
+  <string name="sound_gentle_chimes">Gentle chimes</string>
+  <string name="sound_bright_marimba">Bright marimba</string>
+  <string name="sound_sunrise_arpeggio">Sunrise arpeggio</string>
+  <string name="sound_wake_pluck">Wake-up strings</string>
+  <string name="sound_rise_bells">Rising bells</string>
+  <string name="sound_backup_pulse">Backup pulses</string>
+  <string name="sound_backup_two_tone">Backup two-tone</string>
+  <string name="sound_eve_chime">Evening chime</string>
+  <string name="sound_timer_done">Timer done</string>
+  <string name="category_gentle">Gentle wake-up</string>
+  <string name="category_energetic">Energetic wake-up</string>
+  <string name="category_backup">Backup</string>
+  <string name="category_notification">Notification</string>
+  <string name="sound_default">Default (%1$s)</string>
+  <string name="sound_system">System tone…</string>
+  <string name="sound_file">Your own file…</string>
+  <string name="sound_preview">Preview</string>
+  <string name="sound_stop">Stop</string>
+  <string name="sound_title">Sound</string>
+  <string name="sound_backup_title">Backup tone</string>
+  <string name="sound_backup_global">Same as the general backup tone</string>
+  <string name="sound_system_chosen">System tone</string>
+  <string name="sound_file_chosen">Your file</string>
+</resources>
