@@ -63,7 +63,8 @@ class RingingFlowTest {
         context.startForegroundService(RingingService.startIntent(context, id, System.currentTimeMillis(), AlarmPurpose.SNOOZE))
         assertNotNull("did not switch to backup", waitFor(10_000) { RingingState.current.value?.takeIf { it.mode == RingMode.BACKUP } })
         assertEquals(false, RingingState.current.value?.canSnooze)
-        assertTrue(DiagnosticLog.get(context).read().any { it.type == "BACKUP" && it.alarmId == id })
+        // The event log is written on a background thread: wait for the entry.
+        assertNotNull(waitFor(5_000) { DiagnosticLog.get(context).read().firstOrNull { it.type == "BACKUP" && it.alarmId == id } })
     }
 
     @Test
