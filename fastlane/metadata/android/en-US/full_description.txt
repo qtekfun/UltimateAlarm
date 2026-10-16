@@ -1,0 +1,12 @@
+UltimateAlarm is an alarm clock that knows which days are public holidays, asks you the evening before and lets you decide. Everything runs on your phone: alarms are scheduled locally and ring with the screen off, after a reboot and across time changes.
+
+• Flexible schedules: days of the week, shift patterns (4 on / 4 off, alternate weeks…), per-day exceptions and vacations
+• Public holidays for your country and region, plus your own local holidays; a notification the evening before asks whether to skip
+• One-time alarms that delete themselves when dismissed, and "skip tomorrow" per alarm
+• Gentle volume ramp, vibration, snooze and a backup alarm if you do not react
+• Challenges to dismiss: maths, QR/barcode or NFC tag
+• Bundled sounds with free licences, system tones or your own files
+• Timer, stopwatch and bedtime reminder
+• Backup to a file and automatic backup to your Nextcloud (WebDAV)
+
+Works on Android 12 and later, with or without Google services, on any manufacturer. No analytics, no trackers, no Google dependencies. Free software, GPL-3.0.
