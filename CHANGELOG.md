@@ -4,6 +4,13 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [1.0.0-rc3]
+
+Third release candidate.
+
+### Removed
+- Madrid's official open-data calendar: its download did not work. Madrid's local holidays keep coming from the compiled municipal calendar (Calendarios Nacionales), with the same dates.
+
 ## [1.0.0-rc2]
 
 Second release candidate.
