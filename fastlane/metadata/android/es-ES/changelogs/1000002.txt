@@ -1,0 +1,1 @@
+Arreglo: el asistente inicial cerraba la app en el paso «Tu teléfono».
