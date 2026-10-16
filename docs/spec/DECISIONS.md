@@ -75,3 +75,14 @@ and a decision for one alarm exist for a holiday, the per-alarm one wins.
 sync is a source of bugs in the one path that must never fail, so the Room database (`alarms.db`: alarms, exceptions,
 skips, vacations, holiday decisions) lives entirely in device-protected storage, like the event log. Its contents are not
 sensitive; secrets (Nextcloud credentials, Phase 10) stay in credential-protected storage encrypted with the Android Keystore.
+
+## D-13 · Ringing rules: snooze exhaustion, backup, auto-silence, ring state
+
+- "If the snoozes run out, the backup tone sounds" (RF-R4) is read as: the ring that follows the last allowed snooze starts
+  directly with the backup tone (full volume, no ramp, continuous vibration). Only for alarms with a backup configured.
+- The backup timer counts from the start of each ring; snoozing or dismissing stops it. A safety exact alarm at the same
+  instant re-starts the ring in backup mode if the service was killed.
+- RF-R8: with a backup, a ring never silences itself by default; without one, after 30 min. Either way a ring stops after
+  60 min without interaction (a phone left at home must not ring for days); the global setting can shorten it.
+- `RingState` (§2) is kept in device-protected preferences, not Room: it is one row, written synchronously at the start of
+  every ring and read before the first unlock and after a process death.
