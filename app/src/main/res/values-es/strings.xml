@@ -36,7 +36,7 @@
   <string name="holidays_region_none">Solo festivos nacionales</string>
   <string name="holidays_region_code">Código de región (opcional)</string>
   <string name="holidays_region_code_hint">ISO 3166-2, p. ej. %1$s-XX</string>
-  <string name="holidays_source_note">De Nager.Date (nacionales y autonómicos). Festivos locales: añade un calendario público o añádelos abajo.</string>
+  <string name="holidays_source_note">Festivos nacionales y autonómicos de Nager.Date; en España, también los locales de tu municipio. Si falta alguno: añade un calendario público o añádelo abajo.</string>
   <string name="holidays_ics">Calendario público (dirección ICS)</string>
   <string name="holidays_ics_hint">Opcional: un calendario .ics público con festivos extra, como los de tu municipio.</string>
   <string name="holidays_apply">Aplicar</string>
@@ -63,4 +63,14 @@
   <string name="holidays_yearly">Todos los años</string>
   <string name="holidays_save">Guardar</string>
   <string name="holidays_cancel">Cancelar</string>
+  <string name="holidays_local">Festivos locales de tu municipio</string>
+  <string name="holidays_province">Provincia</string>
+  <string name="holidays_municipality">Municipio</string>
+  <string name="holidays_choose">Elegir…</string>
+  <string name="holidays_remove">Quitar</string>
+  <string name="holidays_places_error">No se pudo cargar la lista. Comprueba la conexión.</string>
+  <string name="holidays_local_attribution">Festivos locales: Calendarios Nacionales (calendariosnacionales.com)</string>
+  <string name="holidays_search">Buscar</string>
+  <string name="holidays_loading">Cargando…</string>
+  <string name="holidays_origin_local">Calendario municipal</string>
 </resources>

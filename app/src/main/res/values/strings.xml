@@ -37,7 +37,7 @@
   <string name="holidays_region_none">National holidays only</string>
   <string name="holidays_region_code">Region code (optional)</string>
   <string name="holidays_region_code_hint">ISO 3166-2, e.g. %1$s-XX</string>
-  <string name="holidays_source_note">From Nager.Date (national and regional). Town holidays: add a public calendar or add them below.</string>
+  <string name="holidays_source_note">National and regional holidays from Nager.Date; in Spain, your town\'s local holidays too. Anything missing: add a public calendar or add it below.</string>
   <string name="holidays_ics">Public calendar (ICS address)</string>
   <string name="holidays_ics_hint">Optional: a public .ics calendar with extra holidays, such as your town\'s.</string>
   <string name="holidays_apply">Apply</string>
@@ -64,4 +64,14 @@
   <string name="holidays_yearly">Every year</string>
   <string name="holidays_save">Save</string>
   <string name="holidays_cancel">Cancel</string>
+  <string name="holidays_local">Local holidays of your town</string>
+  <string name="holidays_province">Province</string>
+  <string name="holidays_municipality">Municipality</string>
+  <string name="holidays_choose">Choose…</string>
+  <string name="holidays_remove">Remove</string>
+  <string name="holidays_places_error">Could not load the list. Check the connection.</string>
+  <string name="holidays_local_attribution">Local holidays: Calendarios Nacionales (calendariosnacionales.com)</string>
+  <string name="holidays_search">Search</string>
+  <string name="holidays_loading">Loading…</string>
+  <string name="holidays_origin_local">Municipal calendar</string>
 </resources>

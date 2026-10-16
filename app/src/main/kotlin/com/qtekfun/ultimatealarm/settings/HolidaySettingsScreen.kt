@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,6 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.qtekfun.ultimatealarm.R
 import com.qtekfun.ultimatealarm.core.data.HolidayEntry
 import com.qtekfun.ultimatealarm.core.data.HolidaySourceType
+import com.qtekfun.ultimatealarm.feature.holidays.LocalHolidays
 import java.text.DateFormat as JavaDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -73,8 +76,9 @@ fun HolidaySettingsScreen(modifier: Modifier = Modifier, viewModel: HolidaySetti
         if (config.automatic) {
             CountryPicker(config.country, viewModel::setCountry)
             RegionPicker(config.country, config.subdivision, viewModel::setSubdivision)
-            Text(stringResource(R.string.holidays_source_note), style = MaterialTheme.typography.bodySmall)
         }
+        if (config.country == "ES" && config.subdivision != null) MunicipalityPicker(config, viewModel)
+        Text(stringResource(R.string.holidays_source_note), style = MaterialTheme.typography.bodySmall)
         IcsField(config.icsUrl, viewModel::setIcsUrl)
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedButton(onClick = viewModel::refresh, enabled = !config.refreshing) { Text(stringResource(R.string.holidays_refresh)) }
@@ -149,6 +153,89 @@ private fun RegionPicker(country: String, subdivision: String?, onSelect: (Strin
     }
 }
 
+/** D-16: province, then municipality with a search box; attribution link required by the data provider's terms. */
+@Composable
+private fun MunicipalityPicker(config: HolidayConfig, viewModel: HolidaySettingsViewModel) {
+    val provinces by viewModel.provinces.collectAsStateWithLifecycle()
+    val municipalities by viewModel.municipalities.collectAsStateWithLifecycle()
+    val error by viewModel.placesError.collectAsStateWithLifecycle()
+    var province by rememberSaveable(config.subdivision) { mutableStateOf(config.municipalityPath?.split('/')?.getOrNull(1)) }
+    var searching by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(config.subdivision) { viewModel.loadProvinces() }
+    LaunchedEffect(province) { province?.let(viewModel::loadMunicipalities) }
+    LaunchedEffect(provinces) {
+        if (province == null && provinces.size == 1) province = provinces.single().slug
+    }
+
+    Text(stringResource(R.string.holidays_local), style = MaterialTheme.typography.titleSmall)
+    if (provinces.size > 1) {
+        Dropdown(
+            label = stringResource(R.string.holidays_province),
+            value = provinces.firstOrNull { it.slug == province }?.name ?: stringResource(R.string.holidays_choose),
+            options = provinces.map { it.slug to it.name },
+            onSelect = { province = it }
+        )
+    }
+    Row(Modifier.fillMaxWidth().heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(1f).clickable(enabled = province != null) { searching = true }) {
+            Text(
+                stringResource(R.string.holidays_municipality),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(config.municipalityName ?: stringResource(R.string.holidays_choose), style = MaterialTheme.typography.bodyLarge)
+        }
+        if (config.municipalityPath != null) {
+            TextButton(onClick = { viewModel.setMunicipality(province.orEmpty(), null) }) { Text(stringResource(R.string.holidays_remove)) }
+        }
+    }
+    if (error) Text(stringResource(R.string.holidays_places_error), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+    val uriHandler = LocalUriHandler.current
+    Text(
+        stringResource(R.string.holidays_local_attribution),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.clickable { uriHandler.openUri(LocalHolidays.ATTRIBUTION_URL) }.padding(vertical = 4.dp)
+    )
+    if (searching && province != null) {
+        MunicipalitySearch(municipalities, onDismiss = { searching = false }) { place ->
+            searching = false
+            viewModel.setMunicipality(province!!, place)
+        }
+    }
+}
+
+@Composable
+private fun MunicipalitySearch(all: List<LocalHolidays.Place>, onDismiss: () -> Unit, onPick: (LocalHolidays.Place) -> Unit) {
+    var query by rememberSaveable { mutableStateOf("") }
+    val normalized = query.trim().lowercase()
+    val matches = all.filter { normalized.isEmpty() || it.name.lowercase().contains(normalized) }.take(MAX_RESULTS)
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.holidays_municipality)) },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = { query = it },
+                    label = { Text(stringResource(R.string.holidays_search)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    if (all.isEmpty()) Text(stringResource(R.string.holidays_loading), Modifier.padding(top = 8.dp))
+                    matches.forEach { place ->
+                        Text(place.name, Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable { onPick(place) }.padding(vertical = 12.dp))
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.holidays_cancel)) } }
+    )
+}
+
+private const val MAX_RESULTS = 100
+
 @Composable
 private fun Dropdown(label: String, value: String, options: List<Pair<String, String>>, onSelect: (String) -> Unit) {
     var open by remember { mutableStateOf(false) }
@@ -210,6 +297,7 @@ private fun HolidayRow(entry: HolidayEntry, onCancelled: (Boolean) -> Unit, onDe
     val origin = stringResource(
         when (entry.source) {
             HolidaySourceType.API -> R.string.holidays_origin_api
+            HolidaySourceType.LOCAL -> R.string.holidays_origin_local
             HolidaySourceType.ICS -> R.string.holidays_origin_ics
             HolidaySourceType.MANUAL -> R.string.holidays_origin_manual
         }
