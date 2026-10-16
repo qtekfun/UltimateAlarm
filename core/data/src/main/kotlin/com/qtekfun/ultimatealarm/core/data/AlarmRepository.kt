@@ -13,8 +13,11 @@ import com.qtekfun.ultimatealarm.core.data.db.vacationRules
 import com.qtekfun.ultimatealarm.core.scheduling.HolidayCalendar
 import com.qtekfun.ultimatealarm.core.scheduling.OverrideMode
 import com.qtekfun.ultimatealarm.core.scheduling.RuleSet
+import com.qtekfun.ultimatealarm.core.scheduling.SchedulingEngine
 import com.qtekfun.ultimatealarm.core.scheduling.Vacation
+import java.time.Duration
 import java.time.LocalDate
+import java.time.ZonedDateTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -63,6 +66,14 @@ class AlarmRepository(
     }
 
     fun observeVacations(): Flow<List<Vacation>> = combine(vacations.observeVacations(), vacations.observeVacationAlarms(), ::vacationRules)
+
+    suspend fun holidayCalendar(): HolidayCalendar = holidays.calendar()
+
+    /** Time until the next occurrence of [id], or `null` if it will not ring (RF-A3). */
+    suspend fun ringsIn(id: Long, now: ZonedDateTime = ZonedDateTime.now()): Duration? {
+        val alarm = alarm(id) ?: return null
+        return SchedulingEngine.nextOccurrence(alarm.spec, rules(), now)?.let { Duration.between(now, it.at) }
+    }
 
     suspend fun alarms(): List<Alarm> = alarms.all().map { it.toAlarm() }
 

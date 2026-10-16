@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="schedule_every_day">Todos los días</string>
+  <string name="schedule_weekdays">L–V</string>
+  <string name="schedule_weekend">Fines de semana</string>
+  <string name="schedule_no_days">Ningún día seleccionado</string>
+  <string name="schedule_cycle">Turno: %1$d de %2$d días</string>
+  <string name="schedule_once">Una vez, %1$s</string>
+  <string name="schedule_next_time">La próxima vez</string>
+  <string name="rings_in_hours">Suena en %1$d h %2$d min</string>
+  <string name="will_not_ring">No sonará</string>
+  <string name="off_holiday">No el %1$s: festivo (%2$s)</string>
+  <string name="off_vacation">No el %1$s: vacaciones</string>
+  <string name="off_skipped">Saltada el %1$s</string>
+  <string name="off_exception">No el %1$s: excepción</string>
+  <string name="status_missed">Perdida: el móvil estaba apagado</string>
+  <string name="status_off">Desactivada</string>
+  <string name="add_alarm">Alarma</string>
+  <string name="no_alarms">Aún no hay alarmas</string>
+  <string name="alarm_deleted">Alarma eliminada</string>
+  <string name="alarm_skipped">Saltada el %1$s</string>
+  <string name="undo">Deshacer</string>
+  <string name="alarm_switch">Alarma de las %1$s</string>
+  <string name="undo_skip">Deshacer salto</string>
+  <string name="skip_next">Saltar %1$s</string>
+  <string name="more_options">Más opciones</string>
+  <string name="duplicate">Duplicar</string>
+  <string name="delete">Eliminar</string>
+  <string name="snackbar_rings_in">La alarma sonará dentro de %1$d h %2$d min</string>
+  <string name="new_alarm">Nueva alarma</string>
+  <string name="edit_alarm">Editar alarma</string>
+  <string name="back">Atrás</string>
+  <string name="save">Guardar</string>
+  <string name="label">Etiqueta</string>
+  <string name="section_ringing">Sonido</string>
+  <string name="max_volume">Volumen máximo: %1$d %%</string>
+  <string name="ramp_seconds">Volumen progresivo: %1$d s</string>
+  <string name="vibrate">Vibrar</string>
+  <string name="sound_default">Tono: predeterminado</string>
+  <string name="section_snooze">Posponer</string>
+  <string name="snooze_minutes">Posponer %1$d min</string>
+  <string name="snooze_unlimited">Posponer sin límite</string>
+  <string name="max_snoozes">Máximo de posposiciones: %1$d</string>
+  <string name="section_backup">Respaldo y avisos</string>
+  <string name="backup_enabled">Alarma de respaldo si no reacciono</string>
+  <string name="backup_minutes">Respaldo a los %1$d min</string>
+  <string name="pre_notify">Avisar 1 h antes</string>
+  <string name="kind_recurring">Repetir</string>
+  <string name="kind_one_shot">Una vez</string>
+  <string name="respect_holidays">Respetar festivos</string>
+  <string name="pick_date">Elegir fecha</string>
+  <string name="ok">Aceptar</string>
+  <string name="cancel">Cancelar</string>
+  <plurals name="rings_in_minutes">
+    <item quantity="one">Suena en %1$d min</item>
+    <item quantity="many">Suena en %1$d min</item>
+    <item quantity="other">Suena en %1$d min</item>
+  </plurals>
+  <plurals name="rings_in_days">
+    <item quantity="one">Suena en %1$d día %2$d h</item>
+    <item quantity="many">Suena en %1$d días %2$d h</item>
+    <item quantity="other">Suena en %1$d días %2$d h</item>
+  </plurals>
+</resources>
