@@ -5,6 +5,9 @@ plugins {
 
 android {
     namespace = "com.qtekfun.ultimatealarm.feature.ringing"
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
     buildFeatures {
         compose = true
     }
@@ -21,4 +24,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
     testImplementation(libs.junit)
+
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.core.ktx)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.ext.junit)
 }

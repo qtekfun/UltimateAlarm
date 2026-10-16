@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.qtekfun.ultimatealarm.core.designsystem.UltimateAlarmTheme
+import com.qtekfun.ultimatealarm.spike.SpikeScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -68,8 +69,12 @@ private fun MainScreen() {
             }
         }
     ) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-            Text(stringResource(R.string.coming_soon))
+        val content = Modifier.fillMaxSize().padding(padding)
+        when (current) {
+            Destination.ALARMS -> SpikeScreen(content)
+            else -> Box(content, contentAlignment = Alignment.Center) {
+                Text(stringResource(R.string.coming_soon))
+            }
         }
     }
 }

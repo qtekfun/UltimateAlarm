@@ -1,0 +1,1 @@
+Spike de fiabilidad: una alarma de prueba diaria, un autotest de un minuto, diagnóstico de permisos y batería, y un registro de eventos exportable. Solo para probar en móviles reales.
