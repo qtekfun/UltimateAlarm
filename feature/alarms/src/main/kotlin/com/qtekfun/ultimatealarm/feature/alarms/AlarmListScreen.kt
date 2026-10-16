@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -24,8 +25,8 @@ import androidx.compose.material.icons.outlined.Event
 import androidx.compose.material.icons.outlined.SkipNext
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -97,17 +98,18 @@ fun AlarmListScreen(
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.background,
+        // The main screen's own scaffold already leaves room for the system bars.
+        contentWindowInsets = WindowInsets(0),
         snackbarHost = { SnackbarHost(snackbar) },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
+            // Icon only: an extended button covered the last card's day pills.
+            FloatingActionButton(
                 onClick = { onEdit(0) },
-                modifier = Modifier.testTag(TAG_ADD_ALARM),
+                modifier = Modifier.size(64.dp).testTag(TAG_ADD_ALARM),
                 containerColor = MaterialTheme.colorScheme.secondary,
                 contentColor = MaterialTheme.colorScheme.onSecondary,
-                shape = RoundedCornerShape(22.dp),
-                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-                text = { Text(stringResource(R.string.add_alarm), style = MaterialTheme.typography.titleMedium) }
-            )
+                shape = RoundedCornerShape(22.dp)
+            ) { Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_alarm), modifier = Modifier.size(28.dp)) }
         }
     ) { padding ->
         if (state.loaded && state.rows.isEmpty()) {
