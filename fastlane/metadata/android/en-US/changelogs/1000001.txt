@@ -1,0 +1,1 @@
+Release candidate for F-Droid: new icon, screenshots, licence review and dependency audit. Fix for a dark background in the alarm editor.

@@ -1,6 +1,5 @@
-# Draft of the F-Droid metadata (for a merge request to gitlab.com/fdroid/fdroiddata).
-# Fill in `commit` with the release tag's commit and `AllowedAPKSigningKeys` with the SHA-256 of the
-# release certificate once the project's signing key exists (see RELEASING.md). Submit after 1.0.
+# Draft of the F-Droid metadata (for a merge request to gitlab.com/fdroid/fdroiddata), submitted after 1.0.
+# Fill in `commit` with the release tag's commit before submitting.
 Categories:
   - Time
 License: GPL-3.0-or-later
@@ -16,8 +15,8 @@ Repo: https://github.com/qtekfun/UltimateAlarm.git
 Binaries: https://github.com/qtekfun/UltimateAlarm/releases/download/v%v/UltimateAlarm-%v.apk
 
 Builds:
-  - versionName: 0.0.0-rc1
-    versionCode: 1
+  - versionName: 1.0.0-rc1
+    versionCode: 1000001
     commit: TODO_RELEASE_TAG_COMMIT
     subdir: app
     sudo:
@@ -27,9 +26,10 @@ Builds:
     gradle:
       - yes
 
-# AllowedAPKSigningKeys: TODO_SHA256_OF_THE_RELEASE_CERTIFICATE
+# SHA-256 of the release certificate (CN=Qtekfun), as published in every release's APK.
+AllowedAPKSigningKeys: f618cc0383408f1332cf9021450c39256b20e4865a65e043f27efee31af43c36
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags ^v[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$
-CurrentVersion: 0.0.0-rc1
-CurrentVersionCode: 1
+CurrentVersion: 1.0.0-rc1
+CurrentVersionCode: 1000001

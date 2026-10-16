@@ -4,6 +4,18 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [1.0.0-rc1]
+
+Phase 12: ready for F-Droid (release candidate).
+
+### Added
+- New adaptive and monochrome icon.
+- Store screenshots in English and Spanish, taken automatically on an emulator.
+- Licence review and dependency audit (no Google Play services, Firebase or ML Kit).
+
+### Fixed
+- Screens without their own bar (such as the alarm editor) showed a dark background in the light theme.
+
 ## [0.9.0]
 
 Phase 11: onboarding and polish.
