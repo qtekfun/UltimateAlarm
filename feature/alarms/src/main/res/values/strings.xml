@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="schedule_every_day">Every day</string>
+  <string name="schedule_weekdays">Mon–Fri</string>
+  <string name="schedule_weekend">Weekends</string>
+  <string name="schedule_no_days">No days selected</string>
+  <string name="schedule_cycle">Shift: %1$d of %2$d days</string>
+  <string name="schedule_once">Once, %1$s</string>
+  <string name="schedule_next_time">Next time</string>
+  <string name="rings_in_hours">Rings in %1$d h %2$d min</string>
+  <string name="will_not_ring">Will not ring</string>
+  <string name="off_holiday">Not on %1$s: holiday (%2$s)</string>
+  <string name="off_vacation">Not on %1$s: vacation</string>
+  <string name="off_skipped">Skipped on %1$s</string>
+  <string name="off_exception">Not on %1$s: exception</string>
+  <string name="status_missed">Missed: the phone was off</string>
+  <string name="status_off">Off</string>
+  <string name="add_alarm">Alarm</string>
+  <string name="no_alarms">No alarms yet</string>
+  <string name="alarm_deleted">Alarm deleted</string>
+  <string name="alarm_skipped">Skipped %1$s</string>
+  <string name="undo">Undo</string>
+  <string name="alarm_switch">Alarm at %1$s</string>
+  <string name="undo_skip">Undo skip</string>
+  <string name="skip_next">Skip %1$s</string>
+  <string name="more_options">More options</string>
+  <string name="duplicate">Duplicate</string>
+  <string name="delete">Delete</string>
+  <string name="snackbar_rings_in">Alarm set for %1$d h %2$d min from now</string>
+  <string name="new_alarm">New alarm</string>
+  <string name="edit_alarm">Edit alarm</string>
+  <string name="back">Back</string>
+  <string name="save">Save</string>
+  <string name="label">Label</string>
+  <string name="section_ringing">Ringing</string>
+  <string name="max_volume">Maximum volume: %1$d %%</string>
+  <string name="ramp_seconds">Volume ramp: %1$d s</string>
+  <string name="vibrate">Vibrate</string>
+  <string name="sound_default">Sound: default tone</string>
+  <string name="section_snooze">Snooze</string>
+  <string name="snooze_minutes">Snooze for %1$d min</string>
+  <string name="snooze_unlimited">Unlimited snoozes</string>
+  <string name="max_snoozes">Maximum snoozes: %1$d</string>
+  <string name="section_backup">Backup and notices</string>
+  <string name="backup_enabled">Backup alarm if I do not react</string>
+  <string name="backup_minutes">Backup after %1$d min</string>
+  <string name="pre_notify">Notify 1 h before</string>
+  <string name="kind_recurring">Repeat</string>
+  <string name="kind_one_shot">Once</string>
+  <string name="respect_holidays">Respect holidays</string>
+  <string name="pick_date">Pick a date</string>
+  <string name="ok">OK</string>
+  <string name="cancel">Cancel</string>
+  <plurals name="rings_in_minutes">
+    <item quantity="one">Rings in %1$d min</item>
+    <item quantity="other">Rings in %1$d min</item>
+  </plurals>
+  <plurals name="rings_in_days">
+    <item quantity="one">Rings in %1$d day %2$d h</item>
+    <item quantity="other">Rings in %1$d days %2$d h</item>
+  </plurals>
+</resources>

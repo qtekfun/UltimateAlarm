@@ -6,18 +6,24 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material.icons.outlined.Celebration
 import androidx.compose.material.icons.outlined.HourglassEmpty
+import androidx.compose.material.icons.outlined.MonitorHeart
 import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,8 +33,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.qtekfun.ultimatealarm.core.designsystem.UltimateAlarmTheme
 import com.qtekfun.ultimatealarm.diagnostics.DiagnosticsScreen
+import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorScreen
+import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorViewModel
+import com.qtekfun.ultimatealarm.feature.alarms.AlarmListScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,8 +52,32 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             UltimateAlarmTheme {
-                MainScreen()
+                AppNavHost()
             }
+        }
+    }
+}
+
+private object Routes {
+    const val MAIN = "main"
+    const val EDITOR = "editor/{${AlarmEditorViewModel.ARG_ALARM_ID}}"
+    const val DIAGNOSTICS = "diagnostics"
+
+    fun editor(id: Long) = "editor/$id"
+}
+
+@Composable
+private fun AppNavHost() {
+    val nav = rememberNavController()
+    NavHost(nav, startDestination = Routes.MAIN) {
+        composable(Routes.MAIN) {
+            MainScreen(onEdit = { nav.navigate(Routes.editor(it)) }, onDiagnostics = { nav.navigate(Routes.DIAGNOSTICS) })
+        }
+        composable(Routes.EDITOR, arguments = listOf(navArgument(AlarmEditorViewModel.ARG_ALARM_ID) { type = NavType.LongType })) {
+            AlarmEditorScreen(onDone = { _, _ -> nav.popBackStack() }, onBack = { nav.popBackStack() })
+        }
+        composable(Routes.DIAGNOSTICS) {
+            BackScaffold(stringResource(R.string.diagnostics), onBack = { nav.popBackStack() }) { DiagnosticsScreen(it) }
         }
     }
 }
@@ -52,10 +90,19 @@ private enum class Destination(@StringRes val label: Int, val icon: ImageVector)
     HOLIDAYS(R.string.nav_holidays, Icons.Outlined.Celebration)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen() {
+private fun MainScreen(onEdit: (Long) -> Unit, onDiagnostics: () -> Unit) {
     var current by rememberSaveable { mutableStateOf(Destination.ALARMS) }
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(current.label)) },
+                actions = {
+                    IconButton(onClick = onDiagnostics) { Icon(Icons.Outlined.MonitorHeart, contentDescription = stringResource(R.string.diagnostics)) }
+                }
+            )
+        },
         bottomBar = {
             NavigationBar {
                 Destination.entries.forEach { destination ->
@@ -69,12 +116,29 @@ private fun MainScreen() {
             }
         }
     ) { padding ->
-        val content = Modifier.fillMaxSize().padding(padding)
-        when (current) {
-            Destination.ALARMS -> DiagnosticsScreen(content)
-            else -> Box(content, contentAlignment = Alignment.Center) {
-                Text(stringResource(R.string.coming_soon))
+        Column(Modifier.fillMaxSize().padding(padding)) {
+            PermissionBanner(onFix = onDiagnostics)
+            when (current) {
+                Destination.ALARMS -> AlarmListScreen(onEdit = onEdit)
+                else -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(stringResource(R.string.coming_soon))
+                }
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BackScaffold(title: String, onBack: () -> Unit, content: @Composable (Modifier) -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(title) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back)) }
+                }
+            )
+        }
+    ) { padding -> content(Modifier.padding(padding)) }
 }
