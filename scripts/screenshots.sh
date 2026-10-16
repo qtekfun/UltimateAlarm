@@ -61,4 +61,18 @@ for LOCALE in en-US es-ES; do
   adb shell input keyevent KEYCODE_BACK
   adb shell am force-stop "$PKG"
 done
+
+# Dark mode (Settings → Appearance follows the system by default), Spanish: list, editor and settings.
+LOCALE=es-ES
+adb shell cmd uimode night yes
+adb shell am start -n "$PKG/com.qtekfun.ultimatealarm.MainActivity" > /dev/null
+sleep 5
+shot 08_alarms_dark
+tap_id add_alarm 3
+shot 09_editor_dark
+back
+tap_text '^(Ajustes)$' 3
+shot 10_settings_dark
+adb shell cmd uimode night no
+adb shell am force-stop "$PKG"
 ls -R "$OUT"
