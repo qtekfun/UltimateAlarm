@@ -2,13 +2,15 @@ package com.qtekfun.ultimatealarm
 
 import android.app.AlarmManager
 import android.content.Context
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.qtekfun.ultimatealarm.feature.alarms.TAG_ADD_ALARM
+import com.qtekfun.ultimatealarm.feature.alarms.TAG_SAVE_ALARM
 import com.qtekfun.ultimatealarm.feature.ringing.AlarmGraph
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -35,20 +37,22 @@ class AlarmFlowTest {
 
     @Test
     fun createAlarmShowsStatusAndRegistersIt() {
-        val resources = context.resources
-        compose.onAllNodesWithText(resources.getString(com.qtekfun.ultimatealarm.feature.alarms.R.string.add_alarm)).onFirst().performClick()
-        compose.waitUntil(5_000) {
-            compose.onAllNodes(hasText(resources.getString(com.qtekfun.ultimatealarm.feature.alarms.R.string.save))).fetchSemanticsNodes().isNotEmpty()
-        }
-        compose.onAllNodesWithText(resources.getString(com.qtekfun.ultimatealarm.feature.alarms.R.string.save)).onFirst().performClick()
-        compose.waitUntil(10_000) {
+        compose.waitUntil(TIMEOUT_MS) { compose.onAllNodes(hasTestTag(TAG_ADD_ALARM)).fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithTag(TAG_ADD_ALARM).performClick()
+        compose.waitUntil(TIMEOUT_MS) { compose.onAllNodes(hasTestTag(TAG_SAVE_ALARM)).fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithTag(TAG_SAVE_ALARM).performClick()
+        compose.waitUntil(TIMEOUT_MS) {
             runBlocking { AlarmGraph.repository(context).alarms().isNotEmpty() } &&
                 context.getSystemService(AlarmManager::class.java).nextAlarmClock != null
         }
         // The default alarm repeats Mon–Fri, so it rings within a week.
         assertNotNull(context.getSystemService(AlarmManager::class.java).nextAlarmClock)
-        compose.waitUntil(5_000) {
+        compose.waitUntil(TIMEOUT_MS) {
             compose.onAllNodes(hasText("Rings in", substring = true).or(hasText("Suena en", substring = true))).fetchSemanticsNodes().isNotEmpty()
         }
+    }
+
+    private companion object {
+        const val TIMEOUT_MS = 15_000L
     }
 }

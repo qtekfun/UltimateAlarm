@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -85,6 +86,7 @@ fun AlarmListScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { onEdit(0) },
+                modifier = Modifier.testTag(TAG_ADD_ALARM),
                 icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                 text = { Text(stringResource(R.string.add_alarm)) }
             )
@@ -204,6 +206,8 @@ private fun RowMenu(onDuplicate: () -> Unit, onDelete: () -> Unit) {
         }
     }
 }
+
+const val TAG_ADD_ALARM = "add_alarm"
 
 /** Snackbar text for RF-A3, outside composition. */
 fun android.content.res.Resources.ringsInMessage(duration: java.time.Duration): String {

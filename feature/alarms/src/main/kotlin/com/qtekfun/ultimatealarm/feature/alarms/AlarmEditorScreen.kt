@@ -52,6 +52,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -94,7 +95,11 @@ fun AlarmEditorScreen(
                         Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.delete))
                     }
                 }
-                TextButton(onClick = { scope.launch { onDone(viewModel.save(), null) } }, enabled = state.loaded) { Text(stringResource(R.string.save)) }
+                TextButton(
+                    onClick = { scope.launch { onDone(viewModel.save(), null) } },
+                    enabled = state.loaded,
+                    modifier = Modifier.testTag(TAG_SAVE_ALARM)
+                ) { Text(stringResource(R.string.save)) }
             }
         )
         if (!state.loaded) return@Column
@@ -273,6 +278,8 @@ private fun SliderRow(label: String, value: Float, range: ClosedFloatingPointRan
         Slider(value = value, onValueChange = onChange, valueRange = range, steps = steps)
     }
 }
+
+const val TAG_SAVE_ALARM = "save_alarm"
 
 private const val DEFAULT_MAX_SNOOZES = 3
 private const val DEFAULT_BACKUP_MINUTES = 5
