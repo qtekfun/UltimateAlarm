@@ -20,4 +20,12 @@
   <string name="back">Atrás</string>
   <string name="permission_banner">Las alarmas podrían no sonar o no mostrarse: falta un permiso.</string>
   <string name="permission_banner_fix">Arreglar</string>
+  <string name="settings">Ajustes</string>
+  <string name="settings_volume_buttons">Botones de volumen al sonar</string>
+  <string name="settings_volume_snooze">Posponer</string>
+  <string name="settings_volume_dismiss">Descartar</string>
+  <string name="settings_volume_nothing">Nada</string>
+  <string name="settings_silence_after">Silenciar una alarma sin respuesta</string>
+  <string name="settings_silence_default">Predeterminado (nunca con respaldo, 30 min sin él)</string>
+  <string name="settings_silence_minutes">A los %1$d min</string>
 </resources>

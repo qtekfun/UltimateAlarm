@@ -17,18 +17,19 @@ class AlarmReceiver : BroadcastReceiver() {
         val firedAt = System.currentTimeMillis()
         val alarmId = intent.getLongExtra(AlarmScheduler.EXTRA_ALARM_ID, AlarmScheduler.AUTOTEST_ID)
         val scheduledAt = intent.getLongExtra(AlarmScheduler.EXTRA_SCHEDULED_AT, 0)
-        val snooze = intent.getBooleanExtra(AlarmScheduler.EXTRA_SNOOZE, false)
+        val purpose = AlarmPurpose.entries.firstOrNull { it.name == intent.getStringExtra(AlarmScheduler.EXTRA_PURPOSE) } ?: AlarmPurpose.OCCURRENCE
 
-        context.startForegroundService(RingingService.startIntent(context, alarmId, firedAt))
+        context.startForegroundService(RingingService.startIntent(context, alarmId, firedAt, purpose))
 
         val delay = if (scheduledAt > 0) "${firedAt - scheduledAt}ms" else "unknown"
-        DiagnosticLog.log(context, "FIRED", "delay=$delay snooze=$snooze ${deviceState(context)}", alarmId)
+        DiagnosticLog.log(context, "FIRED", "${purpose.path} delay=$delay ${deviceState(context)}", alarmId)
+        if (purpose != AlarmPurpose.OCCURRENCE) return
         doAsync {
             if (alarmId == AlarmScheduler.AUTOTEST_ID) {
                 DiagnosticsStore(context).autotestAt = 0
                 DiagnosticLog.log(context, "AUTOTEST_RESULT", "fired delay=$delay", alarmId)
             } else {
-                if (!snooze) AlarmGraph.repository(context).markFired(alarmId, LocalDate.now())
+                AlarmGraph.repository(context).markFired(alarmId, LocalDate.now())
                 Rescheduler.rescheduleAll(context, "fired")
             }
         }

@@ -42,7 +42,7 @@ internal object Notifications {
         context.getSystemService(NotificationManager::class.java).cancel(DELETED_BASE + alarmId.toInt())
     }
 
-    private fun builder(context: Context): NotificationCompat.Builder {
+    fun builder(context: Context): NotificationCompat.Builder {
         ensureChannel(context)
         return NotificationCompat.Builder(context, CHANNEL_EVENTS)
             .setSmallIcon(R.drawable.ic_stat_alarm)
@@ -50,7 +50,7 @@ internal object Notifications {
             .setContentIntent(launchIntent(context))
     }
 
-    private fun post(context: Context, id: Int, builder: NotificationCompat.Builder) {
+    fun post(context: Context, id: Int, builder: NotificationCompat.Builder) {
         val manager = context.getSystemService(NotificationManager::class.java)
         // Without the notification permission there is nothing to show; the permission banner covers it.
         if (manager.areNotificationsEnabled()) manager.notify(id, builder.build())

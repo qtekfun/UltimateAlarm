@@ -21,4 +21,12 @@
   <string name="back">Back</string>
   <string name="permission_banner">Alarms may not ring or show: a permission is missing.</string>
   <string name="permission_banner_fix">Fix</string>
+  <string name="settings">Settings</string>
+  <string name="settings_volume_buttons">Volume buttons while ringing</string>
+  <string name="settings_volume_snooze">Snooze</string>
+  <string name="settings_volume_dismiss">Dismiss</string>
+  <string name="settings_volume_nothing">Nothing</string>
+  <string name="settings_silence_after">Silence an unanswered alarm</string>
+  <string name="settings_silence_default">Default (never with a backup alarm, 30 min without)</string>
+  <string name="settings_silence_minutes">After %1$d min</string>
 </resources>

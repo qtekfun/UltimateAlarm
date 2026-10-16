@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material.icons.outlined.Celebration
 import androidx.compose.material.icons.outlined.HourglassEmpty
 import androidx.compose.material.icons.outlined.MonitorHeart
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,6 +44,7 @@ import com.qtekfun.ultimatealarm.diagnostics.DiagnosticsScreen
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorScreen
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorViewModel
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmListScreen
+import com.qtekfun.ultimatealarm.settings.SettingsScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -62,6 +64,7 @@ private object Routes {
     const val MAIN = "main"
     const val EDITOR = "editor/{${AlarmEditorViewModel.ARG_ALARM_ID}}"
     const val DIAGNOSTICS = "diagnostics"
+    const val SETTINGS = "settings"
 
     fun editor(id: Long) = "editor/$id"
 }
@@ -71,10 +74,17 @@ private fun AppNavHost() {
     val nav = rememberNavController()
     NavHost(nav, startDestination = Routes.MAIN) {
         composable(Routes.MAIN) {
-            MainScreen(onEdit = { nav.navigate(Routes.editor(it)) }, onDiagnostics = { nav.navigate(Routes.DIAGNOSTICS) })
+            MainScreen(
+                onEdit = { nav.navigate(Routes.editor(it)) },
+                onDiagnostics = { nav.navigate(Routes.DIAGNOSTICS) },
+                onSettings = { nav.navigate(Routes.SETTINGS) }
+            )
         }
         composable(Routes.EDITOR, arguments = listOf(navArgument(AlarmEditorViewModel.ARG_ALARM_ID) { type = NavType.LongType })) {
             AlarmEditorScreen(onDone = { _, _ -> nav.popBackStack() }, onBack = { nav.popBackStack() })
+        }
+        composable(Routes.SETTINGS) {
+            BackScaffold(stringResource(R.string.settings), onBack = { nav.popBackStack() }) { SettingsScreen(it) }
         }
         composable(Routes.DIAGNOSTICS) {
             BackScaffold(stringResource(R.string.diagnostics), onBack = { nav.popBackStack() }) { DiagnosticsScreen(it) }
@@ -92,7 +102,7 @@ private enum class Destination(@StringRes val label: Int, val icon: ImageVector)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen(onEdit: (Long) -> Unit, onDiagnostics: () -> Unit) {
+private fun MainScreen(onEdit: (Long) -> Unit, onDiagnostics: () -> Unit, onSettings: () -> Unit) {
     var current by rememberSaveable { mutableStateOf(Destination.ALARMS) }
     Scaffold(
         topBar = {
@@ -100,6 +110,7 @@ private fun MainScreen(onEdit: (Long) -> Unit, onDiagnostics: () -> Unit) {
                 title = { Text(stringResource(current.label)) },
                 actions = {
                     IconButton(onClick = onDiagnostics) { Icon(Icons.Outlined.MonitorHeart, contentDescription = stringResource(R.string.diagnostics)) }
+                    IconButton(onClick = onSettings) { Icon(Icons.Outlined.Settings, contentDescription = stringResource(R.string.settings)) }
                 }
             )
         },
