@@ -1,24 +1,40 @@
 # Builds the release APK for a version tag (vX.Y.Z, vX.Y.Z-rcN or vX.Y.Z-spike) and publishes it as a GitHub Release
 # with SHA-256 checksums and the notes of that version from CHANGELOG.md. See RELEASING.md.
 #
-# With the UG_KEYSTORE_* secrets set, the APK is signed with the release key. Without them it is signed with the debug
-# key, which is installable but not suitable for distribution: the release is then a pre-release marked UNSIGNED-DEBUG.
+# Signing: the RELEASE_KEYSTORE_* / RELEASE_KEY_* secrets are handed to Gradle as UG_KEYSTORE_FILE, UG_KEYSTORE_PASSWORD,
+# UG_KEY_ALIAS and UG_KEY_PASSWORD (what app/build.gradle.kts reads, as in the other Ultimate apps). With the secrets the
+# APK must carry the release certificate or the job fails. Without them it is debug-signed and published as an
+# UNSIGNED-DEBUG pre-release.
+#
+# Run by hand with a `tag` to rebuild an already published tag and replace its assets, title and notes.
 name: Release
 
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to rebuild (e.g. v0.0.1-spike)"
+        required: true
 
 permissions:
   contents: write
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: refs/tags/${{ inputs.tag || github.ref_name }}
           persist-credentials: false
 
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
@@ -31,25 +47,36 @@ jobs:
       - name: Check the tag and the release notes
         run: |
           version=$(grep '^appVersion=' gradle.properties | cut -d= -f2)
-          test "v$version" = "$GITHUB_REF_NAME" || { echo "Tag $GITHUB_REF_NAME does not match appVersion $version"; exit 1; }
+          test "v$version" = "$TAG" || { echo "Tag $TAG does not match appVersion $version"; exit 1; }
           scripts/release-notes.sh "$version" > notes.md
 
       - name: Check and build the release APK
         env:
-          UG_KEYSTORE_BASE64: ${{ secrets.UG_KEYSTORE_BASE64 }}
-          UG_KEYSTORE_PASSWORD: ${{ secrets.UG_KEYSTORE_PASSWORD }}
-          UG_KEY_ALIAS: ${{ secrets.UG_KEY_ALIAS }}
-          UG_KEY_PASSWORD: ${{ secrets.UG_KEY_PASSWORD }}
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          UG_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          UG_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          UG_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: |
-          if [ -n "$UG_KEYSTORE_BASE64" ] && [ -n "$UG_KEYSTORE_PASSWORD" ] && [ -n "$UG_KEY_ALIAS" ] && [ -n "$UG_KEY_PASSWORD" ]; then
+          if [ -n "$RELEASE_KEYSTORE_BASE64" ] && [ -n "$UG_KEYSTORE_PASSWORD" ] && [ -n "$UG_KEY_ALIAS" ] && [ -n "$UG_KEY_PASSWORD" ]; then
             export UG_KEYSTORE_FILE="$RUNNER_TEMP/release.jks"
-            echo "$UG_KEYSTORE_BASE64" | base64 -d > "$UG_KEYSTORE_FILE"
+            echo "$RELEASE_KEYSTORE_BASE64" | base64 -d > "$UG_KEYSTORE_FILE"
             echo "SIGNED=release" >> "$GITHUB_ENV"
           else
+            echo "::warning::Release signing secrets are missing: the APK is debug-signed (UNSIGNED-DEBUG)."
             echo "SIGNED=debug" >> "$GITHUB_ENV"
           fi
           ./gradlew check assembleRelease
           rm -f "$RUNNER_TEMP/release.jks"
+
+      - name: Verify the signing certificate
+        run: |
+          apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          certs=$("$apksigner" verify --print-certs app/build/outputs/apk/release/app-release.apk)
+          echo "$certs" | grep -E 'Signer #1 certificate (DN|SHA-256)'
+          if [ "$SIGNED" = "release" ] && echo "$certs" | grep -q 'CN=Android Debug'; then
+            echo "Signing secrets are set but the APK carries the debug certificate" >&2
+            exit 1
+          fi
 
       - name: Verify there are no Google dependencies (GMS, Firebase, ML Kit)
         run: scripts/check-no-google.sh app/build/outputs/apk/release/app-release.apk
@@ -58,19 +85,30 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          version="${GITHUB_REF_NAME#v}"
+          version="${TAG#v}"
           apk="UltimateAlarm-$version.apk"
           title="UltimateAlarm $version"
-          flags=()
+          prerelease=false
           # Pre-release for -rcN / -spike versions and for any debug-signed build.
-          case "$version" in *-*) flags+=(--prerelease) ;; esac
+          case "$version" in *-*) prerelease=true ;; esac
           if [ "$SIGNED" = "debug" ]; then
             apk="UltimateAlarm-$version-UNSIGNED-DEBUG.apk"
             title="$title (UNSIGNED-DEBUG)"
-            flags=(--prerelease)
+            prerelease=true
             printf '\n> **UNSIGNED-DEBUG:** this APK is signed with the debug key because no release signing key is configured. It is installable for testing, but it is not a distribution build.\n' >> notes.md
           fi
           cp app/build/outputs/apk/release/app-release.apk "$apk"
           sha256sum "$apk" > SHA256SUMS.txt
           cat SHA256SUMS.txt
-          gh release create "$GITHUB_REF_NAME" "$apk" SHA256SUMS.txt --title "$title" --notes-file notes.md "${flags[@]}"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            # Rebuild: drop the old APKs, then upload and update in place.
+            for old in $(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' | grep '\.apk$'); do
+              gh release delete-asset "$TAG" "$old" --repo "$GITHUB_REPOSITORY" --yes
+            done
+            gh release upload "$TAG" "$apk" SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title "$title" --notes-file notes.md --prerelease="$prerelease"
+          else
+            flags=()
+            [ "$prerelease" = true ] && flags+=(--prerelease)
+            gh release create "$TAG" "$apk" SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --title "$title" --notes-file notes.md "${flags[@]}"
+          fi

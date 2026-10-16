@@ -36,10 +36,10 @@ keytool -list -v -keystore ~/keys/ultimatealarm-release.jks \
 ```bash
 REPO=qtekfun/UltimateAlarm
 
-base64 -w0 ~/keys/ultimatealarm-release.jks | gh secret set UG_KEYSTORE_BASE64 -R "$REPO"
-printf '%s' "$UA_PASS"   | gh secret set UG_KEYSTORE_PASSWORD -R "$REPO"
-printf '%s' "ultimatealarm" | gh secret set UG_KEY_ALIAS -R "$REPO"
-printf '%s' "$UA_PASS"   | gh secret set UG_KEY_PASSWORD -R "$REPO"
+base64 -w0 ~/keys/ultimatealarm-release.jks | gh secret set RELEASE_KEYSTORE_BASE64 -R "$REPO"
+printf '%s' "$UA_PASS"   | gh secret set RELEASE_KEYSTORE_PASSWORD -R "$REPO"
+printf '%s' "ultimatealarm" | gh secret set RELEASE_KEY_ALIAS -R "$REPO"
+printf '%s' "$UA_PASS"   | gh secret set RELEASE_KEY_PASSWORD -R "$REPO"
 
 unset UA_PASS
 gh secret list -R "$REPO"
