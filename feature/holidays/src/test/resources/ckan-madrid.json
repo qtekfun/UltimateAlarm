@@ -1,0 +1,39 @@
+{
+ "success": true,
+ "result": {
+  "name": "300082-0-calendario_laboral",
+  "license_title": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+  "resources": [
+   {
+    "format": "ICS",
+    "name": "300082-0-calendario_laboral-ics",
+    "url": "https://datos.madrid.es/dataset/300082-0-calendario_laboral/resource/300082-0-calendario_laboral-ics/download/300082-0-calendario_laboral-ics.ics"
+   },
+   {
+    "format": "CSV",
+    "name": "300082-1-calendario_laboral-csv",
+    "url": "https://datos.madrid.es/dataset/300082-0-calendario_laboral/resource/300082-1-calendario_laboral-csv/download/300082-1-calendario_laboral-csv.csv"
+   },
+   {
+    "format": "ICS",
+    "name": "300082-2-calendario_laboral-ics",
+    "url": "https://datos.madrid.es/dataset/300082-0-calendario_laboral/resource/300082-2-calendario_laboral-ics/download/300082-2-calendario_laboral-ics.ics"
+   },
+   {
+    "format": "XLSX",
+    "name": "300082-3-calendario_laboral-xls",
+    "url": "https://datos.madrid.es/dataset/300082-0-calendario_laboral/resource/300082-3-calendario_laboral-xls/download/300082-1-calendario_laboral-csv.xlsx"
+   },
+   {
+    "format": "PDF",
+    "name": "300082-4-calendario_laboral",
+    "url": "https://datos.madrid.es/dataset/300082-0-calendario_laboral/resource/300082-4-calendario_laboral/download/estructura_conjuntodatos.pdf"
+   },
+   {
+    "format": "ICS",
+    "name": "300082-5-calendario_laboral-ics",
+    "url": "https://datos.madrid.es/dataset/300082-0-calendario_laboral/resource/300082-5-calendario_laboral-ics/download/300082-5-calendario_laboral-ics.ics"
+   }
+  ]
+ }
+}
