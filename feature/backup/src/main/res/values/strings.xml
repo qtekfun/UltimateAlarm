@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="backup_file">Backup file</string>
+  <string name="backup_file_help">Alarms, schedules, exceptions, vacations, your holidays and settings in one file.</string>
+  <string name="backup_include_audio">Include my own audio files</string>
+  <string name="backup_export_password">Password for the Nextcloud account (optional)</string>
+  <string name="backup_export_password_help">With a password, your Nextcloud account goes into the file, encrypted. Without one, it is left out.</string>
+  <string name="backup_export">Export…</string>
+  <string name="backup_import">Import…</string>
+  <string name="backup_exported">Backup saved</string>
+  <string name="backup_restored">Backup restored: %1$d alarms</string>
+  <string name="backup_nextcloud">Nextcloud</string>
+  <string name="backup_nextcloud_help">Automatic copies in your own Nextcloud (WebDAV). Use an app password from Nextcloud → Settings → Security.</string>
+  <string name="backup_server">Server (https://…)</string>
+  <string name="backup_user">User</string>
+  <string name="backup_app_password">App password</string>
+  <string name="backup_folder">Folder</string>
+  <string name="backup_keep">Keep the last %1$d copies</string>
+  <string name="backup_auto">Back up automatically (after changes and daily)</string>
+  <string name="backup_last_error">Last automatic backup failed: %1$s</string>
+  <string name="backup_last">Last backup: %1$s</string>
+  <string name="backup_save">Save</string>
+  <string name="backup_test">Test connection</string>
+  <string name="backup_now">Back up now</string>
+  <string name="backup_restore_remote">Restore…</string>
+  <string name="backup_connection_ok">Connection works</string>
+  <string name="backup_uploaded">Uploaded %1$s</string>
+  <string name="backup_remote_list">Backups in Nextcloud</string>
+  <string name="backup_remote_empty">No backups yet</string>
+  <string name="backup_cancel">Cancel</string>
+  <string name="backup_restore_title">Restore backup</string>
+  <string name="backup_preview">Backup of %1$s with %2$d alarms.</string>
+  <string name="backup_replace">Replace what I have</string>
+  <string name="backup_merge">Add to what I have</string>
+  <string name="backup_import_password">Password of the Nextcloud account (optional)</string>
+  <string name="backup_restore">Restore</string>
+  <string name="backup_wrong_password">Wrong password, or the file was altered.</string>
+  <string name="backup_invalid">This is not a valid UltimateAlarm backup.</string>
+  <string name="backup_error_auth">Nextcloud rejected the user or app password.</string>
+  <string name="backup_error_https">Only https addresses are allowed.</string>
+  <string name="backup_error_tls">Secure connection failed (certificate).</string>
+  <string name="backup_error_network">No connection with the server.</string>
+  <string name="backup_error_server">The server answered with an error.</string>
+</resources>

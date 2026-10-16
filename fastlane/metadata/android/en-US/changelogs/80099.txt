@@ -1,0 +1,1 @@
+Backup: export and import (replace or merge), optional audio and encrypted Nextcloud account, automatic copies to your Nextcloud with rotation and restore from the list.

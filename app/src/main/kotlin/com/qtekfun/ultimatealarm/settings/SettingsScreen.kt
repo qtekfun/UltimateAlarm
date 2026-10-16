@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 
 /** Global ringing settings: volume buttons (RF-R7) and auto-silence (RF-R8). More sections arrive with their phases. */
 @Composable
-fun SettingsScreen(onHolidays: () -> Unit, modifier: Modifier = Modifier) {
+fun SettingsScreen(onHolidays: () -> Unit, onBackup: () -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val store = RingStore(context)
@@ -53,6 +53,14 @@ fun SettingsScreen(onHolidays: () -> Unit, modifier: Modifier = Modifier) {
             Text(stringResource(R.string.settings_holidays), style = MaterialTheme.typography.titleMedium)
             Text(
                 stringResource(R.string.settings_holidays_summary),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Column(Modifier.fillMaxWidth().heightIn(min = 56.dp).clickable(onClick = onBackup)) {
+            Text(stringResource(R.string.settings_backup), style = MaterialTheme.typography.titleMedium)
+            Text(
+                stringResource(R.string.settings_backup_summary),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

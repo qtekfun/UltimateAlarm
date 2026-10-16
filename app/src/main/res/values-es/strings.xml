@@ -76,4 +76,6 @@
   <string name="settings_bedtime">Recordatorio de acostarse</string>
   <string name="settings_bedtime_enabled">Recordarme ir a dormir</string>
   <string name="settings_bedtime_hours">%1$d h antes de la primera alarma del día</string>
+  <string name="settings_backup">Copia de seguridad</string>
+  <string name="settings_backup_summary">Exportar, importar y copias automáticas en tu Nextcloud</string>
 </resources>

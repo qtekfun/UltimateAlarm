@@ -77,4 +77,6 @@
   <string name="settings_bedtime">Bedtime reminder</string>
   <string name="settings_bedtime_enabled">Remind me to go to bed</string>
   <string name="settings_bedtime_hours">%1$d h before the first alarm of the day</string>
+  <string name="settings_backup">Backup</string>
+  <string name="settings_backup_summary">Export, import and automatic copies in your Nextcloud</string>
 </resources>
