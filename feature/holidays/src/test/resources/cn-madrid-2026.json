@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "year": 2026,
+  "generatedAt": "2026-10-05T22:51:13.698Z",
+  "source": {
+    "name": "Fuentes oficiales BOE + Seguridad Social + CCAA Open Data",
+    "url": "https://www.boe.es/",
+    "license": "Reutilización BOE + Seguridad Social + CC BY 4.0 (CCAA)",
+    "notes": "BOE 2026: BOE-A-2025-21667 (https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667). Locales oficiales: Seguridad Social (CSV tipo=0) + CCAA Open Data (AND, CAT, MAD, EUS, CLM, CYL, ARA, NAV) + Static JSON",
+    "retrievalDate": "2026-05-20",
+    "resolutionId": "BOE-A-2025-21667"
+  },
+  "calendarType": "laboral",
+  "scope": "municipio",
+  "region": {
+    "code": "MAD",
+    "slug": "mad",
+    "name": "Comunidad de Madrid"
+  },
+  "province": {
+    "code": "28",
+    "slug": "madrid",
+    "name": "Madrid"
+  },
+  "municipality": {
+    "ine": "28079",
+    "slug": "madrid",
+    "name": "Madrid"
+  },
+  "holidays": {
+    "national": [
+      {
+        "date": "2026-01-01",
+        "name": "Año Nuevo",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-01-06",
+        "name": "Epifanía del Señor",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-04-03",
+        "name": "Viernes Santo",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-05-01",
+        "name": "Fiesta del Trabajo",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-08-15",
+        "name": "Asunción de la Virgen",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-10-12",
+        "name": "Fiesta Nacional de España",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-12-08",
+        "name": "Inmaculada Concepción",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-12-25",
+        "name": "Natividad del Señor",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      }
+    ],
+    "regional": [
+      {
+        "date": "2026-04-02",
+        "name": "Jueves Santo",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-05-02",
+        "name": "Fiesta de la Comunidad de Madrid",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "autonomico"
+      },
+      {
+        "date": "2026-11-02",
+        "name": "Día siguiente a Todos los Santos",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-12-07",
+        "name": "Lunes siguiente al Día de la Constitución Española",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      }
+    ],
+    "provincial": [],
+    "local": [
+      {
+        "date": "2026-05-15",
+        "name": "Fiesta local",
+        "scope": "local",
+        "source": "Comunidad de Madrid (Open Data)",
+        "sourceUrl": "https://datos.comunidad.madrid/catalogo/dataset/festivos_regionales_locales/resource/ba59e7e8-3d8d-4221-a5fa-b5e78b82707f/download/festivos_locales.csv"
+      },
+      {
+        "date": "2026-11-09",
+        "name": "Fiesta local",
+        "scope": "local",
+        "source": "Comunidad de Madrid (Open Data)",
+        "sourceUrl": "https://datos.comunidad.madrid/catalogo/dataset/festivos_regionales_locales/resource/ba59e7e8-3d8d-4221-a5fa-b5e78b82707f/download/festivos_locales.csv"
+      }
+    ],
+    "calendar": [
+      {
+        "date": "2026-01-01",
+        "name": "Año Nuevo",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-01-06",
+        "name": "Epifanía del Señor",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-04-02",
+        "name": "Jueves Santo",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-04-03",
+        "name": "Viernes Santo",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-05-01",
+        "name": "Fiesta del Trabajo",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-05-02",
+        "name": "Fiesta de la Comunidad de Madrid",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "autonomico"
+      },
+      {
+        "date": "2026-05-15",
+        "name": "Fiesta local",
+        "scope": "local",
+        "source": "Comunidad de Madrid (Open Data)",
+        "sourceUrl": "https://datos.comunidad.madrid/catalogo/dataset/festivos_regionales_locales/resource/ba59e7e8-3d8d-4221-a5fa-b5e78b82707f/download/festivos_locales.csv"
+      },
+      {
+        "date": "2026-08-15",
+        "name": "Asunción de la Virgen",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-10-12",
+        "name": "Fiesta Nacional de España",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-11-02",
+        "name": "Día siguiente a Todos los Santos",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-11-09",
+        "name": "Fiesta local",
+        "scope": "local",
+        "source": "Comunidad de Madrid (Open Data)",
+        "sourceUrl": "https://datos.comunidad.madrid/catalogo/dataset/festivos_regionales_locales/resource/ba59e7e8-3d8d-4221-a5fa-b5e78b82707f/download/festivos_locales.csv"
+      },
+      {
+        "date": "2026-12-07",
+        "name": "Lunes siguiente al Día de la Constitución Española",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-12-08",
+        "name": "Inmaculada Concepción",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      },
+      {
+        "date": "2026-12-25",
+        "name": "Natividad del Señor",
+        "source": "BOE (BOE-A-2025-21667)",
+        "sourceUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-21667",
+        "scope": "nacional"
+      }
+    ]
+  },
+  "warnings": [],
+  "disclaimer": "Este servicio se proporciona de forma gratuita, sin garantía de ningún tipo, expresa o implícita. Los datos son meramente informativos y no sustituyen a las fuentes oficiales (BOE, diarios oficiales, organismos competentes de cada país). El acceso, sea anónimo o mediante cuenta gratuita, no genera relación contractual ni obligación alguna por parte de Calendarios Nacionales. El titular del servicio no se responsabiliza de daños o perjuicios derivados del uso o interpretación de estos datos."
+}

@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 /** Where a holiday comes from (RF-F6). */
-enum class HolidaySourceType { API, ICS, MANUAL }
+enum class HolidaySourceType { API, LOCAL, ICS, MANUAL }
 
 /** One row of the yearly list in Settings → Holidays (RF-F6): origin and whether the user cancelled it (RF-F5). */
 data class HolidayEntry(val date: LocalDate, val name: String, val source: HolidaySourceType, val cancelled: Boolean, val manualId: Long? = null)

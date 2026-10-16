@@ -23,6 +23,15 @@ class HolidaySettings(context: Context) {
         get() = prefs.getString(KEY_SUBDIVISION, null)
         set(value) = prefs.edit { putString(KEY_SUBDIVISION, value) }
 
+    /** Spanish municipality as `community/province/municipality` slugs (Calendarios Nacionales), `null` = none (D-16). */
+    var municipalityPath: String?
+        get() = prefs.getString(KEY_MUNICIPALITY, null)
+        set(value) = prefs.edit { putString(KEY_MUNICIPALITY, value) }
+
+    var municipalityName: String?
+        get() = prefs.getString(KEY_MUNICIPALITY_NAME, null)
+        set(value) = prefs.edit { putString(KEY_MUNICIPALITY_NAME, value) }
+
     /** A public calendar (ICS) with extra holidays, e.g. the local ones of a town; `null` = none. */
     var icsUrl: String?
         get() = prefs.getString(KEY_ICS, null)?.takeIf { it.isNotBlank() }
@@ -53,6 +62,8 @@ class HolidaySettings(context: Context) {
         const val KEY_COUNTRY = "country"
         const val KEY_SUBDIVISION = "subdivision"
         const val KEY_ICS = "ics_url"
+        const val KEY_MUNICIPALITY = "municipality"
+        const val KEY_MUNICIPALITY_NAME = "municipality_name"
         const val KEY_EVE = "eve_enabled"
         const val KEY_EVE_TIME = "eve_time"
         const val KEY_LAST_REFRESH = "last_refresh"
