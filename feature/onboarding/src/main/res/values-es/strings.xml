@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="capability_exact_alarms">Alarmas exactas</string>
+  <string name="capability_notifications">Notificaciones</string>
+  <string name="capability_full_screen">Pantalla completa sobre el bloqueo</string>
+  <string name="capability_battery">Sin restricción de optimización de batería</string>
+  <string name="capability_power_save_off">Ahorro de batería desactivado</string>
+  <string name="capability_nfc">NFC</string>
+  <string name="capability_camera">Cámara</string>
+  <string name="capability_ok">Disponible</string>
+  <string name="capability_missing">No disponible</string>
+  <string name="capability_fix">Arreglar</string>
+  <string name="capability_device">%1$s %2$s · Android %3$s (API %4$d)</string>
+</resources>
