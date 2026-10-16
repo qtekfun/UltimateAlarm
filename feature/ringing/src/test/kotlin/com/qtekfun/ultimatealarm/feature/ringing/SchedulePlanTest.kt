@@ -46,4 +46,13 @@ class SchedulePlanTest {
         val rules = RuleSet(skips = listOf(SkipNext(1, LocalDate.of(2026, 10, 16)), SkipNext(1, LocalDate.of(2026, 10, 19))))
         assertEquals(listOf(1L to LocalDate.of(2026, 10, 16)), planSchedule(listOf(weekly), rules, now, emptySet()).staleSkips)
     }
+
+    @Test
+    fun `pre-notice one hour before the next occurrence, only while still ahead`() {
+        val withNotice = weekly.copy(preNotifyMinutes = 60)
+        val plan = planSchedule(listOf(withNotice, weekly.copy(id = 2)), RuleSet(), now, emptySet())
+        assertEquals(mapOf(1L to PreNotice(millis(2026, 10, 19, 6), LocalDate.of(2026, 10, 19), millis(2026, 10, 19, 7))), plan.preNotices)
+        val late = ZonedDateTime.of(2026, 10, 19, 6, 30, 0, 0, zone)
+        assertEquals(emptyMap<Long, PreNotice>(), planSchedule(listOf(withNotice), RuleSet(), late, emptySet()).preNotices)
+    }
 }
