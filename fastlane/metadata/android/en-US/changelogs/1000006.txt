@@ -1,0 +1,1 @@
+Swipe between Alarms, Timer and Stopwatch. Every icon and button now follows the colour you choose.

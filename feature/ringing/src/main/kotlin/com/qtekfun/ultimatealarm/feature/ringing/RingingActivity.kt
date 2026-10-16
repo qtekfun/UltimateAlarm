@@ -52,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -253,9 +254,13 @@ private fun SwipeToDismiss(onDismiss: () -> Unit) {
     }
 }
 
-private val RING_GROUND = Color(0xFF1E1108)
-private val RING_TEXT = Color(0xFFFFF3E6)
-private val RING_SOFT = Color(0xFFFFD9B8)
+/** The ringing screen's colours are tinted by the chosen accent: a near-black ground, near-white text. */
+private val RING_GROUND: Color @Composable get() = lerp(MaterialTheme.colorScheme.primary, Color.Black, GROUND_MIX)
+private val RING_TEXT: Color @Composable get() = lerp(MaterialTheme.colorScheme.primary, Color.White, TEXT_MIX)
+private val RING_SOFT: Color @Composable get() = lerp(MaterialTheme.colorScheme.primary, Color.White, SOFT_MIX)
+private const val GROUND_MIX = 0.86f
+private const val TEXT_MIX = 0.92f
+private const val SOFT_MIX = 0.7f
 private val SUN_RADIUS = 320.dp
 private val SUN_DROP = 10.dp
 private val HALO_STEP = 80.dp

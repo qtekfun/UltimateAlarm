@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -31,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -64,6 +67,7 @@ import com.qtekfun.ultimatealarm.feature.ringing.Rescheduler
 import com.qtekfun.ultimatealarm.settings.HolidaySettingsScreen
 import com.qtekfun.ultimatealarm.settings.SettingsScreen
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -167,7 +171,10 @@ private enum class Destination(@StringRes val label: Int, val icon: ImageVector)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreen(onEdit: (Long) -> Unit, onDiagnostics: () -> Unit, onSettings: () -> Unit, onVacations: () -> Unit) {
-    var current by rememberSaveable { mutableStateOf(Destination.ALARMS) }
+    // Sections are pages: swipe sideways or tap the navigation (the pager keeps its page across rotation).
+    val pager = rememberPagerState { Destination.entries.size }
+    val scope = rememberCoroutineScope()
+    val current = Destination.entries[pager.currentPage]
     Scaffold(
         topBar = {
             TopAppBar(
@@ -187,18 +194,20 @@ private fun MainScreen(onEdit: (Long) -> Unit, onDiagnostics: () -> Unit, onSett
         Box(Modifier.fillMaxSize().padding(top = padding.calculateTopPadding())) {
             Column(Modifier.fillMaxSize()) {
                 PermissionBanner(onFix = onDiagnostics)
-                when (current) {
-                    // The list scrolls under the floating navigation; the clock screens stop above it.
-                    Destination.ALARMS -> AlarmListScreen(onEdit = onEdit)
-                    Destination.TIMER -> TimerScreen(Modifier.navigationBarsPadding().padding(bottom = NAV_CLEARANCE))
-                    Destination.STOPWATCH -> StopwatchScreen(Modifier.navigationBarsPadding().padding(bottom = NAV_CLEARANCE))
+                HorizontalPager(pager, Modifier.weight(1f), beyondViewportPageCount = 1) { page ->
+                    when (Destination.entries[page]) {
+                        // The list scrolls under the floating navigation; the clock screens stop above it.
+                        Destination.ALARMS -> AlarmListScreen(onEdit = onEdit)
+                        Destination.TIMER -> TimerScreen(Modifier.fillMaxSize().navigationBarsPadding().padding(bottom = NAV_CLEARANCE))
+                        Destination.STOPWATCH -> StopwatchScreen(Modifier.fillMaxSize().navigationBarsPadding().padding(bottom = NAV_CLEARANCE))
+                    }
                 }
             }
             val entries = Destination.entries.map { NavEntry(stringResource(it.label), it.icon) }
             FloatingNav(
                 entries = entries,
                 selected = current.ordinal,
-                onSelect = { current = Destination.entries[it] },
+                onSelect = { scope.launch { pager.animateScrollToPage(it) } },
                 modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 16.dp)
             ) {
                 if (current == Destination.ALARMS) {

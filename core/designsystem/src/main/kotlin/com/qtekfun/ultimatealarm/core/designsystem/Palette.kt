@@ -46,8 +46,9 @@ object ColorMath {
 }
 
 /**
- * The "Amanecer" palette (warm ground, one accent of the user's choice, an indigo secondary and a teal tertiary) as a
- * Material colour scheme, so every screen picks it up. In the dark the accent is lightened and carries dark text.
+ * The "Amanecer" palette (warm ground and one accent of the user's choice) as a Material colour scheme, so every screen
+ * picks it up. Secondary and tertiary are deeper and paler shades of the same accent, so every icon and button follows
+ * the chosen colour. In the dark the accent is lightened and carries dark text.
  */
 object AmanecerPalette {
     fun scheme(dark: Boolean, accent: Int): ColorScheme = if (dark) darkScheme(accent) else lightScheme(accent)
@@ -61,14 +62,14 @@ object AmanecerPalette {
         primaryContainer = c(ColorMath.mix(accent, WHITE, SOFT)),
         onPrimaryContainer = c(ColorMath.mix(accent, BLACK, INK)),
         inversePrimary = c(ColorMath.mix(accent, WHITE, DARK_LIFT)),
-        secondary = c(0x3B4A8C),
+        secondary = c(ColorMath.mix(accent, BLACK, DEEP)),
         onSecondary = c(WHITE),
-        secondaryContainer = c(0xE3E7F7),
-        onSecondaryContainer = c(0x1E2A5C),
-        tertiary = c(0x0F766E),
+        secondaryContainer = c(ColorMath.mix(accent, WHITE, PALE)),
+        onSecondaryContainer = c(ColorMath.mix(accent, BLACK, DARK_TEXT_MIX)),
+        tertiary = c(ColorMath.mix(accent, BLACK, SLIGHT)),
         onTertiary = c(WHITE),
-        tertiaryContainer = c(0xDDF1EC),
-        onTertiaryContainer = c(0x0B3F3A),
+        tertiaryContainer = c(ColorMath.mix(accent, WHITE, PALER)),
+        onTertiaryContainer = c(ColorMath.mix(accent, BLACK, DARK_TEXT_MIX)),
         background = c(LIGHT_GROUND),
         onBackground = c(LIGHT_INK),
         surface = c(LIGHT_GROUND),
@@ -97,14 +98,14 @@ object AmanecerPalette {
             primaryContainer = c(ColorMath.mix(accent, DARK_GROUND, DARK_SOFT)),
             onPrimaryContainer = c(ColorMath.mix(accent, WHITE, DARK_INK)),
             inversePrimary = c(accent),
-            secondary = c(0xAEB9F2),
-            onSecondary = c(0x141A33),
-            secondaryContainer = c(0x262D4D),
-            onSecondaryContainer = c(0xDDE2FF),
-            tertiary = c(0x5EC7B8),
-            onTertiary = c(0x00332D),
-            tertiaryContainer = c(0x16302C),
-            onTertiaryContainer = c(0xB8EEE5),
+            secondary = c(ColorMath.mix(accent, WHITE, HALF)),
+            onSecondary = c(DARK_ON_PRIMARY),
+            secondaryContainer = c(ColorMath.mix(accent, DARK_GROUND, DARK_DIM)),
+            onSecondaryContainer = c(ColorMath.mix(accent, WHITE, LIGHT_TEXT_MIX)),
+            tertiary = c(ColorMath.mix(accent, WHITE, DARK_TERTIARY)),
+            onTertiary = c(DARK_ON_PRIMARY),
+            tertiaryContainer = c(ColorMath.mix(accent, DARK_GROUND, DARK_DIMMER)),
+            onTertiaryContainer = c(ColorMath.mix(accent, WHITE, LIGHT_TEXT_MIX)),
             background = c(DARK_GROUND),
             onBackground = c(DARK_TEXT),
             surface = c(DARK_GROUND),
@@ -141,4 +142,14 @@ object AmanecerPalette {
     private const val DARK_LIFT = 0.3f
     private const val DARK_SOFT = 0.62f
     private const val DARK_INK = 0.62f
+    private const val DEEP = 0.3f
+    private const val SLIGHT = 0.15f
+    private const val PALE = 0.86f
+    private const val PALER = 0.9f
+    private const val DARK_TEXT_MIX = 0.55f
+    private const val HALF = 0.5f
+    private const val DARK_TERTIARY = 0.4f
+    private const val DARK_DIM = 0.72f
+    private const val DARK_DIMMER = 0.78f
+    private const val LIGHT_TEXT_MIX = 0.7f
 }
