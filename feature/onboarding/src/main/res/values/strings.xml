@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="capability_exact_alarms">Exact alarms</string>
+  <string name="capability_notifications">Notifications</string>
+  <string name="capability_full_screen">Full screen over the lock screen</string>
+  <string name="capability_battery">Not restricted by battery optimisation</string>
+  <string name="capability_power_save_off">Battery saver off</string>
+  <string name="capability_nfc">NFC</string>
+  <string name="capability_camera">Camera</string>
+  <string name="capability_ok">Available</string>
+  <string name="capability_missing">Not available</string>
+  <string name="capability_fix">Fix</string>
+  <string name="capability_device">%1$s %2$s · Android %3$s (API %4$d)</string>
+</resources>
