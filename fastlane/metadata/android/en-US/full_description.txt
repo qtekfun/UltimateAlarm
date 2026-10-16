@@ -1,7 +1,7 @@
 UltimateAlarm is an alarm clock that knows which days are public holidays, asks you the evening before and lets you decide. Everything runs on your phone: alarms are scheduled locally and ring with the screen off, after a reboot and across time changes.
 
 • Flexible schedules: days of the week, shift patterns (4 on / 4 off, alternate weeks…), per-day exceptions and vacations
-• Public holidays for your country and region, plus your own local holidays; a notification the evening before asks whether to skip
+• Public holidays for your country and region, public ICS calendars and your own holidays; a notification the evening before asks whether to skip
 • One-time alarms that delete themselves when dismissed, and "skip tomorrow" per alarm
 • Gentle volume ramp, vibration, snooze and a backup alarm if you do not react
 • Challenges to dismiss: maths, QR/barcode or NFC tag

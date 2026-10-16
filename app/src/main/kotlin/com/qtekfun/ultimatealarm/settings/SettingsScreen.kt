@@ -1,6 +1,7 @@
 package com.qtekfun.ultimatealarm.settings
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,11 +32,19 @@ import com.qtekfun.ultimatealarm.core.data.VolumeButtonAction
 
 /** Global ringing settings: volume buttons (RF-R7) and auto-silence (RF-R8). More sections arrive with their phases. */
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier) {
+fun SettingsScreen(onHolidays: () -> Unit, modifier: Modifier = Modifier) {
     val store = RingStore(LocalContext.current)
     var volume by remember { mutableStateOf(store.volumeButtons) }
     var silence by remember { mutableStateOf(store.silenceAfterMinutes) }
     Column(modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column(Modifier.fillMaxWidth().heightIn(min = 56.dp).clickable(onClick = onHolidays)) {
+            Text(stringResource(R.string.settings_holidays), style = MaterialTheme.typography.titleMedium)
+            Text(
+                stringResource(R.string.settings_holidays_summary),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
         Group(stringResource(R.string.settings_volume_buttons)) {
             listOf(
                 VolumeButtonAction.SNOOZE to R.string.settings_volume_snooze,
