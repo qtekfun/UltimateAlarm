@@ -1,0 +1,1 @@
+Primera compilación de prueba: esqueleto del proyecto, CI y publicación. Aún sin alarmas.

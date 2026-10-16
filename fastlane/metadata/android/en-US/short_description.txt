@@ -1,0 +1,1 @@
+Alarm clock that knows public holidays, shifts and vacations. Fully local.
