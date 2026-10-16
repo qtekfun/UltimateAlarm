@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="nav_alarms">Alarmas</string>
+  <string name="nav_timer">Temporizador</string>
+  <string name="nav_stopwatch">Cronómetro</string>
+  <string name="nav_holidays">Festivos</string>
+  <string name="coming_soon">Próximamente</string>
+</resources>

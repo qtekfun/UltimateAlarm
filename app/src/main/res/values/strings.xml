@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name" translatable="false">UltimateAlarm</string>
+  <string name="nav_alarms">Alarms</string>
+  <string name="nav_timer">Timer</string>
+  <string name="nav_stopwatch">Stopwatch</string>
+  <string name="nav_holidays">Holidays</string>
+  <string name="coming_soon">Coming soon</string>
+</resources>
