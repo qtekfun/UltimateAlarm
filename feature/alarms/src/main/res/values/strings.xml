@@ -20,6 +20,16 @@
   <string name="day_today">today</string>
   <string name="day_tomorrow">tomorrow, %1$s</string>
   <string name="notice_alarm">Alarm %1$s</string>
+  <string name="repeat_weekly">Weekly</string>
+  <string name="repeat_shifts">Shifts</string>
+  <string name="ramp_short">rises over %1$d s</string>
+  <string name="snooze_short">%1$d min · up to %2$d times</string>
+  <string name="snooze_short_unlimited">%1$d min · no limit</string>
+  <string name="wheel_hour">Hour</string>
+  <string name="wheel_minute">Minute</string>
+  <string name="wheel_am">AM</string>
+  <string name="wheel_pm">PM</string>
+  <string name="wheel_type_time">Type the time</string>
   <string name="no_alarms">No alarms yet</string>
   <string name="alarm_deleted">Alarm deleted</string>
   <string name="alarm_skipped">Skipped %1$s</string>
