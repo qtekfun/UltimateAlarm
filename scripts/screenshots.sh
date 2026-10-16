@@ -28,12 +28,12 @@ for LOCALE in en-US es-ES; do
   shot 01_assistant
   tap_text '^(Skip|Omitir)$' 3
   # Two alarms through the editor: the default (07:00, Mon–Fri) and a labelled one-off.
-  tap_text '^(Alarm|Alarma)$' 3
+  tap_id add_alarm 3
   shot 03_editor
-  tap_text '^(Save|Guardar)$' 3
-  tap_text '^(Alarm|Alarma)$' 3
+  tap_id save_alarm 3
+  tap_id add_alarm 3
   tap_text '^(Once|Una vez)$' 2
-  tap_text '^(Save|Guardar)$' 3
+  tap_id save_alarm 3
   shot 02_alarms
   tap_text '^(Timer|Temporizador)$' 3
   tap_text '^(5 min)$' 2
@@ -53,7 +53,9 @@ for LOCALE in en-US es-ES; do
   # The ringing screen: a real autotest alarm, one minute from now.
   tap_text '^(Diagnostics|Diagnóstico)$' 3
   tap_text '^(Start autotest|Iniciar autotest)' 2
+  # Screen off: the alarm turns it on and shows its full screen over the lock screen.
   adb shell input keyevent KEYCODE_HOME
+  adb shell input keyevent KEYCODE_SLEEP
   sleep 70
   shot 07_ringing
   adb shell input keyevent KEYCODE_BACK

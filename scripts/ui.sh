@@ -39,3 +39,28 @@ print(best[0], best[1])' "$pat") || { echo "not found: $pat"; return 1; }
   adb shell input tap $xy
   sleep "$wait"
 }
+
+# tap_id <test tag> [seconds to wait afterwards]: taps the element whose resource-id ends with the tag (Compose test tags
+# exposed with testTagsAsResourceId).
+tap_id() {
+  local tag="$1" wait="${2:-2}" xy
+  xy=$(ui_dump | python3 -c '
+import re, sys
+import xml.etree.ElementTree as ET
+try:
+    root = ET.fromstring(sys.stdin.read())
+except Exception:
+    sys.exit(1)
+for n in root.iter("node"):
+    rid = n.get("resource-id") or ""
+    if rid == sys.argv[1] or rid.endswith("/" + sys.argv[1]):
+        m = re.match(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", n.get("bounds", ""))
+        if m:
+            x1, y1, x2, y2 = map(int, m.groups())
+            print((x1 + x2) // 2, (y1 + y2) // 2)
+            sys.exit(0)
+sys.exit(1)' "$tag") || { echo "not found: #$tag"; return 1; }
+  # shellcheck disable=SC2086
+  adb shell input tap $xy
+  sleep "$wait"
+}

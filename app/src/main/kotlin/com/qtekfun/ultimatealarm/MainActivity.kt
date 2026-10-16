@@ -36,6 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -65,7 +67,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             UltimateAlarmTheme {
-                AppNavHost()
+                // Test tags as resource ids: lets UI Automator (store screenshots, scripts/screenshots.sh) find buttons.
+                Box(Modifier.semantics { testTagsAsResourceId = true }) { AppNavHost() }
             }
         }
     }
