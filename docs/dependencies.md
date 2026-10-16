@@ -17,5 +17,5 @@ Bouncy Castle's licence into the APK.
 | `javax.inject`, `jakarta.inject` | Annotations | Apache-2.0 / EPL-2.0 | DI annotations |
 
 Network endpoints used by the app (CLAUDE.md rule 2): Nager.Date (holidays), Calendarios Nacionales (Spanish municipal
-holidays), datos.madrid.es (Madrid's official calendar), the public ICS address the user types, and the user's Nextcloud.
+holidays), the public ICS address the user types, and the user's Nextcloud.
 Nothing else; no analytics or crash reporting.

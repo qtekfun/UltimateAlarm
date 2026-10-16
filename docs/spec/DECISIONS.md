@@ -123,7 +123,7 @@ sources (BOE, Social Security, regional open data) for all 8,000+ Spanish munici
   monthly like Nager.Date, current and next year. A year not published yet (empty) is not an error.
 - Network only for holidays (rule 2); failures keep the cache; nothing here can delay an alarm.
 
-## D-17 · Official open-data calendars of towns take precedence (product owner, 2026-10-16)
+## D-17 · Official open-data calendars of towns take precedence (product owner, 2026-10-16) — withdrawn by D-18
 
 Where a town publishes its labour calendar as open data, the app reads it on every holiday refresh and its days, with the
 official names, take precedence over the compiled municipal calendar (D-16); days only in the compiled calendar are kept.
@@ -132,3 +132,12 @@ attribution shown in Settings → Holidays). Each year is a new CKAN resource wi
 package up through the CKAN API (`package_show`) instead of storing a URL. For 2026 its dates match the compiled calendar
 exactly; it adds the official names (San Isidro Labrador, Nuestra Señora de la Almudena). More towns are added to
 `OfficialCalendars.sources`. Any failure falls back silently to the compiled calendar.
+
+## D-18 · Madrid's official calendar removed; the compiled municipal calendar is the only local source (product owner, 2026-10-16)
+
+The product owner reported that the Madrid download did not work on the phone and asked for an alternative or its removal.
+It was removed in 1.0.0-rc3: the compiled calendar of D-16 already gives Madrid the same dates (checked for 2026), the
+official feed only added names, and it was the most fragile source (a new address every year, three overlapping ICS
+files exported from a personal calendar, a mislabelled day). One fewer network endpoint (rule 2). D-17 no longer applies;
+towns' open data can come back only with a source that is stable from year to year.
+

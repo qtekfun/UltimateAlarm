@@ -1,0 +1,1 @@
+Se quita el calendario oficial de Madrid (su descarga fallaba); los festivos locales de Madrid siguen llegando del calendario municipal.

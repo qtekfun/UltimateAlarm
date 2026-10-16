@@ -53,7 +53,6 @@ import com.qtekfun.ultimatealarm.R
 import com.qtekfun.ultimatealarm.core.data.HolidayEntry
 import com.qtekfun.ultimatealarm.core.data.HolidaySourceType
 import com.qtekfun.ultimatealarm.feature.holidays.LocalHolidays
-import com.qtekfun.ultimatealarm.feature.holidays.OfficialCalendars
 import java.text.DateFormat as JavaDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -198,14 +197,6 @@ private fun MunicipalityPicker(config: HolidayConfig, viewModel: HolidaySettings
         color = MaterialTheme.colorScheme.primary,
         modifier = Modifier.clickable { uriHandler.openUri(LocalHolidays.ATTRIBUTION_URL) }.padding(vertical = 4.dp)
     )
-    OfficialCalendars.forPath(config.municipalityPath)?.let { official ->
-        Text(
-            stringResource(R.string.holidays_official_source, official.attribution),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.clickable { uriHandler.openUri(official.attributionUrl) }.padding(vertical = 4.dp)
-        )
-    }
     if (searching && province != null) {
         MunicipalitySearch(municipalities, onDismiss = { searching = false }) { place ->
             searching = false
