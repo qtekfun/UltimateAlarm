@@ -35,6 +35,11 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".UndoDeleteReceiver"
+            android:directBootAware="true"
+            android:exported="false" />
+
         <service
             android:name=".RingingService"
             android:directBootAware="true"
