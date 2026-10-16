@@ -83,6 +83,7 @@ import kotlinx.coroutines.launch
 fun AlarmEditorScreen(
     onDone: (saved: Duration?, deleted: Alarm?) -> Unit,
     onBack: () -> Unit,
+    onExceptions: (Long) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: AlarmEditorViewModel = hiltViewModel()
 ) {
@@ -121,6 +122,9 @@ fun AlarmEditorScreen(
                 modifier = Modifier.fillMaxWidth()
             )
             RepeatSection(draft, viewModel)
+            if (!state.isNew && draft.kind == AlarmKind.RECURRING) {
+                TextButton(onClick = { onExceptions(draft.id) }) { Text(stringResource(R.string.exceptions_open)) }
+            }
             Section(stringResource(R.string.section_ringing)) {
                 SliderRow(stringResource(R.string.max_volume, draft.maxVolume), draft.maxVolume.toFloat(), 1f..100f) { v ->
                     viewModel.edit { it.copy(maxVolume = v.roundToInt()) }
@@ -209,23 +213,39 @@ private fun RepeatSection(draft: Alarm, viewModel: AlarmEditorViewModel) {
             }
             if (draft.kind == AlarmKind.RECURRING) {
                 val schedule = draft.schedule
-                if (schedule is Schedule.Weekly) {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        DayOfWeek.entries.forEach { day ->
-                            FilterChip(
-                                selected = day in schedule.days,
-                                onClick = { viewModel.toggleDay(day) },
-                                label = { Text(formatDay(day, TextStyle.SHORT)) }
-                            )
+                val modes = listOf(false to R.string.repeat_days, true to R.string.repeat_shift)
+                SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+                    modes.forEachIndexed { index, (shift, label) ->
+                        SegmentedButton(
+                            selected = (schedule is Schedule.Cycle) == shift,
+                            onClick = {
+                                if (shift && schedule !is Schedule.Cycle) viewModel.setSchedule(ScheduleTools.shift(ShiftPreset.FOUR_FOUR, LocalDate.now()))
+                                if (!shift && schedule !is Schedule.Weekly) viewModel.setDays(Alarm.WORKDAYS)
+                            },
+                            shape = SegmentedButtonDefaults.itemShape(index, modes.size)
+                        ) { Text(stringResource(label)) }
+                    }
+                }
+                when (schedule) {
+                    is Schedule.Weekly -> {
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            DayOfWeek.entries.forEach { day ->
+                                FilterChip(
+                                    selected = day in schedule.days,
+                                    onClick = { viewModel.toggleDay(day) },
+                                    label = { Text(formatDay(day, TextStyle.SHORT)) }
+                                )
+                            }
+                        }
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            AssistChip(onClick = { viewModel.setDays(Alarm.WORKDAYS) }, label = { Text(stringResource(R.string.schedule_weekdays)) })
+                            AssistChip(onClick = { viewModel.setDays(WEEKEND) }, label = { Text(stringResource(R.string.schedule_weekend)) })
+                            AssistChip(onClick = {
+                                viewModel.setDays(DayOfWeek.entries.toSet())
+                            }, label = { Text(stringResource(R.string.schedule_every_day)) })
                         }
                     }
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        AssistChip(onClick = { viewModel.setDays(Alarm.WORKDAYS) }, label = { Text(stringResource(R.string.schedule_weekdays)) })
-                        AssistChip(onClick = { viewModel.setDays(WEEKEND) }, label = { Text(stringResource(R.string.schedule_weekend)) })
-                        AssistChip(onClick = { viewModel.setDays(DayOfWeek.entries.toSet()) }, label = { Text(stringResource(R.string.schedule_every_day)) })
-                    }
-                } else {
-                    Text(scheduleText(draft), style = MaterialTheme.typography.bodyMedium)
+                    is Schedule.Cycle -> ShiftEditor(schedule, viewModel::setSchedule)
                 }
             } else {
                 OneShotDate(draft.oneShotDate, viewModel::setOneShotDate)

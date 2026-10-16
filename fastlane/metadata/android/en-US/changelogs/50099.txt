@@ -1,0 +1,1 @@
+Shift patterns (4×4, 5×2, alternate weeks or custom), an exceptions calendar per alarm and vacations that pause all or some alarms.

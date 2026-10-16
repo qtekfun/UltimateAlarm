@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Alarm
+import androidx.compose.material.icons.outlined.BeachAccess
 import androidx.compose.material.icons.outlined.HourglassEmpty
 import androidx.compose.material.icons.outlined.MonitorHeart
 import androidx.compose.material.icons.outlined.Settings
@@ -43,6 +44,8 @@ import com.qtekfun.ultimatealarm.diagnostics.DiagnosticsScreen
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorScreen
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorViewModel
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmListScreen
+import com.qtekfun.ultimatealarm.feature.alarms.ExceptionsScreen
+import com.qtekfun.ultimatealarm.feature.alarms.VacationsScreen
 import com.qtekfun.ultimatealarm.settings.HolidaySettingsScreen
 import com.qtekfun.ultimatealarm.settings.SettingsScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,6 +69,10 @@ private object Routes {
     const val DIAGNOSTICS = "diagnostics"
     const val SETTINGS = "settings"
     const val HOLIDAYS = "settings/holidays"
+    const val VACATIONS = "vacations"
+    const val EXCEPTIONS = "exceptions/{${AlarmEditorViewModel.ARG_ALARM_ID}}"
+
+    fun exceptions(id: Long) = "exceptions/$id"
 
     fun editor(id: Long) = "editor/$id"
 }
@@ -78,11 +85,12 @@ private fun AppNavHost() {
             MainScreen(
                 onEdit = { nav.navigate(Routes.editor(it)) },
                 onDiagnostics = { nav.navigate(Routes.DIAGNOSTICS) },
-                onSettings = { nav.navigate(Routes.SETTINGS) }
+                onSettings = { nav.navigate(Routes.SETTINGS) },
+                onVacations = { nav.navigate(Routes.VACATIONS) }
             )
         }
         composable(Routes.EDITOR, arguments = listOf(navArgument(AlarmEditorViewModel.ARG_ALARM_ID) { type = NavType.LongType })) {
-            AlarmEditorScreen(onDone = { _, _ -> nav.popBackStack() }, onBack = { nav.popBackStack() })
+            AlarmEditorScreen(onDone = { _, _ -> nav.popBackStack() }, onBack = { nav.popBackStack() }, onExceptions = { nav.navigate(Routes.exceptions(it)) })
         }
         composable(Routes.SETTINGS) {
             BackScaffold(stringResource(R.string.settings), onBack = {
@@ -91,6 +99,14 @@ private fun AppNavHost() {
         }
         composable(Routes.HOLIDAYS) {
             BackScaffold(stringResource(R.string.settings_holidays), onBack = { nav.popBackStack() }) { HolidaySettingsScreen(it) }
+        }
+        composable(Routes.EXCEPTIONS, arguments = listOf(navArgument(AlarmEditorViewModel.ARG_ALARM_ID) { type = NavType.LongType })) {
+            BackScaffold(stringResource(com.qtekfun.ultimatealarm.feature.alarms.R.string.exceptions_open), onBack = {
+                nav.popBackStack()
+            }) { ExceptionsScreen(it) }
+        }
+        composable(Routes.VACATIONS) {
+            BackScaffold(stringResource(com.qtekfun.ultimatealarm.feature.alarms.R.string.vacations), onBack = { nav.popBackStack() }) { VacationsScreen(it) }
         }
         composable(Routes.DIAGNOSTICS) {
             BackScaffold(stringResource(R.string.diagnostics), onBack = { nav.popBackStack() }) { DiagnosticsScreen(it) }
@@ -107,13 +123,18 @@ private enum class Destination(@StringRes val label: Int, val icon: ImageVector)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen(onEdit: (Long) -> Unit, onDiagnostics: () -> Unit, onSettings: () -> Unit) {
+private fun MainScreen(onEdit: (Long) -> Unit, onDiagnostics: () -> Unit, onSettings: () -> Unit, onVacations: () -> Unit) {
     var current by rememberSaveable { mutableStateOf(Destination.ALARMS) }
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(current.label)) },
                 actions = {
+                    if (current == Destination.ALARMS) {
+                        IconButton(onClick = onVacations) {
+                            Icon(Icons.Outlined.BeachAccess, contentDescription = stringResource(com.qtekfun.ultimatealarm.feature.alarms.R.string.vacations))
+                        }
+                    }
                     IconButton(onClick = onDiagnostics) { Icon(Icons.Outlined.MonitorHeart, contentDescription = stringResource(R.string.diagnostics)) }
                     IconButton(onClick = onSettings) { Icon(Icons.Outlined.Settings, contentDescription = stringResource(R.string.settings)) }
                 }

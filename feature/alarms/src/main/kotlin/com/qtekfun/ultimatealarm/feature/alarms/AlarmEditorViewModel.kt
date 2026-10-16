@@ -47,6 +47,8 @@ class AlarmEditorViewModel @Inject constructor(savedState: SavedStateHandle, pri
 
     fun setDays(days: Set<DayOfWeek>) = edit { it.copy(schedule = Schedule.Weekly(days)) }
 
+    fun setSchedule(schedule: Schedule) = edit { it.copy(schedule = schedule) }
+
     /** Switching kind also sets the default of "respect holidays" for that kind (README assumption 1). */
     fun setKind(kind: AlarmKind) = edit { alarm ->
         if (alarm.kind == kind) alarm else alarm.copy(kind = kind, respectHolidays = kind == AlarmKind.RECURRING)
