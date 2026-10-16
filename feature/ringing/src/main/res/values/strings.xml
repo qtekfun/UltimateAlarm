@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="ringing_channel_name">Ringing alarms</string>
+  <string name="ringing_channel_description">Shown while an alarm is ringing</string>
+  <string name="ringing_title_test">Test alarm</string>
+  <string name="ringing_title_autotest">Autotest</string>
+  <string name="ringing_title_snooze">Snoozed alarm</string>
+  <string name="ringing_dismiss">Dismiss</string>
+  <string name="ringing_snooze">Snooze</string>
+  <string name="ringing_snooze_minutes">Snooze %1$d min</string>
+</resources>
