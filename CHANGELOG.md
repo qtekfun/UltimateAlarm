@@ -4,6 +4,16 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [0.4.0]
+
+Phase 5: sounds.
+
+### Added
+- Our own sound pack: 13 tones made for UltimateAlarm (gentle wake-up, energetic wake-up, backup, notification), free software like the app, normalised in loudness and looping without clicks.
+- Sound picker per alarm with preview using the alarm's volume ramp; system alarm tones and your own audio files are also allowed.
+- Backup tone: a general one in Settings, which each alarm can override.
+- If a sound cannot be played (a deleted file, for example), the alarm falls back to the pack's tone, then the system tone, then a beep: something always rings.
+
 ## [0.3.0]
 
 Holidays (moved ahead of sounds at the product owner's request).

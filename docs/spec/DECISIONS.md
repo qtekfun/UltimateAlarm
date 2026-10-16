@@ -98,3 +98,13 @@ The product owner moved holidays ahead of sounds and asked for **no Holidays scr
   them / Keep them; without an answer, the alarms ring.
 - Release order: holidays ship as **0.3.0** and sounds as **0.4.0** (the table in `03-ci-release.md` is updated).
 - The holiday tables live in the same device-protected database (schema v2, auto-migration).
+
+## D-15 · The sound pack is 100 % original, no CC0 files
+
+§7 allowed original synthesised tones and curated CC0 files. The pack (13 tones, RF-S1 asks ≥ 12) is entirely generated
+by `tools/sounds/generate.py` (numpy + ffmpeg/libopus, deterministic, bit-exact output), so every file is the project's
+own work under GPL-3.0-or-later and nothing depends on a third-party licence or a download. Notification tones are short
+(3.6–4 s) by nature; wake-up and backup tones are 20–32 s loops. CI checks `LICENSES.md`; it does not regenerate the
+audio (libopus versions differ between machines), the committed files are the reference.
+The fallback chain when ringing is: chosen sound → pack default (`dawn_marimba`, or `backup_pulse` for the backup) →
+system alarm tone → generated beep. Bundled assets are readable before the first unlock.

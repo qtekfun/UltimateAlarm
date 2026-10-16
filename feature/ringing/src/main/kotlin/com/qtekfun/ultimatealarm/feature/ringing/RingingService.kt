@@ -25,6 +25,9 @@ import com.qtekfun.ultimatealarm.core.data.RingPolicy
 import com.qtekfun.ultimatealarm.core.data.RingState
 import com.qtekfun.ultimatealarm.core.data.RingStore
 import com.qtekfun.ultimatealarm.core.scheduling.AlarmKind
+import com.qtekfun.ultimatealarm.feature.sounds.SoundCatalog
+import com.qtekfun.ultimatealarm.feature.sounds.SoundRef
+import com.qtekfun.ultimatealarm.feature.sounds.TonePlayer
 import kotlinx.coroutines.launch
 
 /**
@@ -37,7 +40,7 @@ import kotlinx.coroutines.launch
  */
 class RingingService : Service() {
     private val handler = Handler(Looper.getMainLooper())
-    private var player: AlarmPlayer? = null
+    private var player: TonePlayer? = null
     private var vibrator: AlarmVibrator? = null
     private var wakeLock: PowerManager.WakeLock? = null
     private var session: Session? = null
@@ -108,7 +111,8 @@ class RingingService : Service() {
         session = Session(state, null, startMode)
 
         player?.stop()
-        player = AlarmPlayer(this, initialGain(startMode)) { source -> DiagnosticLog.log(this, "SOUND", source, alarmId) }.also { it.start() }
+        // The pack default first: the alarm's own sound needs the database, read a moment later in applyAlarm.
+        player = startPlayer(alarmId, SoundCatalog.chain(null, backup = startMode == RingMode.BACKUP), initialGain(startMode))
         RingingState.set(Ringing(alarmId, firedAt, mode = startMode))
         handler.removeCallbacksAndMessages(null)
         handler.postDelayed(
@@ -117,6 +121,9 @@ class RingingService : Service() {
         )
         ringingScope.launch { applyAlarm(alarmId) }
     }
+
+    private fun startPlayer(alarmId: Long, chain: List<SoundRef>, gain: Float): TonePlayer =
+        TonePlayer(this, chain, gain) { source -> DiagnosticLog.log(this, "SOUND", source, alarmId) }.also { it.start() }
 
     private fun initialGain(mode: RingMode) = if (mode == RingMode.BACKUP) 1f else RingPolicy.gain(0, Alarm().rampSeconds, Alarm().maxVolume)
 
@@ -137,6 +144,11 @@ class RingingService : Service() {
             if (mode == RingMode.BACKUP) {
                 enterBackup(if (current.mode == RingMode.BACKUP) "resumed" else "snoozes used up")
             } else {
+                val chosen = SoundRef.decode(alarm?.sound)
+                if (chosen != null && chosen != SoundCatalog.DEFAULT_ALARM) {
+                    player?.stop()
+                    player = startPlayer(alarmId, SoundCatalog.chain(chosen, backup = false), RingPolicy.gain(0, settings.rampSeconds, settings.maxVolume))
+                }
                 if (settings.vibrate) vibrator = AlarmVibrator(this).also { runCatching { it.start() } }
                 startRamp(current.state.firedAt, settings)
                 RingPolicy.backupAt(current.state.firedAt, settings)?.let { at ->
@@ -167,8 +179,10 @@ class RingingService : Service() {
         session = current.copy(mode = RingMode.BACKUP, state = current.state.copy(backupFired = true))
         RingStore(this).state = session?.state
         DiagnosticLog.log(this, "BACKUP", reason, alarmId)
-        // The bundled backup tone arrives in Phase 5; meanwhile the same chain plays at full volume.
-        player?.setGain(1f)
+        // RF-S5: the alarm's backup tone, else the global one, else the pack's; full volume, no ramp.
+        val chosen = SoundRef.decode(current.alarm?.backupSound) ?: SoundRef.decode(RingStore(this).backupSound)
+        player?.stop()
+        player = startPlayer(alarmId, SoundCatalog.chain(chosen, backup = true), 1f)
         vibrator?.stop()
         vibrator = AlarmVibrator(this).also { runCatching { it.start(continuous = true) } }
         RingingState.current.value?.let { RingingState.set(it.copy(mode = RingMode.BACKUP)) }

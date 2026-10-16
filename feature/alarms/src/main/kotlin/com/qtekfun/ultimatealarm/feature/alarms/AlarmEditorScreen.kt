@@ -60,6 +60,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.qtekfun.ultimatealarm.core.data.Alarm
 import com.qtekfun.ultimatealarm.core.scheduling.AlarmKind
 import com.qtekfun.ultimatealarm.core.scheduling.Schedule
+import com.qtekfun.ultimatealarm.feature.sounds.SoundPickerDialog
+import com.qtekfun.ultimatealarm.feature.sounds.SoundRef
+import com.qtekfun.ultimatealarm.feature.sounds.soundName
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.Instant
@@ -126,7 +129,13 @@ fun AlarmEditorScreen(
                     viewModel.edit { it.copy(rampSeconds = v.roundToInt()) }
                 }
                 SwitchRow(stringResource(R.string.vibrate), draft.vibrate) { on -> viewModel.edit { it.copy(vibrate = on) } }
-                Text(stringResource(R.string.sound_default), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                SoundRow(
+                    title = stringResource(com.qtekfun.ultimatealarm.feature.sounds.R.string.sound_title),
+                    current = SoundRef.decode(draft.sound),
+                    backup = false,
+                    draft = draft,
+                    noneLabel = soundName(null)
+                ) { ref -> viewModel.edit { it.copy(sound = ref?.encode()) } }
             }
             Section(stringResource(R.string.section_snooze)) {
                 SliderRow(stringResource(R.string.snooze_minutes, draft.snoozeMinutes), draft.snoozeMinutes.toFloat(), 1f..30f, steps = 28) { v ->
@@ -151,6 +160,15 @@ fun AlarmEditorScreen(
                     SliderRow(stringResource(R.string.backup_minutes, backup), backup.toFloat(), 1f..30f, steps = 28) { v ->
                         viewModel.edit { it.copy(backupAfterMinutes = v.roundToInt()) }
                     }
+                }
+                if (backup != null) {
+                    SoundRow(
+                        title = stringResource(com.qtekfun.ultimatealarm.feature.sounds.R.string.sound_backup_title),
+                        current = SoundRef.decode(draft.backupSound),
+                        backup = true,
+                        draft = draft,
+                        noneLabel = stringResource(com.qtekfun.ultimatealarm.feature.sounds.R.string.sound_backup_global)
+                    ) { ref -> viewModel.edit { it.copy(backupSound = ref?.encode()) } }
                 }
                 SwitchRow(stringResource(R.string.pre_notify), draft.preNotifyMinutes != null) { on ->
                     viewModel.edit { it.copy(preNotifyMinutes = if (on) PRE_NOTIFY_MINUTES else null) }
@@ -262,6 +280,27 @@ private fun Section(title: String, content: @Composable () -> Unit) {
                 Column(Modifier.padding(bottom = 8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) { content() }
             }
         }
+    }
+}
+
+@Composable
+private fun SoundRow(title: String, current: SoundRef?, backup: Boolean, draft: Alarm, noneLabel: String, onPick: (SoundRef?) -> Unit) {
+    var open by rememberSaveable { mutableStateOf(false) }
+    Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable { open = true }, verticalAlignment = Alignment.CenterVertically) {
+        Text(title, Modifier.weight(1f))
+        Text(if (current == null) noneLabel else soundName(current), color = MaterialTheme.colorScheme.primary)
+    }
+    if (open) {
+        SoundPickerDialog(
+            title = title,
+            current = current,
+            backup = backup,
+            rampSeconds = draft.rampSeconds,
+            maxVolume = draft.maxVolume,
+            noneLabel = noneLabel,
+            onPick = onPick,
+            onDismiss = { open = false }
+        )
     }
 }
 

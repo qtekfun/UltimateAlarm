@@ -29,6 +29,10 @@ import androidx.compose.ui.unit.dp
 import com.qtekfun.ultimatealarm.R
 import com.qtekfun.ultimatealarm.core.data.RingStore
 import com.qtekfun.ultimatealarm.core.data.VolumeButtonAction
+import com.qtekfun.ultimatealarm.feature.sounds.SoundCatalog
+import com.qtekfun.ultimatealarm.feature.sounds.SoundPickerDialog
+import com.qtekfun.ultimatealarm.feature.sounds.SoundRef
+import com.qtekfun.ultimatealarm.feature.sounds.soundName
 
 /** Global ringing settings: volume buttons (RF-R7) and auto-silence (RF-R8). More sections arrive with their phases. */
 @Composable
@@ -43,6 +47,27 @@ fun SettingsScreen(onHolidays: () -> Unit, modifier: Modifier = Modifier) {
                 stringResource(R.string.settings_holidays_summary),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        var backupSound by remember { mutableStateOf(SoundRef.decode(store.backupSound)) }
+        var pickingBackup by remember { mutableStateOf(false) }
+        Column(Modifier.fillMaxWidth().heightIn(min = 56.dp).clickable { pickingBackup = true }) {
+            Text(stringResource(com.qtekfun.ultimatealarm.feature.sounds.R.string.sound_backup_title), style = MaterialTheme.typography.titleMedium)
+            Text(soundName(backupSound, SoundCatalog.DEFAULT_BACKUP), color = MaterialTheme.colorScheme.primary)
+        }
+        if (pickingBackup) {
+            SoundPickerDialog(
+                title = stringResource(com.qtekfun.ultimatealarm.feature.sounds.R.string.sound_backup_title),
+                current = backupSound,
+                backup = true,
+                rampSeconds = 0,
+                maxVolume = 100,
+                noneLabel = soundName(null, SoundCatalog.DEFAULT_BACKUP),
+                onPick = {
+                    backupSound = it
+                    store.backupSound = it?.encode()
+                },
+                onDismiss = { pickingBackup = false }
             )
         }
         Group(stringResource(R.string.settings_volume_buttons)) {

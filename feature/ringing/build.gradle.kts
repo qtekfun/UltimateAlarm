@@ -17,6 +17,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:scheduling"))
     implementation(project(":core:data"))
+    implementation(project(":feature:sounds"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
