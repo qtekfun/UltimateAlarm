@@ -23,14 +23,25 @@ data class SchedulePlan(
     /** RF-R6: alarm id → when to show "Alarm in 1 h", for which occurrence. */
     val preNotices: Map<Long, PreNotice> = emptyMap(),
     /** RF-F7: the next evening notice before a holiday on which some alarm would ring, or `null`. */
-    val eve: EveNotice? = null
+    val eve: EveNotice? = null,
+    /** RF-E1: when to remind the user to go to bed, and the alarm it is for. */
+    val bedtime: Bedtime? = null
 )
+
+data class Bedtime(val at: Long, val alarmAt: Long)
 
 data class EveNotice(val at: Long, val holidayDate: LocalDate)
 
 data class PreNotice(val at: Long, val occurrenceDate: LocalDate, val occurrenceAt: Long)
 
-fun planSchedule(alarms: List<Alarm>, rules: RuleSet, now: ZonedDateTime, previouslyRegistered: Set<Long>, eveTime: LocalTime? = null): SchedulePlan {
+fun planSchedule(
+    alarms: List<Alarm>,
+    rules: RuleSet,
+    now: ZonedDateTime,
+    previouslyRegistered: Set<Long>,
+    eveTime: LocalTime? = null,
+    bedtimeHours: Int? = null
+): SchedulePlan {
     val occurrences = alarms.mapNotNull { alarm -> SchedulingEngine.nextOccurrence(alarm.spec, rules, now)?.let { alarm to it } }
     val register = occurrences.associate { (alarm, occurrence) -> alarm.id to occurrence.at.toInstant().toEpochMilli() }
     val nowMillis = now.toInstant().toEpochMilli()
@@ -45,7 +56,15 @@ fun planSchedule(alarms: List<Alarm>, rules: RuleSet, now: ZonedDateTime, previo
     }.map { it.id }
     val live = SchedulingEngine.liveSkips(alarms.map { it.spec }, rules.skips, now).toSet()
     val stale = rules.skips.filterNot { it in live }.map { it.alarmId to it.occurrenceDate }
-    return SchedulePlan(register, previouslyRegistered - register.keys, missed, stale, preNotices, eveTime?.let { nextEve(alarms, rules, now, it) })
+    return SchedulePlan(
+        register,
+        previouslyRegistered - register.keys,
+        missed,
+        stale,
+        preNotices,
+        eveTime?.let { nextEve(alarms, rules, now, it) },
+        bedtimeHours?.let { nextBedtime(alarms, rules, now, it) }
+    )
 }
 
 /**
@@ -63,3 +82,23 @@ private fun nextEve(alarms: List<Alarm>, rules: RuleSet, now: ZonedDateTime, eve
         .firstOrNull { (holiday, _) -> SchedulingEngine.holidayEve(specs, rules, holiday) != null }
         ?.let { (holiday, at) -> EveNotice(at.toInstant().toEpochMilli(), holiday) }
 }
+
+/**
+ * RF-E1: [hours] before the first alarm of a day, the earliest such reminder still ahead. Days with no alarm get no
+ * reminder ("no sale si mañana no suena nada"). Looks a week ahead.
+ */
+private fun nextBedtime(alarms: List<Alarm>, rules: RuleSet, now: ZonedDateTime, hours: Int): Bedtime? {
+    val specs = alarms.filter { it.enabled }.map { it.spec }
+    return (0L..BEDTIME_DAYS).asSequence()
+        .map { now.toLocalDate().plusDays(it) }
+        .mapNotNull { day ->
+            specs.filter { SchedulingEngine.explain(it, day, rules) == com.qtekfun.ultimatealarm.core.scheduling.DayVerdict.Rings }
+                .map { atLocalTime(day, it.time, now.zone) }
+                .filter { it.isAfter(now) }
+                .minOrNull()
+        }
+        .map { first -> Bedtime(first.minusHours(hours.toLong()).toInstant().toEpochMilli(), first.toInstant().toEpochMilli()) }
+        .firstOrNull { it.at > now.toInstant().toEpochMilli() }
+}
+
+private const val BEDTIME_DAYS = 7L

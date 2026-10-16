@@ -73,4 +73,7 @@
   <string name="holidays_search">Buscar</string>
   <string name="holidays_loading">Cargando…</string>
   <string name="holidays_origin_local">Calendario municipal</string>
+  <string name="settings_bedtime">Recordatorio de acostarse</string>
+  <string name="settings_bedtime_enabled">Recordarme ir a dormir</string>
+  <string name="settings_bedtime_hours">%1$d h antes de la primera alarma del día</string>
 </resources>

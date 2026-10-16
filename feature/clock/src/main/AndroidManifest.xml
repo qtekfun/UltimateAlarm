@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- Timers fire like alarms: Direct Boot aware, foreground service, screen over the lock screen (RF-E2). -->
+        <receiver
+            android:name=".TimerReceiver"
+            android:directBootAware="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".StopwatchReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".ClockBootReceiver"
+            android:directBootAware="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".TimerService"
+            android:directBootAware="true"
+            android:exported="false"
+            android:foregroundServiceType="systemExempted|mediaPlayback" />
+
+        <activity
+            android:name=".TimerDoneActivity"
+            android:directBootAware="true"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:showWhenLocked="true"
+            android:taskAffinity="com.qtekfun.ultimatealarm.timer"
+            android:theme="@style/Theme.UltimateAlarm.Timer"
+            android:turnScreenOn="true" />
+    </application>
+</manifest>

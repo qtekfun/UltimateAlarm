@@ -25,7 +25,15 @@ object Rescheduler {
         val rules = repository.rules()
         val now = ZonedDateTime.now()
         val holidaySettings = HolidaySettings(context)
-        val plan = planSchedule(alarms, rules, now, store.registered.keys, holidaySettings.eveTime.takeIf { holidaySettings.eveEnabled })
+        val ringSettings = RingStore(context)
+        val plan = planSchedule(
+            alarms,
+            rules,
+            now,
+            store.registered.keys,
+            holidaySettings.eveTime.takeIf { holidaySettings.eveEnabled },
+            ringSettings.bedtimeHours.takeIf { ringSettings.bedtimeEnabled }
+        )
 
         plan.cancel.forEach { AlarmScheduler.cancel(context, it) }
         plan.register.forEach { (id, at) -> AlarmScheduler.schedule(context, id, at) }
@@ -41,6 +49,7 @@ object Rescheduler {
         if (plan.staleSkips.isNotEmpty()) repository.dropSkips(plan.staleSkips)
         repository.dropDecisionsBefore(now.toLocalDate())
         HolidayEve.schedule(context, plan.eve)
+        BedtimeReminder.schedule(context, plan.bedtime)
         store.registered = plan.register
 
         // Snoozes and an interrupted ring do not survive a reboot in AlarmManager: register them again.
