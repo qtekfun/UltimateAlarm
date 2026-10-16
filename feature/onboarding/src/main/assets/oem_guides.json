@@ -1,0 +1,345 @@
+{
+  "schema": 1,
+  "guides": [
+    {
+      "id": "coloros",
+      "manufacturers": [
+        "oppo",
+        "realme",
+        "oneplus"
+      ],
+      "topics": {
+        "battery": {
+          "textKey": "oem_coloros_battery",
+          "intents": [
+            {
+              "component": "com.oplus.battery/com.oplus.powermanager.fuelgaue.PowerUsageModelActivity"
+            },
+            {
+              "component": "com.coloros.oppoguardelf/com.coloros.powermanager.fuelgaue.PowerUsageModelActivity"
+            },
+            {
+              "component": "com.coloros.oppoguardelf/com.coloros.powermanager.fuelgaue.PowerConsumptionActivity"
+            }
+          ]
+        },
+        "autostart": {
+          "textKey": "oem_coloros_autostart",
+          "intents": [
+            {
+              "component": "com.oplus.safecenter/com.oplus.safecenter.permission.startup.StartupAppListActivity"
+            },
+            {
+              "component": "com.coloros.safecenter/com.coloros.safecenter.permission.startup.StartupAppListActivity"
+            },
+            {
+              "component": "com.coloros.safecenter/com.coloros.safecenter.startupapp.StartupAppListActivity"
+            }
+          ]
+        },
+        "recents": {
+          "textKey": "oem_coloros_recents",
+          "intents": []
+        },
+        "fullscreen": {
+          "textKey": "oem_coloros_fullscreen",
+          "intents": [
+            {
+              "action": "android.settings.MANAGE_APP_USE_FULL_SCREEN_INTENT",
+              "data": "package:{package}"
+            },
+            {
+              "action": "android.settings.APPLICATION_DETAILS_SETTINGS",
+              "data": "package:{package}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "oneui",
+      "manufacturers": [
+        "samsung"
+      ],
+      "topics": {
+        "battery": {
+          "textKey": "oem_oneui_battery",
+          "intents": [
+            {
+              "component": "com.samsung.android.lool/com.samsung.android.sm.battery.ui.BatteryActivity"
+            },
+            {
+              "component": "com.samsung.android.sm_cn/com.samsung.android.sm.battery.ui.BatteryActivity"
+            },
+            {
+              "action": "android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"
+            }
+          ]
+        },
+        "autostart": {
+          "textKey": "oem_oneui_autostart",
+          "intents": [
+            {
+              "component": "com.samsung.android.lool/com.samsung.android.sm.battery.ui.usage.CheckableAppListActivity"
+            },
+            {
+              "component": "com.samsung.android.lool/com.samsung.android.sm.battery.ui.BatteryActivity"
+            }
+          ]
+        },
+        "recents": {
+          "textKey": "oem_oneui_recents",
+          "intents": []
+        },
+        "fullscreen": {
+          "textKey": "oem_oneui_fullscreen",
+          "intents": [
+            {
+              "action": "android.settings.MANAGE_APP_USE_FULL_SCREEN_INTENT",
+              "data": "package:{package}"
+            },
+            {
+              "action": "android.settings.APPLICATION_DETAILS_SETTINGS",
+              "data": "package:{package}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hyperos",
+      "manufacturers": [
+        "xiaomi",
+        "redmi",
+        "poco",
+        "blackshark"
+      ],
+      "topics": {
+        "battery": {
+          "textKey": "oem_hyperos_battery",
+          "intents": [
+            {
+              "component": "com.miui.powerkeeper/com.miui.powerkeeper.ui.HiddenAppsConfigActivity",
+              "extras": {
+                "package_name": "{package}"
+              }
+            }
+          ]
+        },
+        "autostart": {
+          "textKey": "oem_hyperos_autostart",
+          "intents": [
+            {
+              "component": "com.miui.securitycenter/com.miui.permcenter.autostart.AutoStartManagementActivity"
+            }
+          ]
+        },
+        "recents": {
+          "textKey": "oem_hyperos_recents",
+          "intents": []
+        },
+        "fullscreen": {
+          "textKey": "oem_hyperos_fullscreen",
+          "intents": [
+            {
+              "action": "android.settings.MANAGE_APP_USE_FULL_SCREEN_INTENT",
+              "data": "package:{package}"
+            },
+            {
+              "action": "android.settings.APPLICATION_DETAILS_SETTINGS",
+              "data": "package:{package}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "originos",
+      "manufacturers": [
+        "vivo",
+        "iqoo"
+      ],
+      "topics": {
+        "battery": {
+          "textKey": "oem_originos_battery",
+          "intents": [
+            {
+              "component": "com.iqoo.secure/com.iqoo.secure.ui.phoneoptimize.BgPowerManagerActivity"
+            },
+            {
+              "component": "com.vivo.abe/com.vivo.applicationbehaviorengine.ui.ExcessivePowerManagerActivity"
+            },
+            {
+              "action": "android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"
+            }
+          ]
+        },
+        "autostart": {
+          "textKey": "oem_originos_autostart",
+          "intents": [
+            {
+              "component": "com.vivo.permissionmanager/com.vivo.permissionmanager.activity.BgStartUpManagerActivity"
+            },
+            {
+              "component": "com.iqoo.secure/com.iqoo.secure.ui.phoneoptimize.AddWhiteListActivity"
+            }
+          ]
+        },
+        "recents": {
+          "textKey": "oem_originos_recents",
+          "intents": []
+        },
+        "fullscreen": {
+          "textKey": "oem_originos_fullscreen",
+          "intents": [
+            {
+              "action": "android.settings.MANAGE_APP_USE_FULL_SCREEN_INTENT",
+              "data": "package:{package}"
+            },
+            {
+              "action": "android.settings.APPLICATION_DETAILS_SETTINGS",
+              "data": "package:{package}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "magicos",
+      "manufacturers": [
+        "honor",
+        "huawei"
+      ],
+      "topics": {
+        "battery": {
+          "textKey": "oem_magicos_battery",
+          "intents": [
+            {
+              "component": "com.hihonor.systemmanager/com.hihonor.systemmanager.power.ui.HwPowerManagerActivity"
+            },
+            {
+              "component": "com.huawei.systemmanager/com.huawei.systemmanager.power.ui.HwPowerManagerActivity"
+            },
+            {
+              "action": "android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"
+            }
+          ]
+        },
+        "autostart": {
+          "textKey": "oem_magicos_autostart",
+          "intents": [
+            {
+              "component": "com.hihonor.systemmanager/com.hihonor.systemmanager.startupmgr.ui.StartupNormalAppListActivity"
+            },
+            {
+              "component": "com.huawei.systemmanager/com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity"
+            }
+          ]
+        },
+        "recents": {
+          "textKey": "oem_magicos_recents",
+          "intents": []
+        },
+        "fullscreen": {
+          "textKey": "oem_magicos_fullscreen",
+          "intents": [
+            {
+              "action": "android.settings.MANAGE_APP_USE_FULL_SCREEN_INTENT",
+              "data": "package:{package}"
+            },
+            {
+              "action": "android.settings.APPLICATION_DETAILS_SETTINGS",
+              "data": "package:{package}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "stock",
+      "manufacturers": [
+        "google",
+        "motorola",
+        "nokia",
+        "hmd global",
+        "fairphone",
+        "sony"
+      ],
+      "topics": {
+        "battery": {
+          "textKey": "oem_stock_battery",
+          "intents": [
+            {
+              "action": "android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"
+            }
+          ]
+        },
+        "autostart": {
+          "textKey": "oem_stock_autostart",
+          "intents": []
+        },
+        "recents": {
+          "textKey": "oem_stock_recents",
+          "intents": []
+        },
+        "fullscreen": {
+          "textKey": "oem_stock_fullscreen",
+          "intents": [
+            {
+              "action": "android.settings.MANAGE_APP_USE_FULL_SCREEN_INTENT",
+              "data": "package:{package}"
+            },
+            {
+              "action": "android.settings.APPLICATION_DETAILS_SETTINGS",
+              "data": "package:{package}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "generic",
+      "manufacturers": [],
+      "topics": {
+        "battery": {
+          "textKey": "oem_generic_battery",
+          "intents": [
+            {
+              "action": "android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"
+            },
+            {
+              "action": "android.settings.APPLICATION_DETAILS_SETTINGS",
+              "data": "package:{package}"
+            }
+          ]
+        },
+        "autostart": {
+          "textKey": "oem_generic_autostart",
+          "intents": [
+            {
+              "action": "android.settings.APPLICATION_DETAILS_SETTINGS",
+              "data": "package:{package}"
+            }
+          ]
+        },
+        "recents": {
+          "textKey": "oem_generic_recents",
+          "intents": []
+        },
+        "fullscreen": {
+          "textKey": "oem_generic_fullscreen",
+          "intents": [
+            {
+              "action": "android.settings.MANAGE_APP_USE_FULL_SCREEN_INTENT",
+              "data": "package:{package}"
+            },
+            {
+              "action": "android.settings.APPLICATION_DETAILS_SETTINGS",
+              "data": "package:{package}"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

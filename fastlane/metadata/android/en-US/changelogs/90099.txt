@@ -1,0 +1,1 @@
+Reliability assistant on first run: permissions, your phone maker's battery and auto-start steps, and a test alarm. Fix for an alarm starting right after another was dismissed.

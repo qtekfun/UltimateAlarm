@@ -1,0 +1,1 @@
+Asistente de fiabilidad al primer arranque: permisos, pasos de batería e inicio automático de tu fabricante y alarma de prueba. Arreglo para una alarma que empieza justo tras descartar otra.

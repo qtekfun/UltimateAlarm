@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="oem_coloros_battery">Open Settings > Battery, find UltimateAlarm and allow background activity; do not let the system optimise or restrict it.</string>
+  <string name="oem_coloros_autostart">Open Settings > Apps > Auto launch (or App management > Auto launch) and turn UltimateAlarm on.</string>
+  <string name="oem_coloros_recents">Open recent apps, long-press UltimateAlarm (or swipe down on it) and choose “Lock” so the system does not close it.</string>
+  <string name="oem_coloros_fullscreen">Allow full-screen notifications and “Show on lock screen” for UltimateAlarm, so the alarm appears while the phone is locked.</string>
+  <string name="oem_oneui_battery">Open Settings > Battery > Background usage limits. Remove UltimateAlarm from “Sleeping apps” and “Deep sleeping apps” and add it to “Never sleeping apps”.</string>
+  <string name="oem_oneui_autostart">Samsung has no separate auto-start list: it is enough for UltimateAlarm to be in “Never sleeping apps”.</string>
+  <string name="oem_oneui_recents">In recent apps, tap UltimateAlarm’s icon and choose “Keep open” so it is not closed.</string>
+  <string name="oem_oneui_fullscreen">Allow full-screen notifications for UltimateAlarm (the app’s notification settings).</string>
+  <string name="oem_hyperos_battery">Open Settings > Apps > Manage apps > UltimateAlarm > Battery saver and choose “No restrictions”.</string>
+  <string name="oem_hyperos_autostart">Open Security > Permissions > Autostart (or the app’s settings > Autostart) and turn UltimateAlarm on.</string>
+  <string name="oem_hyperos_recents">In recent apps, long-press UltimateAlarm and tap the padlock to lock it.</string>
+  <string name="oem_hyperos_fullscreen">In the app’s “Other permissions”, allow “Show on lock screen” and “Display pop-up windows while running in the background”.</string>
+  <string name="oem_originos_battery">Open Settings > Battery > Background power consumption (or i Manager > Power management) and allow UltimateAlarm high background power use.</string>
+  <string name="oem_originos_autostart">Open i Manager > App management > Autostart (or Settings > Apps > Permissions > Autostart) and turn UltimateAlarm on.</string>
+  <string name="oem_originos_recents">In recent apps, swipe down on UltimateAlarm to lock it.</string>
+  <string name="oem_originos_fullscreen">Allow full-screen notifications and “Show on lock screen” for UltimateAlarm.</string>
+  <string name="oem_magicos_battery">Open Settings > Battery > App launch (or Power management), find UltimateAlarm and choose to manage it manually with everything on.</string>
+  <string name="oem_magicos_autostart">In App launch, turn off “Manage automatically” for UltimateAlarm and turn on auto-launch, secondary launch and run in background.</string>
+  <string name="oem_magicos_recents">In recent apps, swipe down on UltimateAlarm to lock it.</string>
+  <string name="oem_magicos_fullscreen">Allow full-screen and lock-screen notifications for UltimateAlarm.</string>
+  <string name="oem_stock_battery">Let UltimateAlarm ignore battery optimisation: show “All apps”, find UltimateAlarm and choose “Don’t optimise”.</string>
+  <string name="oem_stock_autostart">Not needed on this phone: Android does not restrict auto-start.</string>
+  <string name="oem_stock_recents">Not needed on this phone: alarms keep working even if you close the app.</string>
+  <string name="oem_stock_fullscreen">Allow full-screen notifications for UltimateAlarm so the alarm appears over the lock screen (Android 14 and later).</string>
+  <string name="oem_generic_battery">Find the battery or power settings, look for UltimateAlarm and exclude it from battery optimisation and background restrictions.</string>
+  <string name="oem_generic_autostart">If your phone has an auto-start list (often under Security or Apps), turn UltimateAlarm on.</string>
+  <string name="oem_generic_recents">If your phone lets you lock apps in the recents view, lock UltimateAlarm.</string>
+  <string name="oem_generic_fullscreen">Allow UltimateAlarm to show full-screen notifications and over the lock screen, so the alarm appears while the phone is locked.</string>
+</resources>

@@ -28,11 +28,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -49,6 +51,9 @@ import com.qtekfun.ultimatealarm.feature.alarms.VacationsScreen
 import com.qtekfun.ultimatealarm.feature.backup.BackupScreen
 import com.qtekfun.ultimatealarm.feature.clock.StopwatchScreen
 import com.qtekfun.ultimatealarm.feature.clock.TimerScreen
+import com.qtekfun.ultimatealarm.feature.onboarding.OnboardingScreen
+import com.qtekfun.ultimatealarm.feature.onboarding.OnboardingStore
+import com.qtekfun.ultimatealarm.feature.ringing.Rescheduler
 import com.qtekfun.ultimatealarm.settings.HolidaySettingsScreen
 import com.qtekfun.ultimatealarm.settings.SettingsScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,6 +79,7 @@ private object Routes {
     const val HOLIDAYS = "settings/holidays"
     const val VACATIONS = "vacations"
     const val BACKUP = "settings/backup"
+    const val ONBOARDING = "onboarding"
     const val EXCEPTIONS = "exceptions/{${AlarmEditorViewModel.ARG_ALARM_ID}}"
 
     fun exceptions(id: Long) = "exceptions/$id"
@@ -84,7 +90,21 @@ private object Routes {
 @Composable
 private fun AppNavHost() {
     val nav = rememberNavController()
-    NavHost(nav, startDestination = Routes.MAIN) {
+    val context = LocalContext.current
+    val start = remember { if (OnboardingStore.isDone(context)) Routes.MAIN else Routes.ONBOARDING }
+    NavHost(nav, startDestination = start) {
+        composable(Routes.ONBOARDING) {
+            Scaffold { padding ->
+                OnboardingScreen(
+                    onStartAutotest = { Rescheduler.startAutotest(context) },
+                    onFinish = {
+                        OnboardingStore.markDone(context)
+                        if (!nav.popBackStack()) nav.navigate(Routes.MAIN) { popUpTo(Routes.ONBOARDING) { inclusive = true } }
+                    },
+                    modifier = Modifier.padding(padding)
+                )
+            }
+        }
         composable(Routes.MAIN) {
             MainScreen(
                 onEdit = { nav.navigate(Routes.editor(it)) },
@@ -99,7 +119,14 @@ private fun AppNavHost() {
         composable(Routes.SETTINGS) {
             BackScaffold(stringResource(R.string.settings), onBack = {
                 nav.popBackStack()
-            }) { SettingsScreen(onHolidays = { nav.navigate(Routes.HOLIDAYS) }, onBackup = { nav.navigate(Routes.BACKUP) }, modifier = it) }
+            }) {
+                SettingsScreen(
+                    onHolidays = { nav.navigate(Routes.HOLIDAYS) },
+                    onBackup = { nav.navigate(Routes.BACKUP) },
+                    onAssistant = { nav.navigate(Routes.ONBOARDING) },
+                    modifier = it
+                )
+            }
         }
         composable(Routes.HOLIDAYS) {
             BackScaffold(stringResource(R.string.settings_holidays), onBack = { nav.popBackStack() }) { HolidaySettingsScreen(it) }

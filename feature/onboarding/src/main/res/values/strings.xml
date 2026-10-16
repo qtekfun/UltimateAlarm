@@ -11,4 +11,23 @@
   <string name="capability_missing">Not available</string>
   <string name="capability_fix">Fix</string>
   <string name="capability_device">%1$s %2$s · Android %3$s (API %4$d)</string>
+  <string name="onboarding_welcome_title">An alarm that always rings</string>
+  <string name="onboarding_welcome_text">UltimateAlarm schedules everything on your phone. Phones save battery in many ways, and some of them can stop an alarm. In three short steps we will make sure yours rings.</string>
+  <string name="onboarding_permissions_title">Permissions</string>
+  <string name="onboarding_permissions_text">These let the alarm ring on time and show over the lock screen. Tap Fix on anything red.</string>
+  <string name="onboarding_phone_title">Your phone</string>
+  <string name="onboarding_phone_text">Steps for %1$s. Each button opens the right screen if your phone has it; otherwise follow the text.</string>
+  <string name="onboarding_open_settings">Open settings</string>
+  <string name="onboarding_topic_battery">Battery</string>
+  <string name="onboarding_topic_autostart">Auto-start</string>
+  <string name="onboarding_topic_recents">Recent apps</string>
+  <string name="onboarding_topic_fullscreen">Full screen and lock screen</string>
+  <string name="onboarding_autotest_title">Test it</string>
+  <string name="onboarding_autotest_text">Start the autotest, turn the screen off and wait one minute: a real alarm will ring. The result is in Diagnostics.</string>
+  <string name="onboarding_autotest_start">Start autotest (1 min)</string>
+  <string name="onboarding_back">Back</string>
+  <string name="onboarding_skip">Skip</string>
+  <string name="onboarding_next">Next</string>
+  <string name="onboarding_done">Done</string>
+  <string name="onboarding_generic_phone">your phone</string>
 </resources>
