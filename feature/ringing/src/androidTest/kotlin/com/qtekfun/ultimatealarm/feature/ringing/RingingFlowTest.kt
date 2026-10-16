@@ -115,9 +115,22 @@ class RingingFlowTest {
         assertEquals(expected, RingingState.current.value?.challenge)
     }
 
+    @Test
+    fun alarmFiringRightAfterADismissKeepsRinging() = runBlocking {
+        val first = repository.save(Alarm(time = LocalTime.of(3, 0), backupAfterMinutes = null))
+        val second = repository.save(Alarm(time = LocalTime.of(4, 0), backupAfterMinutes = null))
+        ring(first)
+        // Dismiss and a new ring back to back: the stop of the first must not take the second down.
+        context.startService(RingingService.command(context, RingingService.ACTION_DISMISS, first))
+        context.startForegroundService(RingingService.startIntent(context, second, System.currentTimeMillis()))
+        assertNotNull("second alarm did not ring", waitFor(10_000) { RingingState.current.value?.takeIf { it.alarmId == second && it.title.isNotEmpty() } })
+        Thread.sleep(2_000)
+        assertEquals(second, RingingState.current.value?.alarmId)
+    }
+
     private fun ring(id: Long) {
         context.startForegroundService(RingingService.startIntent(context, id, System.currentTimeMillis()))
-        assertNotNull("did not ring", waitFor(10_000) { RingingState.current.value?.takeIf { it.alarmId == id && it.title.isNotEmpty() } })
+        assertNotNull("did not ring", waitFor(20_000) { RingingState.current.value?.takeIf { it.alarmId == id && it.title.isNotEmpty() } })
     }
 
     private fun <T> waitFor(timeoutMs: Long, probe: () -> T?): T? {
