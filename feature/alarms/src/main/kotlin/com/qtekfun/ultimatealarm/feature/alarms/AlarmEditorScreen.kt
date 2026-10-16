@@ -212,7 +212,7 @@ fun AlarmEditorScreen(
             Section(stringResource(R.string.section_challenge), Icons.Outlined.Extension, IconTone.TERTIARY, null) {
                 ChallengeSection(draft.challenge) { encoded -> viewModel.edit { it.copy(challenge = encoded) } }
             }
-            Section(stringResource(R.string.section_backup), Icons.Outlined.NotificationsActive, IconTone.NEUTRAL, null) {
+            Section(stringResource(R.string.section_backup), Icons.Outlined.NotificationsActive, IconTone.TERTIARY, null) {
                 val backup = draft.backupAfterMinutes
                 SwitchRow(stringResource(R.string.backup_enabled), backup != null) { on ->
                     viewModel.edit { it.copy(backupAfterMinutes = if (on) DEFAULT_BACKUP_MINUTES else null) }

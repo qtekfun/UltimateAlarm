@@ -149,5 +149,7 @@ a sun-shaped ringing screen. Settings → Appearance: System / Light / Dark and 
 plum, indigo, teal, mustard) or "from your wallpaper" (Material You, the old default). The palette is a Material colour
 scheme built in `AmanecerPalette`, so every screen follows it; `PaletteTest` keeps text at WCAG 4.5:1 for every accent in
 both modes. The choice lives in device-protected preferences so the ringing screen can use it before the first unlock.
-Rolled out screen by screen (theme and settings, alarm list, editor, ringing).
+Rolled out screen by screen (theme and settings, alarm list, editor, ringing). Secondary and tertiary colours are shades
+of the chosen accent (not a fixed indigo/teal), and the ringing screen is tinted by it; the sections are swipeable pages
+behind a floating pill navigation (1.0.0-rc6).
 

@@ -4,6 +4,14 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [1.0.0-rc6]
+
+### Added
+- Swipe sideways between Alarms, Timer and Stopwatch.
+
+### Fixed
+- Some icons and buttons (add, snooze, skip, backup) kept indigo or teal whatever colour you chose; they now follow it, and so does the ringing screen.
+
 ## [1.0.0-rc5]
 
 New look ("Amanecer").
