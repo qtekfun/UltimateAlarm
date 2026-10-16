@@ -68,6 +68,7 @@ import java.time.LocalTime
 import java.time.ZoneOffset
 import java.time.format.TextStyle
 import kotlin.math.roundToInt
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -83,6 +84,7 @@ fun AlarmEditorScreen(
     viewModel: AlarmEditorViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    // Navigation must run on the main thread whatever dispatcher the composition's scope uses (e.g. in tests).
     val scope = rememberCoroutineScope()
     val draft = state.draft
     Column(modifier.fillMaxSize()) {
@@ -91,12 +93,12 @@ fun AlarmEditorScreen(
             navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back)) } },
             actions = {
                 if (!state.isNew) {
-                    IconButton(onClick = { scope.launch { onDone(null, viewModel.delete()) } }) {
+                    IconButton(onClick = { scope.launch(Dispatchers.Main) { onDone(null, viewModel.delete()) } }) {
                         Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.delete))
                     }
                 }
                 TextButton(
-                    onClick = { scope.launch { onDone(viewModel.save(), null) } },
+                    onClick = { scope.launch(Dispatchers.Main) { onDone(viewModel.save(), null) } },
                     enabled = state.loaded,
                     modifier = Modifier.testTag(TAG_SAVE_ALARM)
                 ) { Text(stringResource(R.string.save)) }
@@ -154,7 +156,7 @@ fun AlarmEditorScreen(
                     viewModel.edit { it.copy(preNotifyMinutes = if (on) PRE_NOTIFY_MINUTES else null) }
                 }
             }
-            Button(onClick = { scope.launch { onDone(viewModel.save(), null) } }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+            Button(onClick = { scope.launch(Dispatchers.Main) { onDone(viewModel.save(), null) } }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
                 Text(stringResource(R.string.save))
             }
         }
