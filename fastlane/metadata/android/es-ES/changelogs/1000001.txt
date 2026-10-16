@@ -1,0 +1,1 @@
+Candidata para F-Droid: icono nuevo, capturas, revisión de licencias y auditoría de dependencias. Arreglo del fondo oscuro del editor.
