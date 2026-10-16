@@ -1,0 +1,1 @@
+Reliability spike: one daily test alarm, a one-minute autotest, diagnostics of permissions and battery settings, and an exportable event log. For testing on real phones only.

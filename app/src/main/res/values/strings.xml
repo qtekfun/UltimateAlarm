@@ -6,4 +6,20 @@
   <string name="nav_stopwatch">Stopwatch</string>
   <string name="nav_holidays">Holidays</string>
   <string name="coming_soon">Coming soon</string>
+  <string name="spike_intro">Reliability test build. Set the test alarm, run the autotest and export the event log after each scenario.</string>
+  <string name="spike_test_alarm">Test alarm (daily)</string>
+  <string name="spike_change_time">Change time</string>
+  <string name="spike_next">Next: %1$s</string>
+  <string name="spike_off">Off</string>
+  <string name="spike_autotest">Autotest</string>
+  <string name="spike_autotest_help">Schedules a real alarm in one minute. Turn the screen off right away and wait.</string>
+  <string name="spike_autotest_start">Start autotest (1 min)</string>
+  <string name="spike_autotest_none">No autotest yet</string>
+  <string name="spike_autotest_pending">Autotest pending…</string>
+  <string name="spike_autotest_missed">Autotest MISSED: the alarm did not fire</string>
+  <string name="spike_autotest_fired">Last autotest fired, delay %1$s</string>
+  <string name="spike_diagnostics">Diagnostics</string>
+  <string name="spike_force_media">Force the mediaPlayback service type</string>
+  <string name="spike_event_log">Event log</string>
+  <string name="spike_export">Export event log</string>
 </resources>
