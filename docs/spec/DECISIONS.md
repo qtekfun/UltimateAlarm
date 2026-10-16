@@ -141,3 +141,13 @@ official feed only added names, and it was the most fragile source (a new addres
 files exported from a personal calendar, a mislabelled day). One fewer network endpoint (rule 2). D-17 no longer applies;
 towns' open data can come back only with a source that is stable from year to year.
 
+## D-19 · "Amanecer" look, light/dark and a choice of colour (product owner, 2026-10-16)
+
+Of two UI concepts the product owner chose "Amanecer": warm ground, Bricolage Grotesque for times and headings, DM Sans
+for text (both SIL OFL 1.1, bundled in `core/designsystem`, no font download), large radii, the next alarm as a hero card,
+a sun-shaped ringing screen. Settings → Appearance: System / Light / Dark and the accent (orange by default; raspberry,
+plum, indigo, teal, mustard) or "from your wallpaper" (Material You, the old default). The palette is a Material colour
+scheme built in `AmanecerPalette`, so every screen follows it; `PaletteTest` keeps text at WCAG 4.5:1 for every accent in
+both modes. The choice lives in device-protected preferences so the ringing screen can use it before the first unlock.
+Rolled out screen by screen (theme and settings, alarm list, editor, ringing).
+
