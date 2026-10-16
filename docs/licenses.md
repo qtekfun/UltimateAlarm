@@ -9,5 +9,4 @@
     API's response, used for offline first start. Nager.Date is open source (MIT).
   - Calendarios Nacionales (https://calendariosnacionales.com): free API, terms require visible attribution with a link
     (shown in Settings → Holidays) and caching; nothing of it is embedded in the APK.
-  - Ayuntamiento de Madrid, datos.madrid.es: CC BY 4.0, attribution shown in Settings → Holidays; not embedded.
 - **Third-party libraries**: see `docs/dependencies.md`; Licensee enforces the allowed licences at build time.

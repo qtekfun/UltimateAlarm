@@ -31,8 +31,7 @@ class HolidayRefresher(
             years.forEach { year -> refreshNager(year)?.let(errors::add) }
         }
         settings.municipalityPath?.takeIf { settings.country == SPAIN }?.let { path ->
-            val official = officialHolidays(path, LocalDate.of(years.first(), 1, 1), LocalDate.of(years.last(), DECEMBER, LAST_DAY))
-            years.forEach { year -> refreshLocal(year, path, official.filter { it.date.year == year })?.let(errors::add) }
+            years.forEach { year -> refreshLocal(year, path)?.let(errors::add) }
         }
         settings.icsUrl?.let { url -> refreshIcs(url, LocalDate.of(years.first(), 1, 1), LocalDate.of(years.last(), DECEMBER, LAST_DAY))?.let(errors::add) }
         settings.lastRefresh = System.currentTimeMillis()
@@ -64,26 +63,13 @@ class HolidayRefresher(
      * D-16: municipal calendar. The next year is often not published yet (an empty list): that is not an error, the
      * monthly refresh picks it up later.
      */
-    private suspend fun refreshLocal(year: Int, path: String, official: List<Holiday>): String? {
+    private suspend fun refreshLocal(year: Int, path: String): String? {
         val result = runCatching { LocalHolidays.parseHolidays(download(LocalHolidays.holidaysUrl(year, path))) }
-        val compiled = result.getOrNull()
-        if (compiled != null || official.isNotEmpty()) {
-            store(HolidaySourceType.LOCAL, year, mergeLocal(official, compiled.orEmpty()))
+        result.getOrNull()?.let { holidays ->
+            store(HolidaySourceType.LOCAL, year, holidays)
             return null
         }
         return "Municipal $path $year: ${result.exceptionOrNull()?.let { it.javaClass.simpleName + ": " + it.message }}"
-    }
-
-    /** D-17: the town's own open-data calendar, when it publishes one. Any failure just means "none". */
-    private fun officialHolidays(path: String, from: LocalDate, to: LocalDate): List<Holiday> {
-        val source = OfficialCalendars.forPath(path) ?: return emptyList()
-        return runCatching {
-            OfficialCalendars.icsUrls(download(source.packageUrl)).flatMap { url ->
-                runCatching { IcsParser.parse(download(url), from, to) }.getOrDefault(emptyList())
-            }
-        }.onFailure { DiagnosticLog.log(context, "HOLIDAYS", "official calendar of $path failed: ${it.javaClass.simpleName}") }
-            .getOrDefault(emptyList())
-            .distinctBy { it.date }
     }
 
     private suspend fun refreshIcs(url: String, from: LocalDate, to: LocalDate): String? {
