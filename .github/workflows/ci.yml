@@ -1,0 +1,35 @@
+# Bootstrap CI: replaced by the Gradle build in Phase 0 (see docs/spec/DECISIONS.md, D-3). Keep the job name `check`.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Spec documents are present
+        run: |
+          for f in CLAUDE.md docs/spec/README.md docs/spec/01-requisitos.md docs/spec/02-diseno.md \
+                   docs/spec/03-ci-release.md docs/spec/04-fases.md docs/spec/KEYS.md docs/spec/DECISIONS.md; do
+            test -s "$f" || { echo "Missing $f"; exit 1; }
+          done
+
+      - name: No signing material is committed
+        run: |
+          found=$(git ls-files | grep -Ei '\.(jks|keystore|p12|pem)$' || true)
+          test -z "$found" || { echo "Signing material in the repository: $found"; exit 1; }
