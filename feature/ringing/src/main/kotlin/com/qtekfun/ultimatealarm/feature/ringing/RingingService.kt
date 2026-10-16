@@ -177,7 +177,8 @@ class RingingService : Service() {
 
     private fun dismiss(alarmId: Long) {
         DiagnosticLog.log(this, "DISMISSED", "", alarmId)
-        finishSession()
+        // A command for another alarm (e.g. from a stale notification) must never silence the one ringing now.
+        if (session?.state?.alarmId == alarmId) finishSession()
         RingStore(this).setSnoozes(alarmId, null)
         stopIfIdle()
         ringingScope.launch { afterDismiss(applicationContext, alarmId) }
@@ -185,6 +186,10 @@ class RingingService : Service() {
 
     private fun snooze(alarmId: Long) {
         val current = session?.takeIf { it.state.alarmId == alarmId }
+        if (current == null && session != null) {
+            DiagnosticLog.log(this, "SNOOZE_IGNORED", "alarm ${session?.state?.alarmId} is ringing", alarmId)
+            return
+        }
         val alarm = current?.alarm
         val count = current?.state?.snoozeCount ?: 0
         if (alarm != null && !RingPolicy.canSnooze(count, alarm.maxSnoozes)) {
