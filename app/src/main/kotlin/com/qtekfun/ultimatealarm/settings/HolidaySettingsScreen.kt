@@ -1,6 +1,8 @@
 package com.qtekfun.ultimatealarm.settings
 
 import android.app.TimePickerDialog
+import android.content.Intent
+import android.provider.Settings
 import android.text.format.DateFormat
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,12 +49,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.qtekfun.ultimatealarm.R
 import com.qtekfun.ultimatealarm.core.data.HolidayEntry
 import com.qtekfun.ultimatealarm.core.data.HolidaySourceType
 import com.qtekfun.ultimatealarm.feature.holidays.LocalHolidays
+import com.qtekfun.ultimatealarm.feature.holidays.NetworkErrors
 import java.text.DateFormat as JavaDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -84,6 +88,7 @@ fun HolidaySettingsScreen(modifier: Modifier = Modifier, viewModel: HolidaySetti
             OutlinedButton(onClick = viewModel::refresh, enabled = !config.refreshing) { Text(stringResource(R.string.holidays_refresh)) }
             Text(refreshStatus(config), style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
         }
+        if (!config.refreshing && NetworkErrors.isNoInternet(config.lastError)) NoInternetHint()
 
         HorizontalDivider()
         Heading(stringResource(R.string.holidays_eve))
@@ -189,7 +194,13 @@ private fun MunicipalityPicker(config: HolidayConfig, viewModel: HolidaySettings
             TextButton(onClick = { viewModel.setMunicipality(province.orEmpty(), null) }) { Text(stringResource(R.string.holidays_remove)) }
         }
     }
-    if (error) Text(stringResource(R.string.holidays_places_error), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+    error?.let {
+        if (NetworkErrors.isNoInternet(it)) {
+            NoInternetHint()
+        } else {
+            Text(stringResource(R.string.holidays_places_error), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+        }
+    }
     val uriHandler = LocalUriHandler.current
     Text(
         stringResource(R.string.holidays_local_attribution),
@@ -267,6 +278,22 @@ private fun IcsField(url: String, onSave: (String) -> Unit) {
         modifier = Modifier.fillMaxWidth()
     )
     if (text.trim() != url) TextButton(onClick = { onSave(text) }) { Text(stringResource(R.string.holidays_apply)) }
+}
+
+/** The app could not reach the internet: say how to let it, and open its system settings (data usage lives there). */
+@Composable
+private fun NoInternetHint() {
+    val context = LocalContext.current
+    Column {
+        Text(stringResource(R.string.holidays_no_internet), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+        TextButton(onClick = {
+            runCatching {
+                context.startActivity(
+                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:${context.packageName}".toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
+            }
+        }) { Text(stringResource(R.string.holidays_open_app_settings)) }
+    }
 }
 
 @Composable
