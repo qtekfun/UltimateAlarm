@@ -1,28 +1,35 @@
 package com.qtekfun.ultimatealarm.feature.alarms
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.outlined.BeachAccess
+import androidx.compose.material.icons.outlined.Event
+import androidx.compose.material.icons.outlined.SkipNext
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -38,17 +45,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.qtekfun.ultimatealarm.core.designsystem.card
+import com.qtekfun.ultimatealarm.core.designsystem.timeStyle
+import com.qtekfun.ultimatealarm.core.scheduling.AlarmKind
+import com.qtekfun.ultimatealarm.core.scheduling.OffReason
+import com.qtekfun.ultimatealarm.core.scheduling.Schedule
+import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.ZonedDateTime
+import java.time.format.TextStyle as JavaTextStyle
 
 /** The alarm list (RF-A2): sorted by next occurrence, each row with its status, "skip tomorrow" and the switch. */
 @Composable
@@ -82,14 +97,19 @@ fun AlarmListScreen(
     }
     Scaffold(
         modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.background,
+        // The main screen's own scaffold already leaves room for the system bars.
+        contentWindowInsets = WindowInsets(0),
         snackbarHost = { SnackbarHost(snackbar) },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
+            // Icon only: an extended button covered the last card's day pills.
+            FloatingActionButton(
                 onClick = { onEdit(0) },
-                modifier = Modifier.testTag(TAG_ADD_ALARM),
-                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-                text = { Text(stringResource(R.string.add_alarm)) }
-            )
+                modifier = Modifier.size(64.dp).testTag(TAG_ADD_ALARM),
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary,
+                shape = RoundedCornerShape(22.dp)
+            ) { Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_alarm), modifier = Modifier.size(28.dp)) }
         }
     ) { padding ->
         if (state.loaded && state.rows.isEmpty()) {
@@ -97,17 +117,20 @@ fun AlarmListScreen(
                 Text(stringResource(R.string.no_alarms), style = MaterialTheme.typography.bodyLarge)
             }
         } else {
+            val next = state.rows.firstOrNull { it.alarm.enabled && it.next != null }
+            val notices = state.rows.filter { it.alarm.enabled && it.suppression?.let { s -> s.reason in NOTICE_REASONS } == true }
             LazyColumn(
                 Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
                     start = 16.dp,
                     end = 16.dp,
                     top = padding.calculateTopPadding() + 8.dp,
-                    bottom =
-                        padding.calculateBottomPadding() + 88.dp
+                    bottom = padding.calculateBottomPadding() + 96.dp
                 ),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                next?.let { row -> item(key = "next") { NextAlarmCard(row, state.now, onClick = { onEdit(row.alarm.id) }) } }
+                items(notices, key = { "notice-${it.alarm.id}" }) { row -> NoticeCard(row, onClick = { onEdit(row.alarm.id) }) }
                 items(state.rows, key = { it.alarm.id }) { row ->
                     AlarmRowCard(
                         row = row,
@@ -125,6 +148,87 @@ fun AlarmListScreen(
     }
 }
 
+/** D-19: the next alarm as the hero of the list, on the accent colour. */
+@Composable
+private fun NextAlarmCard(row: AlarmRow, now: ZonedDateTime, onClick: () -> Unit) {
+    val colors = MaterialTheme.colorScheme
+    val at = row.next!!.at
+    Box(
+        Modifier.fillMaxWidth()
+            .clip(RoundedCornerShape(32.dp))
+            .background(colors.primary)
+            .clickable(onClick = onClick)
+    ) {
+        Box(
+            Modifier.align(Alignment.TopEnd)
+                .offset(x = 40.dp, y = (-40).dp)
+                .size(170.dp)
+                .clip(CircleShape)
+                .background(colors.onPrimary.copy(alpha = 0.14f))
+        )
+        Column(Modifier.padding(start = 24.dp, end = 24.dp, top = 22.dp, bottom = 20.dp)) {
+            Text(
+                stringResource(R.string.next_alarm, dayText(at.toLocalDate(), now.toLocalDate())).uppercase(),
+                style = MaterialTheme.typography.labelLarge,
+                color = colors.onPrimary
+            )
+            Text(timeText(row.alarm.time), style = timeStyle(76), color = colors.onPrimary, modifier = Modifier.padding(top = 6.dp))
+            Row(Modifier.fillMaxWidth().padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(ringsInText(row.ringsIn(now)!!), style = MaterialTheme.typography.titleMedium, color = colors.onPrimary, modifier = Modifier.weight(1f))
+                if (row.alarm.label.isNotBlank()) {
+                    Text(
+                        row.alarm.label,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = colors.onPrimary,
+                        maxLines = 1,
+                        modifier = Modifier.clip(CircleShape).background(colors.onPrimary.copy(alpha = 0.2f)).padding(horizontal = 12.dp, vertical = 6.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+/** A day an enabled alarm will not ring (holiday, vacation, skip, exception), above the list. */
+@Composable
+private fun NoticeCard(row: AlarmRow, onClick: () -> Unit) {
+    val colors = MaterialTheme.colorScheme
+    val suppression = row.suppression!!
+    Row(
+        Modifier.fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .background(colors.surfaceContainer)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Box(Modifier.size(40.dp).clip(RoundedCornerShape(14.dp)).background(colors.card), contentAlignment = Alignment.Center) {
+            Icon(noticeIcon(suppression.reason), contentDescription = null, tint = colors.secondary, modifier = Modifier.size(22.dp))
+        }
+        Column(Modifier.weight(1f)) {
+            Text(suppressionText(suppression), style = MaterialTheme.typography.titleSmall, color = colors.onSurface)
+            val alarm = listOf(timeText(row.alarm.time), row.alarm.label).filter { it.isNotBlank() }.joinToString(" · ")
+            Text(stringResource(R.string.notice_alarm, alarm), style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant)
+        }
+    }
+}
+
+private fun noticeIcon(reason: OffReason): ImageVector = when (reason) {
+    OffReason.VACATION -> Icons.Outlined.BeachAccess
+    OffReason.SKIPPED -> Icons.Outlined.SkipNext
+    else -> Icons.Outlined.Event
+}
+
+private val NOTICE_REASONS = setOf(OffReason.HOLIDAY, OffReason.VACATION, OffReason.SKIPPED, OffReason.EXCEPTION)
+
+@Composable
+private fun dayText(date: LocalDate, today: LocalDate): String = when (date) {
+    today -> stringResource(R.string.day_today)
+    today.plusDays(1) -> stringResource(R.string.day_tomorrow, formatDay(date.dayOfWeek, JavaTextStyle.FULL))
+    else -> formatDate(date)
+}
+
 @Composable
 private fun AlarmRowCard(
     row: AlarmRow,
@@ -138,30 +242,56 @@ private fun AlarmRowCard(
 ) {
     val alarm = row.alarm
     val enabled = alarm.enabled
-    val colors = if (enabled) CardDefaults.cardColors() else CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
-    Card(Modifier.fillMaxWidth().clickable(onClick = onClick), colors = colors) {
-        Column(Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        timeText(alarm.time),
-                        fontSize = 44.sp,
-                        fontWeight = FontWeight.Light,
-                        color = if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    val subtitle = listOf(alarm.label, scheduleText(alarm)).filter { it.isNotBlank() }.joinToString(" · ")
-                    Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                RowMenu(onDuplicate, onDelete)
-                val switchLabel = stringResource(R.string.alarm_switch, timeText(alarm.time))
-                Switch(checked = enabled, onCheckedChange = onToggle, modifier = Modifier.semantics { contentDescription = switchLabel })
+    val colors = MaterialTheme.colorScheme
+    Column(
+        Modifier.fillMaxWidth()
+            .clip(RoundedCornerShape(28.dp))
+            .background(colors.card)
+            .clickable(onClick = onClick)
+            .padding(start = 20.dp, end = 12.dp, top = 18.dp, bottom = 18.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Row(verticalAlignment = Alignment.Top) {
+            Column(Modifier.weight(1f)) {
+                Text(timeText(alarm.time), style = timeStyle(44), color = if (enabled) colors.onSurface else colors.outline)
+                val subtitle = listOf(alarm.label, scheduleText(alarm)).filter { it.isNotBlank() }.joinToString(" · ")
+                Text(
+                    subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (enabled) colors.onSurfaceVariant else colors.outline,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
+                StatusLine(row, now)
             }
-            StatusLine(row, now)
-            if (enabled && (row.skipTarget != null || row.activeSkip != null)) {
-                val active = row.activeSkip
-                OutlinedButton(onClick = { if (active != null) onUnskip(active) else onSkip() }, modifier = Modifier.padding(top = 8.dp)) {
-                    Text(if (active != null) stringResource(R.string.undo_skip) else stringResource(R.string.skip_next, formatDate(row.skipTarget!!)))
-                }
+            RowMenu(onDuplicate, onDelete)
+            val switchLabel = stringResource(R.string.alarm_switch, timeText(alarm.time))
+            Switch(checked = enabled, onCheckedChange = onToggle, modifier = Modifier.semantics { contentDescription = switchLabel })
+        }
+        (alarm.schedule as? Schedule.Weekly)?.takeIf { alarm.kind != AlarmKind.ONE_SHOT }?.let { DayPills(it.days, enabled) }
+        if (enabled && (row.skipTarget != null || row.activeSkip != null)) {
+            val active = row.activeSkip
+            FilledTonalButton(onClick = { if (active != null) onUnskip(active) else onSkip() }) {
+                Text(if (active != null) stringResource(R.string.undo_skip) else stringResource(R.string.skip_next, formatDate(row.skipTarget!!)))
+            }
+        }
+    }
+}
+
+/** Monday-first day initials; the ringing days on the accent's soft tone. */
+@Composable
+private fun DayPills(days: Set<DayOfWeek>, enabled: Boolean) {
+    val colors = MaterialTheme.colorScheme
+    val description = days.sorted().joinToString(", ") { formatDay(it, JavaTextStyle.FULL) }
+    Row(Modifier.semantics(mergeDescendants = true) { contentDescription = description }, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        DayOfWeek.entries.forEach { day ->
+            val on = day in days
+            val background = when {
+                on && enabled -> colors.primaryContainer
+                else -> colors.surfaceVariant
+            }
+            val foreground = if (on && enabled) colors.onPrimaryContainer else colors.outline
+            Box(Modifier.size(34.dp).clip(CircleShape).background(background), contentAlignment = Alignment.Center) {
+                Text(formatDay(day, JavaTextStyle.NARROW), style = MaterialTheme.typography.labelMedium, color = foreground)
             }
         }
     }
@@ -170,23 +300,18 @@ private fun AlarmRowCard(
 @Composable
 private fun StatusLine(row: AlarmRow, now: ZonedDateTime) {
     val alarm = row.alarm
-    val lines = buildList {
-        when {
-            alarm.missed -> add(stringResource(R.string.status_missed))
-            !alarm.enabled -> add(stringResource(R.string.status_off))
-            row.next == null -> add(stringResource(R.string.will_not_ring))
-            else -> add(ringsInText(row.ringsIn(now)!!))
-        }
-        if (alarm.enabled) row.suppression?.let { add(suppressionText(it)) }
-    }.filter { it.isNotBlank() }
-    lines.forEachIndexed { index, line ->
-        Text(
-            line,
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (index == 0 && alarm.enabled && !alarm.missed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 4.dp)
-        )
+    val line = when {
+        alarm.missed -> stringResource(R.string.status_missed)
+        !alarm.enabled -> stringResource(R.string.status_off)
+        row.next == null -> stringResource(R.string.will_not_ring)
+        else -> ringsInText(row.ringsIn(now)!!)
     }
+    Text(
+        line,
+        style = MaterialTheme.typography.bodyMedium,
+        color = if (alarm.enabled && !alarm.missed && row.next != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(top = 4.dp)
+    )
 }
 
 @Composable
