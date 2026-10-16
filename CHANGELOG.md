@@ -4,6 +4,22 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [0.3.0]
+
+Holidays (moved ahead of sounds at the product owner's request).
+
+### Added
+- The evening before a holiday (20:00 by default), a notification asks: "Tomorrow is a holiday (Name). You have N alarms." with Skip them / Keep them. Without an answer, the alarms ring.
+- Settings → Holidays: country and region (official holidays from Nager.Date, Spain's regions listed), an optional public calendar (ICS address) for town or extra holidays, holidays added by hand (once or every year), and the yearly list where any holiday can be marked as "not a holiday for me".
+- Holidays work offline from day one (included in the app) and refresh monthly.
+- Alarms that respect holidays show the holiday in their row once you decide to skip it.
+
+### Changed
+- The Holidays tab is gone: everything about holidays lives in Settings.
+
+### Fixed
+- A dismiss or snooze meant for another alarm (for example from an old notification) no longer silences the alarm ringing now.
+
 ## [0.2.0]
 
 Phase 4: the complete ringing experience.
