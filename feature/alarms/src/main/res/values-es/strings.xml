@@ -16,6 +16,10 @@
   <string name="status_missed">Perdida: el móvil estaba apagado</string>
   <string name="status_off">Desactivada</string>
   <string name="add_alarm">Alarma</string>
+  <string name="next_alarm">Próxima · %1$s</string>
+  <string name="day_today">hoy</string>
+  <string name="day_tomorrow">mañana, %1$s</string>
+  <string name="notice_alarm">Alarma de %1$s</string>
   <string name="no_alarms">Aún no hay alarmas</string>
   <string name="alarm_deleted">Alarma eliminada</string>
   <string name="alarm_skipped">Saltada el %1$s</string>

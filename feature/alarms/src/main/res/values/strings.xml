@@ -16,6 +16,10 @@
   <string name="status_missed">Missed: the phone was off</string>
   <string name="status_off">Off</string>
   <string name="add_alarm">Alarm</string>
+  <string name="next_alarm">Next · %1$s</string>
+  <string name="day_today">today</string>
+  <string name="day_tomorrow">tomorrow, %1$s</string>
+  <string name="notice_alarm">Alarm %1$s</string>
   <string name="no_alarms">No alarms yet</string>
   <string name="alarm_deleted">Alarm deleted</string>
   <string name="alarm_skipped">Skipped %1$s</string>
