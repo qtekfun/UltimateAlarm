@@ -4,6 +4,22 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [0.1.0]
+
+Phases 2 and 3: the scheduling engine, alarms stored on the device, the alarm list and the editor.
+
+### Added
+- Scheduling engine: weekly days, shift cycles, per-day exceptions, vacations, skips and holiday decisions with a fixed precedence; Spanish DST and time zone changes handled; 77 unit tests, 100 % coverage.
+- Alarms stored in a local database readable before the first unlock.
+- Alarm list sorted by next alarm, with "rings in", the reason a day is silenced, "skip" with undo, duplicate and delete with undo.
+- Editor: time, label, repeat days with shortcuts, one-time alarms (date or next time), respect holidays, maximum volume, volume ramp, vibration, snooze, backup alarm and 1 h notice settings.
+- One-time alarms are deleted when dismissed (with a 10 s undo) and flagged when the phone was off at their time.
+- Alarms are re-registered on boot, time and zone changes, updates and every change; daily watchdog.
+- Banner when a permission needed to ring is missing; diagnostics behind the top bar.
+
+### Changed
+- The spike's test alarm is gone; the autotest stays in Diagnostics.
+
 ## [0.0.1-spike]
 
 Phase 1: reliability spike (pre-release, for device testing only).
