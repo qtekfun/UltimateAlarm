@@ -13,10 +13,10 @@ Modelo idéntico a UltimateGallery / UltimatePhone: GitHub Actions + GitHub Rele
 
 | Secret | Contenido |
 |---|---|
-| `UG_KEYSTORE_BASE64` | `ultimatealarm-release.jks` en base64 |
-| `UG_KEYSTORE_PASSWORD` | contraseña del store |
-| `UG_KEY_ALIAS` | `ultimatealarm` |
-| `UG_KEY_PASSWORD` | contraseña de la clave |
+| `RELEASE_KEYSTORE_BASE64` | `ultimatealarm-release.jks` en base64 |
+| `RELEASE_KEYSTORE_PASSWORD` | contraseña del store |
+| `RELEASE_KEY_ALIAS` | `ultimatealarm` |
+| `RELEASE_KEY_PASSWORD` | contraseña de la clave |
 
 Si no existen, `release.yml` firma con debug y marca la release como **pre-release "UNSIGNED-DEBUG"**, sin fallar.
 

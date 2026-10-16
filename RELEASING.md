@@ -17,10 +17,14 @@ One release per phase, versions from `docs/spec/03-ci-release.md`. Releases are 
 
 ## Signing
 
-Repository secrets for a release-signed APK (same names as UltimateGallery and UltimatePhone):
-`UG_KEYSTORE_BASE64` (the keystore, base64), `UG_KEYSTORE_PASSWORD`, `UG_KEY_ALIAS`, `UG_KEY_PASSWORD`.
+Repository secrets for a release-signed APK:
+`RELEASE_KEYSTORE_BASE64` (the keystore, base64), `RELEASE_KEYSTORE_PASSWORD`, `RELEASE_KEY_ALIAS`, `RELEASE_KEY_PASSWORD`.
 How they are created: `docs/spec/KEYS.md`. Without all four, the workflow signs with the debug key and publishes a
-pre-release marked **UNSIGNED-DEBUG**. Never commit a keystore.
+pre-release marked **UNSIGNED-DEBUG**. With them, the workflow checks the APK certificate and fails if it is still the
+debug key. Never commit a keystore.
+
+To rebuild an already published tag (for example after fixing signing): Actions → Release → Run workflow, `tag` = `vX.Y.Z`.
+The APK, `SHA256SUMS.txt`, title and notes of that release are replaced.
 
 ## F-Droid
 
