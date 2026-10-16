@@ -9,7 +9,7 @@ for F-Droid.
 Fourth release candidate.
 
 ### Fixed
-- When holidays cannot be downloaded because the app has no internet (for example, the phone blocks mobile data or Wi-Fi for it), Settings → Holidays now says so and opens the app's system settings, instead of showing a technical error.
+- When holidays cannot be downloaded because the app has no internet (for example, its network permission is off, or a VPN or private DNS blocks it), Settings → Holidays now says so and opens the app's system settings, instead of showing a technical error.
 
 ## [1.0.0-rc3]
 

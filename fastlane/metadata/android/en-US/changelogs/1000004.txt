@@ -1,1 +1,1 @@
-Holidays: a clear message, with a shortcut to the app's settings, when the phone blocks the app's internet access.
+Holidays: a clear message, with a shortcut to the app's settings, when the app has no internet access.

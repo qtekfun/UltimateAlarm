@@ -68,7 +68,7 @@
   <string name="holidays_municipality">Municipio</string>
   <string name="holidays_choose">Elegir…</string>
   <string name="holidays_remove">Quitar</string>
-  <string name="holidays_no_internet">UltimateAlarm no llega a internet. Si tu móvil tiene conexión, puede que el sistema bloquee los datos móviles o el Wi-Fi a esta app: permite ambos en los ajustes de la app (en algunos móviles, en Uso de datos).</string>
+  <string name="holidays_no_internet">UltimateAlarm no llega a internet. Si tu móvil tiene conexión, revisa en los ajustes de la app que tenga acceso a la red (permiso «Red» en GrapheneOS, «Uso de datos» en otros móviles) y que no lo bloquee una VPN o un DNS privado.</string>
   <string name="holidays_open_app_settings">Abrir ajustes de la app</string>
   <string name="holidays_places_error">No se pudo cargar la lista. Comprueba la conexión.</string>
   <string name="holidays_local_attribution">Festivos locales: Calendarios Nacionales (calendariosnacionales.com)</string>

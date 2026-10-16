@@ -1,8 +1,8 @@
 package com.qtekfun.ultimatealarm.feature.holidays
 
 /**
- * Tells "the app could not reach the internet" apart from other refresh errors. Some manufacturers (ColorOS, for one)
- * let the user block mobile data or Wi-Fi per app, and sideloaded apps can start that way; Android then fails every
+ * Tells "the app could not reach the internet" apart from other refresh errors. When the network is blocked for this
+ * app only (GrapheneOS's Network permission, per-app data usage limits, a VPN or private DNS), Android fails every
  * lookup with `UnknownHostException` even though the phone is online. Settings shows a hint with the way to fix it.
  */
 object NetworkErrors {
