@@ -108,3 +108,16 @@ own work under GPL-3.0-or-later and nothing depends on a third-party licence or 
 audio (libopus versions differ between machines), the committed files are the reference.
 The fallback chain when ringing is: chosen sound → pack default (`dawn_marimba`, or `backup_pulse` for the backup) →
 system alarm tone → generated beep. Bundled assets are readable before the first unlock.
+
+## D-16 · Local (municipal) holidays from Calendarios Nacionales (product owner, 2026-10-16)
+
+The product owner asked for local holidays too. There is no official national API for municipal holidays; each region
+publishes them in its bulletin, and the Social Security keeps a national list. The public JSON API of
+[Calendarios Nacionales](https://calendariosnacionales.com/es/api/) compiles them per municipality from those official
+sources (BOE, Social Security, regional open data) for all 8,000+ Spanish municipalities, free and without a key.
+- Settings → Holidays (Spain): region → province → municipality (searchable). The municipality's calendar (local,
+  provincial and the full official calendar, which also carries regional moves Nager.Date may miss) is stored as source
+  `LOCAL` and merged with the other sources.
+- Terms: visible attribution with a link (shown under the picker), cached responses, no abusive syncing: the app refreshes
+  monthly like Nager.Date, current and next year. A year not published yet (empty) is not an error.
+- Network only for holidays (rule 2); failures keep the cache; nothing here can delay an alarm.

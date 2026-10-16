@@ -9,6 +9,7 @@ import com.qtekfun.ultimatealarm.core.data.HolidaySettings
 import com.qtekfun.ultimatealarm.core.data.HolidaySourceType
 import com.qtekfun.ultimatealarm.core.data.ManualHoliday
 import com.qtekfun.ultimatealarm.feature.holidays.HolidayRefresher
+import com.qtekfun.ultimatealarm.feature.holidays.LocalHolidays
 import com.qtekfun.ultimatealarm.feature.ringing.Rescheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
@@ -28,6 +29,8 @@ data class HolidayConfig(
     val country: String,
     val subdivision: String?,
     val icsUrl: String,
+    val municipalityPath: String?,
+    val municipalityName: String?,
     val eveEnabled: Boolean,
     val eveTime: LocalTime,
     val lastRefresh: Long,
@@ -52,6 +55,8 @@ class HolidaySettingsViewModel @Inject constructor(application: Application, pri
         settings.country,
         settings.subdivision,
         settings.icsUrl.orEmpty(),
+        settings.municipalityPath,
+        settings.municipalityName,
         settings.eveEnabled,
         settings.eveTime,
         settings.lastRefresh,
@@ -63,9 +68,59 @@ class HolidaySettingsViewModel @Inject constructor(application: Application, pri
     fun setCountry(country: String) = changeSource(HolidaySourceType.API) {
         settings.country = country
         settings.subdivision = null
+        clearMunicipality()
     }
 
-    fun setSubdivision(code: String?) = changeSource(HolidaySourceType.API) { settings.subdivision = code?.trim()?.uppercase()?.takeIf { it.isNotEmpty() } }
+    fun setSubdivision(code: String?) = changeSource(HolidaySourceType.API) {
+        settings.subdivision = code?.trim()?.uppercase()?.takeIf { it.isNotEmpty() }
+        clearMunicipality()
+    }
+
+    /** D-16: provinces and municipalities of the chosen Spanish region, loaded from the network for the pickers. */
+    val provinces = MutableStateFlow<List<LocalHolidays.Place>>(emptyList())
+    val municipalities = MutableStateFlow<List<LocalHolidays.Place>>(emptyList())
+    val placesError = MutableStateFlow(false)
+
+    fun loadProvinces() {
+        val community = LocalHolidays.communitySlug[settings.subdivision] ?: return
+        viewModelScope.launch {
+            runCatching { refresher().provinces(community) }
+                .onSuccess {
+                    provinces.value = it
+                    placesError.value = false
+                }.onFailure { placesError.value = true }
+        }
+    }
+
+    fun loadMunicipalities(province: String) {
+        val community = LocalHolidays.communitySlug[settings.subdivision] ?: return
+        municipalities.value = emptyList()
+        viewModelScope.launch {
+            runCatching { refresher().municipalities(community, province) }
+                .onSuccess {
+                    municipalities.value = it
+                    placesError.value = false
+                }.onFailure { placesError.value = true }
+        }
+    }
+
+    fun setMunicipality(province: String, place: LocalHolidays.Place?) = changeSource(HolidaySourceType.LOCAL) {
+        val community = LocalHolidays.communitySlug[settings.subdivision]
+        if (place == null || community == null) {
+            clearMunicipality()
+        } else {
+            settings.municipalityPath = "$community/$province/${place.slug}"
+            settings.municipalityName = place.name
+        }
+    }
+
+    private fun clearMunicipality() {
+        settings.municipalityPath = null
+        settings.municipalityName = null
+        viewModelScope.launch { repository.clear(HolidaySourceType.LOCAL) }
+    }
+
+    private fun refresher() = HolidayRefresher(getApplication(), repository, settings)
 
     fun setIcsUrl(url: String) = changeSource(HolidaySourceType.ICS) { settings.icsUrl = url }
 

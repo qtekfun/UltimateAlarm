@@ -30,6 +30,9 @@ class HolidayRefresher(
         if (settings.automatic) {
             years.forEach { year -> refreshNager(year)?.let(errors::add) }
         }
+        settings.municipalityPath?.takeIf { settings.country == SPAIN }?.let { path ->
+            years.forEach { year -> refreshLocal(year, path)?.let(errors::add) }
+        }
         settings.icsUrl?.let { url -> refreshIcs(url, LocalDate.of(years.first(), 1, 1), LocalDate.of(years.last(), DECEMBER, LAST_DAY))?.let(errors::add) }
         settings.lastRefresh = System.currentTimeMillis()
         settings.lastError = errors.firstOrNull()
@@ -56,6 +59,19 @@ class HolidayRefresher(
         return "Nager.Date $country $year: ${result.exceptionOrNull()?.let { it.javaClass.simpleName + ": " + it.message } ?: "empty"}"
     }
 
+    /**
+     * D-16: municipal calendar. The next year is often not published yet (an empty list): that is not an error, the
+     * monthly refresh picks it up later.
+     */
+    private suspend fun refreshLocal(year: Int, path: String): String? {
+        val result = runCatching { LocalHolidays.parseHolidays(download(LocalHolidays.holidaysUrl(year, path))) }
+        result.getOrNull()?.let { holidays ->
+            store(HolidaySourceType.LOCAL, year, holidays)
+            return null
+        }
+        return "Municipal $path $year: ${result.exceptionOrNull()?.let { it.javaClass.simpleName + ": " + it.message }}"
+    }
+
     private suspend fun refreshIcs(url: String, from: LocalDate, to: LocalDate): String? {
         val result = runCatching { IcsParser.parse(download(url), from, to) }
         val holidays = result.getOrNull()
@@ -70,6 +86,13 @@ class HolidayRefresher(
     private fun snapshot(year: Int): List<Holiday>? = runCatching {
         context.assets.open("holidays/${settings.country}-$year.json").bufferedReader().use { NagerParser.parse(it.readText(), settings.subdivision) }
     }.getOrNull()
+
+    /** Lists for the province / municipality pickers (network, not cached). */
+    suspend fun provinces(community: String, year: Int = LocalDate.now().year): List<LocalHolidays.Place> =
+        withContext(Dispatchers.IO) { LocalHolidays.parseProvinces(download(LocalHolidays.provincesUrl(year, community))) }
+
+    suspend fun municipalities(community: String, province: String, year: Int = LocalDate.now().year): List<LocalHolidays.Place> =
+        withContext(Dispatchers.IO) { LocalHolidays.parseMunicipalities(download(LocalHolidays.municipalitiesUrl(year, community, province))) }
 
     private fun download(url: String): String {
         val connection = URL(url).openConnection() as HttpURLConnection
@@ -96,6 +119,7 @@ class HolidayRefresher(
 
     private companion object {
         const val NAGER = "https://date.nager.at/api/v3/PublicHolidays"
+        const val SPAIN = "ES"
         const val TIMEOUT_MS = 15_000
         const val MAX_BYTES = 2 * 1024 * 1024
         const val BUFFER = 8 * 1024

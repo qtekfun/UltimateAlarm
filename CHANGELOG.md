@@ -4,6 +4,13 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [0.4.1]
+
+Local holidays.
+
+### Added
+- Settings → Holidays (Spain): choose your province and municipality and the app adds its local holidays (and the full official calendar of your town), refreshed monthly. Data: Calendarios Nacionales, compiled from the BOE, the Social Security and regional open data.
+
 ## [0.4.0]
 
 Phase 5: sounds.
