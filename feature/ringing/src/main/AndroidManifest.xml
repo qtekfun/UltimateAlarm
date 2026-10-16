@@ -50,6 +50,16 @@
             android:directBootAware="true"
             android:exported="false" />
 
+        <receiver
+            android:name=".HolidayEveReceiver"
+            android:directBootAware="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".HolidayAnswerReceiver"
+            android:directBootAware="true"
+            android:exported="false" />
+
         <service
             android:name=".RingingService"
             android:directBootAware="true"

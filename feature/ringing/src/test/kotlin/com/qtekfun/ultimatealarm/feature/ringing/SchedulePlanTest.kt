@@ -2,6 +2,9 @@ package com.qtekfun.ultimatealarm.feature.ringing
 
 import com.qtekfun.ultimatealarm.core.data.Alarm
 import com.qtekfun.ultimatealarm.core.scheduling.AlarmKind
+import com.qtekfun.ultimatealarm.core.scheduling.EffectiveHolidays
+import com.qtekfun.ultimatealarm.core.scheduling.Holiday
+import com.qtekfun.ultimatealarm.core.scheduling.HolidayDecision
 import com.qtekfun.ultimatealarm.core.scheduling.RuleSet
 import com.qtekfun.ultimatealarm.core.scheduling.SkipNext
 import java.time.LocalDate
@@ -9,6 +12,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 class SchedulePlanTest {
@@ -54,5 +58,19 @@ class SchedulePlanTest {
         assertEquals(mapOf(1L to PreNotice(millis(2026, 10, 19, 6), LocalDate.of(2026, 10, 19), millis(2026, 10, 19, 7))), plan.preNotices)
         val late = ZonedDateTime.of(2026, 10, 19, 6, 30, 0, 0, zone)
         assertEquals(emptyMap<Long, PreNotice>(), planSchedule(listOf(withNotice), RuleSet(), late, emptySet()).preNotices)
+    }
+
+    @Test
+    fun `holiday eve notice the evening before, skipping answered holidays`() {
+        val monday = LocalDate.of(2026, 10, 19)
+        val holidays = EffectiveHolidays(api = listOf(Holiday(monday, "Fiesta"), Holiday(LocalDate.of(2026, 10, 27), "Otra")))
+        val rules = RuleSet(holidays = holidays)
+        val eve = planSchedule(listOf(weekly), rules, now, emptySet(), LocalTime.of(20, 0)).eve
+        assertEquals(EveNotice(millis(2026, 10, 18, 20), monday), eve)
+
+        val answered = rules.copy(decisions = listOf(HolidayDecision(monday, null, skip = false)))
+        assertEquals(LocalDate.of(2026, 10, 27), planSchedule(listOf(weekly), answered, now, emptySet(), LocalTime.of(20, 0)).eve?.holidayDate)
+        assertNull(planSchedule(listOf(weekly), rules, now, emptySet(), null).eve)
+        assertNull(planSchedule(listOf(weekly.copy(respectHolidays = false)), rules, now, emptySet(), LocalTime.of(20, 0)).eve)
     }
 }

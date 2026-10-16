@@ -3,6 +3,7 @@ package com.qtekfun.ultimatealarm.feature.ringing
 import android.content.Context
 import com.qtekfun.ultimatealarm.core.data.DiagnosticLog
 import com.qtekfun.ultimatealarm.core.data.DiagnosticsStore
+import com.qtekfun.ultimatealarm.core.data.HolidaySettings
 import com.qtekfun.ultimatealarm.core.data.RingPolicy
 import com.qtekfun.ultimatealarm.core.data.RingStore
 import java.time.Instant
@@ -23,7 +24,8 @@ object Rescheduler {
         val alarms = repository.alarms()
         val rules = repository.rules()
         val now = ZonedDateTime.now()
-        val plan = planSchedule(alarms, rules, now, store.registered.keys)
+        val holidaySettings = HolidaySettings(context)
+        val plan = planSchedule(alarms, rules, now, store.registered.keys, holidaySettings.eveTime.takeIf { holidaySettings.eveEnabled })
 
         plan.cancel.forEach { AlarmScheduler.cancel(context, it) }
         plan.register.forEach { (id, at) -> AlarmScheduler.schedule(context, id, at) }
@@ -37,6 +39,8 @@ object Rescheduler {
             DiagnosticLog.log(context, "MISSED", "one-shot time passed without ringing", id)
         }
         if (plan.staleSkips.isNotEmpty()) repository.dropSkips(plan.staleSkips)
+        repository.dropDecisionsBefore(now.toLocalDate())
+        HolidayEve.schedule(context, plan.eve)
         store.registered = plan.register
 
         // Snoozes and an interrupted ring do not survive a reboot in AlarmManager: register them again.
@@ -57,7 +61,7 @@ object Rescheduler {
             context,
             "RESCHEDULE",
             "reason=$reason zone=${now.zone} registered=${plan.register.size} cancelled=${plan.cancel.size} " +
-                "next=${plan.register.values.minOrNull()?.let { Instant.ofEpochMilli(it) } ?: "none"}"
+                "next=${plan.register.values.minOrNull()?.let { Instant.ofEpochMilli(it) } ?: "none"} eve=${plan.eve?.holidayDate ?: "none"}"
         )
     }
 
