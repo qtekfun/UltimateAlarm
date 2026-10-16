@@ -21,7 +21,7 @@ class FiringTest {
 
     @After
     fun stop() {
-        context.startService(RingingService.command(context, RingingService.ACTION_DISMISS, SpikeAlarm.AUTOTEST.id))
+        context.startService(RingingService.command(context, RingingService.ACTION_DISMISS, AlarmScheduler.AUTOTEST_ID))
         shell("input keyevent KEYCODE_WAKEUP")
     }
 
@@ -29,7 +29,7 @@ class FiringTest {
     fun alarmFiresWithTheScreenOff() {
         DiagnosticLog.get(context).clear()
         shell("input keyevent KEYCODE_SLEEP")
-        AlarmScheduler.schedule(context, SpikeAlarm.AUTOTEST.id, System.currentTimeMillis() + 5_000)
+        AlarmScheduler.schedule(context, AlarmScheduler.AUTOTEST_ID, System.currentTimeMillis() + 5_000)
 
         val ringing = waitFor(30_000) { RingingState.current.value }
         assertNotNull("the alarm did not ring", ringing)

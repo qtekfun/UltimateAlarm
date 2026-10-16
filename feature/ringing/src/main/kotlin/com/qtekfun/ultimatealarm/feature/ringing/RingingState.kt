@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 /** What is ringing right now, shared by the service and the alarm screen (same process). */
-data class Ringing(val alarmId: Long, val firedAt: Long)
+data class Ringing(val alarmId: Long, val firedAt: Long, val title: String = "")
 
 object RingingState {
     private val state = MutableStateFlow<Ringing?>(null)

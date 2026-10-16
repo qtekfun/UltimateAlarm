@@ -1,11 +1,8 @@
-package com.qtekfun.ultimatealarm.spike
+package com.qtekfun.ultimatealarm.diagnostics
 
 import android.Manifest
-import android.app.TimePickerDialog
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.text.format.DateFormat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -39,34 +36,28 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.qtekfun.ultimatealarm.R
 import com.qtekfun.ultimatealarm.core.data.DiagnosticLog
+import com.qtekfun.ultimatealarm.core.data.DiagnosticsStore
 import com.qtekfun.ultimatealarm.core.data.Event
-import com.qtekfun.ultimatealarm.core.data.TestAlarmStore
 import com.qtekfun.ultimatealarm.feature.onboarding.Capability
 import com.qtekfun.ultimatealarm.feature.onboarding.CapabilityList
 import com.qtekfun.ultimatealarm.feature.onboarding.CapabilityProbe
 import com.qtekfun.ultimatealarm.feature.onboarding.CapabilitySettings
-import com.qtekfun.ultimatealarm.feature.ringing.TestAlarms
+import com.qtekfun.ultimatealarm.feature.ringing.Rescheduler
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Date
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * Phase 1 spike: one daily test alarm, the one-minute autotest, the capability diagnostics and the event log export.
- * Replaced by the alarm list in Phase 3.
- */
+/** Diagnostics: the one-minute autotest (RF-O2), the capability probe and the event log export. */
 @Composable
-fun SpikeScreen(modifier: Modifier = Modifier) {
+fun DiagnosticsScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val store = remember { TestAlarmStore(context) }
+    val store = remember { DiagnosticsStore(context) }
     // Bumped on resume and after every action so the screen re-reads the store, the probe and the log.
     var refresh by remember { mutableIntStateOf(0) }
     var events by remember { mutableStateOf(emptyList<Event>()) }
@@ -93,45 +84,16 @@ fun SpikeScreen(modifier: Modifier = Modifier) {
         modifier.verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(stringResource(R.string.spike_intro), style = MaterialTheme.typography.bodyMedium)
-
-        Section(stringResource(R.string.spike_test_alarm)) {
-            val time = remember(refresh) { store.time }
-            val enabled = remember(refresh) { store.enabled }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(formatTime(context, time), style = MaterialTheme.typography.displayMedium, modifier = Modifier.weight(1f))
-                Switch(checked = enabled, onCheckedChange = {
-                    TestAlarms.setTestAlarm(context, time, it)
-                    refresh++
-                })
-            }
-            OutlinedButton(onClick = {
-                TimePickerDialog(context, { _, hour, minute ->
-                    TestAlarms.setTestAlarm(context, LocalTime.of(hour, minute), enabled = true)
-                    refresh++
-                }, time.hour, time.minute, DateFormat.is24HourFormat(context)).show()
-            }) { Text(stringResource(R.string.spike_change_time)) }
-            val scheduledAt = remember(refresh) { store.scheduledAt }
-            Text(
-                if (enabled && scheduledAt > 0) {
-                    stringResource(R.string.spike_next, formatDateTime(scheduledAt))
-                } else {
-                    stringResource(R.string.spike_off)
-                },
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-
-        Section(stringResource(R.string.spike_autotest)) {
-            Text(stringResource(R.string.spike_autotest_help), style = MaterialTheme.typography.bodyMedium)
+        Section(stringResource(R.string.diag_autotest)) {
+            Text(stringResource(R.string.diag_autotest_help), style = MaterialTheme.typography.bodyMedium)
             Button(onClick = {
-                TestAlarms.startAutotest(context)
+                Rescheduler.startAutotest(context)
                 refresh++
-            }, modifier = Modifier.heightIn(min = 48.dp)) { Text(stringResource(R.string.spike_autotest_start)) }
+            }, modifier = Modifier.heightIn(min = 48.dp)) { Text(stringResource(R.string.diag_autotest_start)) }
             Text(autotestStatus(events), style = MaterialTheme.typography.bodyMedium)
         }
 
-        Section(stringResource(R.string.spike_diagnostics)) {
+        Section(stringResource(R.string.diag_diagnostics)) {
             CapabilityList(capabilities, onFix = { capability ->
                 val needsRuntime = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                     context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
@@ -143,7 +105,7 @@ fun SpikeScreen(modifier: Modifier = Modifier) {
             })
             val forceMedia = remember(refresh) { store.forceMediaPlayback }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.spike_force_media), Modifier.weight(1f))
+                Text(stringResource(R.string.diag_force_media), Modifier.weight(1f))
                 Switch(checked = forceMedia, onCheckedChange = {
                     store.forceMediaPlayback = it
                     DiagnosticLog.log(context, "SETTING", "force_media_playback=$it")
@@ -152,9 +114,9 @@ fun SpikeScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        Section(stringResource(R.string.spike_event_log)) {
+        Section(stringResource(R.string.diag_event_log)) {
             Button(onClick = { export.launch("ultimatealarm-eventlog-${LocalDateTime.now().format(FILE_STAMP)}.txt") }) {
-                Text(stringResource(R.string.spike_export))
+                Text(stringResource(R.string.diag_export))
             }
             events.takeLast(RECENT_EVENTS).asReversed().forEach { event ->
                 Text(
@@ -180,16 +142,11 @@ private fun Section(title: String, content: @Composable () -> Unit) {
 @Composable
 private fun autotestStatus(events: List<Event>): String {
     val last = events.lastOrNull { it.type == "AUTOTEST_START" || it.type == "AUTOTEST_RESULT" }
-        ?: return stringResource(R.string.spike_autotest_none)
-    if (last.type == "AUTOTEST_RESULT") return stringResource(R.string.spike_autotest_fired, last.detail.substringAfter("delay="))
+        ?: return stringResource(R.string.diag_autotest_none)
+    if (last.type == "AUTOTEST_RESULT") return stringResource(R.string.diag_autotest_fired, last.detail.substringAfter("delay="))
     val due = last.detail.substringAfter("at=").let { runCatching { Instant.parse(it) }.getOrNull() }
     val missed = due != null && Instant.now().isAfter(due.plusSeconds(AUTOTEST_GRACE_SECONDS))
-    return stringResource(if (missed) R.string.spike_autotest_missed else R.string.spike_autotest_pending)
-}
-
-private fun formatTime(context: Context, time: LocalTime): String {
-    val millis = time.atDate(LocalDate.now()).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    return DateFormat.getTimeFormat(context).format(Date(millis))
+    return stringResource(if (missed) R.string.diag_autotest_missed else R.string.diag_autotest_pending)
 }
 
 private fun formatDateTime(millis: Long): String =
