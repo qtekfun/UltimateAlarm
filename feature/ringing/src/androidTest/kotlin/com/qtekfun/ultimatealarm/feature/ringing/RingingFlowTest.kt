@@ -45,7 +45,7 @@ class RingingFlowTest {
         val until = RingStore(context).snoozedUntil.getValue(id)
         assertTrue(until - System.currentTimeMillis() in 6 * 60_000L..7 * 60_000L)
         assertEquals(1, RingStore(context).snoozesOf(id))
-        assertNull(RingingState.current.value)
+        assertNotNull("still ringing after snooze", waitFor(5_000) { if (RingingState.current.value == null) Unit else null })
         // The snooze is the next alarm clock the system knows about.
         assertEquals(until, context.getSystemService(AlarmManager::class.java).nextAlarmClock?.triggerTime)
 
@@ -80,6 +80,17 @@ class RingingFlowTest {
         context.startService(RingingService.command(context, RingingService.ACTION_DISMISS, id))
         assertNotNull("one-shot not deleted", waitFor(5_000) { runBlocking { repository.alarm(id) }.let { if (it == null) Unit else null } })
         assertNull(RingStore(context).state)
+    }
+
+    @Test
+    fun commandForAnotherAlarmDoesNotSilenceTheRingingOne() = runBlocking {
+        val ringing = repository.save(Alarm(time = LocalTime.of(3, 0), backupAfterMinutes = null))
+        val other = repository.save(Alarm(time = LocalTime.of(4, 0), backupAfterMinutes = null))
+        ring(ringing)
+        context.startService(RingingService.command(context, RingingService.ACTION_DISMISS, other))
+        context.startService(RingingService.command(context, RingingService.ACTION_SNOOZE, other))
+        Thread.sleep(1_000)
+        assertEquals(ringing, RingingState.current.value?.alarmId)
     }
 
     private fun ring(id: Long) {

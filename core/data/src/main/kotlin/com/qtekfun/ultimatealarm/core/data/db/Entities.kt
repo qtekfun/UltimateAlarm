@@ -77,3 +77,15 @@ data class HolidayDecisionEntity(val date: Long, val alarmId: Long, val skip: Bo
         const val ALL_ALARMS = 0L
     }
 }
+
+/** A holiday from an automatic source (Nager.Date or a public ICS calendar), replaced on every refresh of that source. */
+@Entity(tableName = "holiday", primaryKeys = ["date", "source"])
+data class HolidayEntity(val date: Long, val source: String, val name: String)
+
+/** RF-F4: a holiday the user added; [yearly] repeats on the same day every year. */
+@Entity(tableName = "manual_holiday")
+data class ManualHolidayEntity(@PrimaryKey(autoGenerate = true) val id: Long, val date: Long, val name: String, val yearly: Boolean)
+
+/** RF-F5: "this year it is not a holiday for me" (or the opposite). */
+@Entity(tableName = "holiday_override")
+data class HolidayOverrideEntity(@PrimaryKey val date: Long, val isHoliday: Boolean, val name: String)

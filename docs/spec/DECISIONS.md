@@ -86,3 +86,15 @@ sensitive; secrets (Nextcloud credentials, Phase 10) stay in credential-protecte
   60 min without interaction (a phone left at home must not ring for days); the global setting can shorten it.
 - `RingState` (§2) is kept in device-protected preferences, not Room: it is one row, written synchronously at the start of
   every ring and read before the first unlock and after a process death.
+
+## D-14 · Holidays first, in Settings, from public calendars (product owner, 2026-10-16)
+
+The product owner moved holidays ahead of sounds and asked for **no Holidays screen of its own**:
+- Settings → Holidays holds everything: where the user lives (country + region, Nager.Date), an optional **public ICS
+  calendar** address for extra holidays (a town's local holidays, a company calendar), manual extra holidays and the
+  holiday list where an automatic one can be cancelled (RF-F4–F6). The bottom navigation drops the Holidays tab
+  (Alarms · Timer · Stopwatch).
+- The priority feature is the holiday eve notice (RF-F7): "Tomorrow is a holiday (Name). You have N alarms." with Skip
+  them / Keep them; without an answer, the alarms ring.
+- Release order: holidays ship as **0.3.0** and sounds as **0.4.0** (the table in `03-ci-release.md` is updated).
+- The holiday tables live in the same device-protected database (schema v2, auto-migration).
