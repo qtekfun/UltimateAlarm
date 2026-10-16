@@ -1,0 +1,1 @@
+Holidays: a clear message, with a shortcut to the app's settings, when the app has no internet access.

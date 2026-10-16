@@ -4,6 +4,13 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [1.0.0-rc4]
+
+Fourth release candidate.
+
+### Fixed
+- When holidays cannot be downloaded because the app has no internet (for example, its network permission is off, or a VPN or private DNS blocks it), Settings → Holidays now says so and opens the app's system settings, instead of showing a technical error.
+
 ## [1.0.0-rc3]
 
 Third release candidate.
