@@ -2,10 +2,13 @@
 <resources>
   <string name="ringing_channel_name">Alarmas sonando</string>
   <string name="ringing_channel_description">Se muestra mientras suena una alarma</string>
-  <string name="ringing_title_test">Alarma de prueba</string>
   <string name="ringing_title_autotest">Autotest</string>
-  <string name="ringing_title_snooze">Alarma pospuesta</string>
   <string name="ringing_dismiss">Descartar</string>
   <string name="ringing_snooze">Posponer</string>
-  <string name="ringing_snooze_minutes">Posponer %1$d min</string>
+  <string name="events_channel_name">Avisos de alarmas</string>
+  <string name="missed_title">Alarma perdida</string>
+  <string name="missed_text">%1$s de las %2$s no pudo sonar (el móvil estaba apagado).</string>
+  <string name="deleted_title">%1$s eliminada</string>
+  <string name="undo">Deshacer</string>
+  <string name="alarm_default_label">Alarma</string>
 </resources>

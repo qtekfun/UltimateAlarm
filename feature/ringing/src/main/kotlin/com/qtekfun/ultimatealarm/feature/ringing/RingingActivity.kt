@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.qtekfun.ultimatealarm.core.data.DiagnosticLog
@@ -62,7 +63,9 @@ class RingingActivity : ComponentActivity() {
         }
         setContent {
             UltimateAlarmTheme(darkTheme = true) {
+                val current by RingingState.current.collectAsStateWithLifecycle()
                 RingingScreen(
+                    title = current?.title.orEmpty(),
                     onSnooze = { send(RingingService.ACTION_SNOOZE, ringing.alarmId) },
                     onDismiss = { send(RingingService.ACTION_DISMISS, ringing.alarmId) }
                 )
@@ -77,7 +80,7 @@ class RingingActivity : ComponentActivity() {
 }
 
 @Composable
-private fun RingingScreen(onSnooze: () -> Unit, onDismiss: () -> Unit) {
+private fun RingingScreen(title: String, onSnooze: () -> Unit, onDismiss: () -> Unit) {
     // Back must not silence the alarm by accident.
     BackHandler {}
     val context = LocalContext.current
@@ -99,10 +102,13 @@ private fun RingingScreen(onSnooze: () -> Unit, onDismiss: () -> Unit) {
             fontWeight = FontWeight.Light,
             color = MaterialTheme.colorScheme.onBackground
         )
+        if (title.isNotBlank()) {
+            Text(title, style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onBackground)
+        }
         Spacer(Modifier.height(64.dp))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             FilledTonalButton(onClick = onSnooze, modifier = Modifier.weight(1f).heightIn(min = 72.dp)) {
-                Text(stringResource(R.string.ringing_snooze_minutes, RingingService.SNOOZE_MINUTES), fontSize = 20.sp)
+                Text(stringResource(R.string.ringing_snooze), fontSize = 20.sp)
             }
             Button(onClick = onDismiss, modifier = Modifier.weight(1f).heightIn(min = 72.dp)) {
                 Text(stringResource(R.string.ringing_dismiss), fontSize = 20.sp)
