@@ -31,11 +31,12 @@ module (no Android plugin) with Kover enforcing ≥ 90 % line coverage as part o
 As in UltimateGallery/UltimatePhone: `(MAJOR*10000 + MINOR*100 + PATCH) * 100 + suffix`, where the suffix is `N` for `-rcN`,
 `1` for `-spike` and `99` for a final version. `0.0.1-spike` is therefore `101`, `0.1.0` is `10099`, `1.0.0-rc1` is `1000001`.
 
-## D-6 · One universal APK per release, no per-ABI splits
+## D-6 · Universal APK plus one per ABI (corrected)
 
-`03-ci-release.md` asks for an APK per ABI plus a universal one. Until now the app has no native code, so every per-ABI APK
-would be identical to the universal one. Releases ship one universal `UltimateAlarm-X.Y.Z.apk` plus `SHA256SUMS.txt`, as
-UltimateGallery and UltimatePhone do. CameraX (Phase 8, QR challenge) brings a small JNI library: ABI splits are added then.
+An earlier version of this decision shipped only a universal APK claiming the app had no native code. That was wrong:
+Compose already brought a small native library, and CameraX (Phase 8) adds two more. Releases now follow the spec: one
+APK per ABI (arm64-v8a, armeabi-v7a, x86, x86_64) plus the universal one, all in `SHA256SUMS.txt`. ABI splits are only
+enabled for release builds, so debug builds and CI keep a single APK. F-Droid's recipe keeps pointing at the universal APK.
 
 ## D-7 · F-Droid changelogs are committed in the phase's last PR, not written by `release.yml`
 

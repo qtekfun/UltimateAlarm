@@ -95,6 +95,16 @@ android {
         warningsAsErrors = false
     }
 
+    // 03-ci-release.md: one APK per ABI plus a universal one, for release builds only (debug and CI keep a single APK).
+    splits {
+        abi {
+            isEnable = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+            reset()
+            include("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+            isUniversalApk = true
+        }
+    }
+
     androidResources {
         generateLocaleConfig = true
     }

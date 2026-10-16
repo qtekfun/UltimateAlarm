@@ -34,8 +34,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +60,7 @@ import com.qtekfun.ultimatealarm.core.data.RingMode
 import com.qtekfun.ultimatealarm.core.data.RingStore
 import com.qtekfun.ultimatealarm.core.data.VolumeButtonAction
 import com.qtekfun.ultimatealarm.core.designsystem.UltimateAlarmTheme
+import com.qtekfun.ultimatealarm.feature.ringing.challenge.ChallengeContent
 import java.util.Date
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
@@ -88,13 +91,24 @@ class RingingActivity : ComponentActivity() {
             UltimateAlarmTheme(darkTheme = true) {
                 val current by RingingState.current.collectAsStateWithLifecycle()
                 val state = current ?: return@UltimateAlarmTheme
-                RingingScreen(
-                    title = state.title,
-                    backup = state.mode == RingMode.BACKUP,
-                    canSnooze = state.canSnooze,
-                    onSnooze = { send(RingingService.ACTION_SNOOZE) },
-                    onDismiss = { send(RingingService.ACTION_DISMISS) }
-                )
+                var solving by rememberSaveable { mutableStateOf(false) }
+                val challenge = state.challenge
+                if (solving && challenge != null) {
+                    Column(
+                        Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).safeDrawingPadding().padding(24.dp),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        ChallengeContent(challenge, onSolved = { send(RingingService.ACTION_DISMISS) }, onCancel = { solving = false })
+                    }
+                } else {
+                    RingingScreen(
+                        title = state.title,
+                        backup = state.mode == RingMode.BACKUP,
+                        canSnooze = state.canSnooze,
+                        onSnooze = { send(RingingService.ACTION_SNOOZE) },
+                        onDismiss = { if (challenge == null) send(RingingService.ACTION_DISMISS) else solving = true }
+                    )
+                }
             }
         }
     }
@@ -103,7 +117,8 @@ class RingingActivity : ComponentActivity() {
         if (keyCode != KeyEvent.KEYCODE_VOLUME_UP && keyCode != KeyEvent.KEYCODE_VOLUME_DOWN) return super.onKeyDown(keyCode, event)
         when (RingStore(this).volumeButtons) {
             VolumeButtonAction.SNOOZE -> if (RingingState.current.value?.canSnooze == true) send(RingingService.ACTION_SNOOZE)
-            VolumeButtonAction.DISMISS -> send(RingingService.ACTION_DISMISS)
+            // With a challenge, the volume buttons cannot dismiss (RF-R5): the swipe opens the challenge.
+            VolumeButtonAction.DISMISS -> if (RingingState.current.value?.challenge == null) send(RingingService.ACTION_DISMISS)
             VolumeButtonAction.NOTHING -> Unit
         }
         // Consumed either way: the volume keys must not lower the alarm.

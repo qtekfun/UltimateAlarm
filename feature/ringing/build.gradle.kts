@@ -24,6 +24,11 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.work.runtime)
+    // QR / barcode challenge (RF-R5): CameraX + ZXing, no Google Play services or ML Kit (CLAUDE.md rule 3).
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.zxing.core)
 
     testImplementation(libs.junit)
 

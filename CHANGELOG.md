@@ -4,6 +4,16 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [0.6.0]
+
+Phase 8: challenges to dismiss.
+
+### Added
+- Per-alarm challenge to dismiss (never to snooze): maths (difficulty 1–3, 1–5 problems), scanning a registered QR or barcode, or holding a registered NFC tag. Codes and tags are registered from the editor, with an optional name.
+- Phones without camera or NFC get maths instead, and the editor says so.
+- With a challenge, the notification, the volume buttons and the snoozed notice cannot dismiss: only the alarm screen can.
+- Releases include one APK per processor type (ABI) besides the universal one.
+
 ## [0.5.0]
 
 Phase 7: advanced scheduling.

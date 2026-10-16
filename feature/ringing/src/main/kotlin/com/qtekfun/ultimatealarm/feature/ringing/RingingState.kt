@@ -1,11 +1,20 @@
 package com.qtekfun.ultimatealarm.feature.ringing
 
+import com.qtekfun.ultimatealarm.core.data.Challenge
 import com.qtekfun.ultimatealarm.core.data.RingMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 /** What is ringing right now, shared by the service and the alarm screen (same process). */
-data class Ringing(val alarmId: Long, val firedAt: Long, val title: String = "", val canSnooze: Boolean = true, val mode: RingMode = RingMode.NORMAL)
+data class Ringing(
+    val alarmId: Long,
+    val firedAt: Long,
+    val title: String = "",
+    val canSnooze: Boolean = true,
+    val mode: RingMode = RingMode.NORMAL,
+    /** The effective challenge to dismiss (RF-R5), already degraded to maths if the hardware is missing. */
+    val challenge: Challenge? = null
+)
 
 object RingingState {
     private val state = MutableStateFlow<Ringing?>(null)
