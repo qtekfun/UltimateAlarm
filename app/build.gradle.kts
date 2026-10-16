@@ -30,7 +30,7 @@ fun versionCodeOf(version: String): Int {
     return base * 100 + suffix
 }
 
-/** Release signing from the environment (CI secrets); without it the release build is debug-signed. */
+/** Release signing from the environment (release.yml maps the RELEASE_* secrets here); without it the build is debug-signed. */
 val releaseKeystore: String? = System.getenv("UG_KEYSTORE_FILE")
 
 android {

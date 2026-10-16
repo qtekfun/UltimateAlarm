@@ -2,12 +2,13 @@
 
 Changes to what `01`–`04` propose, and why. Newest last. The spec stays the source of truth for everything not listed here.
 
-## D-1 · Signing secrets use the family names (`UG_*`)
+## D-1 · Signing secrets keep the spec names (`RELEASE_*`)
 
-The spec named the secrets `RELEASE_KEYSTORE_BASE64`, `RELEASE_KEYSTORE_PASSWORD`, `RELEASE_KEY_ALIAS` and `RELEASE_KEY_PASSWORD`.
-UltimateGallery and UltimatePhone both sign with `UG_KEYSTORE_BASE64`, `UG_KEYSTORE_PASSWORD`, `UG_KEY_ALIAS` and `UG_KEY_PASSWORD`,
-so `KEYS.md` asks to reuse those names. `03-ci-release.md` and `KEYS.md` are updated accordingly. The keystore file and the alias
-(`ultimatealarm-release.jks`, `ultimatealarm`) do not change.
+UltimateGallery and UltimatePhone sign with `UG_*` secrets, and an early version of this file switched to those names.
+The secrets of this repository were created as `RELEASE_KEYSTORE_BASE64`, `RELEASE_KEYSTORE_PASSWORD`, `RELEASE_KEY_ALIAS`
+and `RELEASE_KEY_PASSWORD` (spec `03-ci-release.md`), so the workflow reads those. Inside the build, `release.yml` hands them
+to Gradle as the `UG_KEYSTORE_FILE`, `UG_KEYSTORE_PASSWORD`, `UG_KEY_ALIAS` and `UG_KEY_PASSWORD` environment variables, the
+same ones the reference apps' `app/build.gradle.kts` reads; that also lets old tags be rebuilt unchanged.
 
 ## D-2 · Default branch is `master`
 
@@ -45,10 +46,17 @@ missing. Same model as UltimateGallery.
 ## D-8 · Release labels
 
 A version with a suffix (`-rcN`, `-spike`) is a GitHub pre-release; a final version (`0.1.0`…) is a normal release.
-Without the four `UG_*` secrets the build is debug-signed, the APK is named `…-UNSIGNED-DEBUG.apk`, the title says
+Without the four `RELEASE_*` secrets the build is debug-signed, the APK is named `…-UNSIGNED-DEBUG.apk`, the title says
 `(UNSIGNED-DEBUG)` and the release is always a pre-release. Phase 0's acceptance tag is `v0.0.0-rc1`.
 
 ## D-9 · Instrumented tests are nightly and manual
 
 `instrumented.yml` runs on AOSP images without Google apps (API 31 and 36), nightly and on demand, not on every PR (an
 emulator boot takes several minutes). The screen-off firing test arrives with the spike (Phase 1).
+
+## D-10 · Releases must be release-signed when the key exists, and can be rebuilt
+
+`release.yml` verifies the APK certificate with `apksigner`: when the `RELEASE_*` secrets are set and the APK is still
+signed with the debug key, the release fails instead of publishing. It can also be run by hand (`workflow_dispatch`, input
+`tag`) to rebuild an already published tag and replace its assets, title and notes; this re-signed `v0.0.0-rc1` and
+`v0.0.1-spike`, first published as UNSIGNED-DEBUG because the workflow was reading the wrong secret names.
