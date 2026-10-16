@@ -60,3 +60,11 @@ emulator boot takes several minutes). The screen-off firing test arrives with th
 signed with the debug key, the release fails instead of publishing. It can also be run by hand (`workflow_dispatch`, input
 `tag`) to rebuild an already published tag and replace its assets, title and notes; this re-signed `v0.0.0-rc1` and
 `v0.0.1-spike`, first published as UNSIGNED-DEBUG because the workflow was reading the wrong secret names.
+
+## D-11 · One-shot alarms ignore exceptions, vacations, skips and holidays
+
+§3 defines a one-shot occurrence as "its date and time if in the future". The engine applies none of the day rules to
+one-shot alarms: the spec gives them no "skip tomorrow" (README assumption 3, "ahí se usa el interruptor") and their
+"respect holidays" defaults to off. A one-shot with `oneShotDate = null` ("the next time it is HH:MM") is resolved to the
+next occurrence after now; the UI stores the concrete date when the alarm is created. When both a decision for every alarm
+and a decision for one alarm exist for a holiday, the per-alarm one wins.
