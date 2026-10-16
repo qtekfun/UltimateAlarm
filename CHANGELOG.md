@@ -4,6 +4,13 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [0.8.1]
+
+Official town calendars.
+
+### Added
+- If your town publishes its labour calendar as open data, the app uses it on top of the compiled municipal calendar, with the official names. First one: Madrid city (Ayuntamiento de Madrid, datos.madrid.es, CC BY 4.0), shown with its attribution in Settings → Holidays.
+
 ## [0.8.0]
 
 Phase 10: backup.
