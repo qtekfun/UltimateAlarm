@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -100,17 +103,8 @@ fun AlarmListScreen(
         containerColor = MaterialTheme.colorScheme.background,
         // The main screen's own scaffold already leaves room for the system bars.
         contentWindowInsets = WindowInsets(0),
-        snackbarHost = { SnackbarHost(snackbar) },
-        floatingActionButton = {
-            // Icon only: an extended button covered the last card's day pills.
-            FloatingActionButton(
-                onClick = { onEdit(0) },
-                modifier = Modifier.size(64.dp).testTag(TAG_ADD_ALARM),
-                containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary,
-                shape = RoundedCornerShape(22.dp)
-            ) { Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.add_alarm), modifier = Modifier.size(28.dp)) }
-        }
+        // Above the floating navigation of the main screen.
+        snackbarHost = { SnackbarHost(snackbar, Modifier.navigationBarsPadding().padding(bottom = 88.dp)) }
     ) { padding ->
         if (state.loaded && state.rows.isEmpty()) {
             Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
@@ -125,7 +119,7 @@ fun AlarmListScreen(
                     start = 16.dp,
                     end = 16.dp,
                     top = padding.calculateTopPadding() + 8.dp,
-                    bottom = padding.calculateBottomPadding() + 96.dp
+                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 120.dp
                 ),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {

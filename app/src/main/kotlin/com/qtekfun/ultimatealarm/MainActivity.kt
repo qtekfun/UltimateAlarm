@@ -8,9 +8,11 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material.icons.outlined.BeachAccess
 import androidx.compose.material.icons.outlined.HourglassEmpty
@@ -21,8 +23,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,9 +37,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -51,6 +53,7 @@ import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorScreen
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmEditorViewModel
 import com.qtekfun.ultimatealarm.feature.alarms.AlarmListScreen
 import com.qtekfun.ultimatealarm.feature.alarms.ExceptionsScreen
+import com.qtekfun.ultimatealarm.feature.alarms.TAG_ADD_ALARM
 import com.qtekfun.ultimatealarm.feature.alarms.VacationsScreen
 import com.qtekfun.ultimatealarm.feature.backup.BackupScreen
 import com.qtekfun.ultimatealarm.feature.clock.StopwatchScreen
@@ -179,26 +182,33 @@ private fun MainScreen(onEdit: (Long) -> Unit, onDiagnostics: () -> Unit, onSett
                     IconButton(onClick = onSettings) { Icon(Icons.Outlined.Settings, contentDescription = stringResource(R.string.settings)) }
                 }
             )
-        },
-        bottomBar = {
-            NavigationBar {
-                Destination.entries.forEach { destination ->
-                    NavigationBarItem(
-                        selected = destination == current,
-                        onClick = { current = destination },
-                        icon = { Icon(destination.icon, contentDescription = null) },
-                        label = { Text(stringResource(destination.label)) }
-                    )
-                }
-            }
         }
     ) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding)) {
-            PermissionBanner(onFix = onDiagnostics)
-            when (current) {
-                Destination.ALARMS -> AlarmListScreen(onEdit = onEdit)
-                Destination.TIMER -> TimerScreen()
-                Destination.STOPWATCH -> StopwatchScreen()
+        Box(Modifier.fillMaxSize().padding(top = padding.calculateTopPadding())) {
+            Column(Modifier.fillMaxSize()) {
+                PermissionBanner(onFix = onDiagnostics)
+                when (current) {
+                    // The list scrolls under the floating navigation; the clock screens stop above it.
+                    Destination.ALARMS -> AlarmListScreen(onEdit = onEdit)
+                    Destination.TIMER -> TimerScreen(Modifier.navigationBarsPadding().padding(bottom = NAV_CLEARANCE))
+                    Destination.STOPWATCH -> StopwatchScreen(Modifier.navigationBarsPadding().padding(bottom = NAV_CLEARANCE))
+                }
+            }
+            val entries = Destination.entries.map { NavEntry(stringResource(it.label), it.icon) }
+            FloatingNav(
+                entries = entries,
+                selected = current.ordinal,
+                onSelect = { current = Destination.entries[it] },
+                modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 16.dp)
+            ) {
+                if (current == Destination.ALARMS) {
+                    NavAction(
+                        Icons.Filled.Add,
+                        stringResource(com.qtekfun.ultimatealarm.feature.alarms.R.string.add_alarm),
+                        onClick = { onEdit(0) },
+                        modifier = Modifier.testTag(TAG_ADD_ALARM)
+                    )
+                }
             }
         }
     }
@@ -218,3 +228,6 @@ private fun BackScaffold(title: String, onBack: () -> Unit, content: @Composable
         }
     ) { padding -> content(Modifier.padding(padding)) }
 }
+
+/** Room the floating navigation takes at the bottom of the main screen. */
+private val NAV_CLEARANCE = 96.dp

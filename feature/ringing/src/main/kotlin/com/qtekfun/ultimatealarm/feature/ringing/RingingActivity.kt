@@ -7,7 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -24,10 +26,16 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Snooze
+import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +49,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -48,6 +60,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,6 +73,7 @@ import com.qtekfun.ultimatealarm.core.data.RingMode
 import com.qtekfun.ultimatealarm.core.data.RingStore
 import com.qtekfun.ultimatealarm.core.data.VolumeButtonAction
 import com.qtekfun.ultimatealarm.core.designsystem.UltimateAlarmTheme
+import com.qtekfun.ultimatealarm.core.designsystem.timeStyle
 import com.qtekfun.ultimatealarm.feature.ringing.challenge.ChallengeContent
 import java.util.Date
 import kotlin.math.roundToInt
@@ -132,6 +146,10 @@ class RingingActivity : ComponentActivity() {
     }
 }
 
+/**
+ * D-19: a warm dark ground with the sun rising from the bottom (the accent), the time in the display face, a big
+ * snooze button and the swipe to dismiss. Always dark, whatever the app's mode: it is seen in a dark room.
+ */
 @Composable
 private fun RingingScreen(title: String, backup: Boolean, canSnooze: Boolean, onSnooze: () -> Unit, onDismiss: () -> Unit) {
     // Back must not silence the alarm by accident.
@@ -144,31 +162,55 @@ private fun RingingScreen(title: String, backup: Boolean, canSnooze: Boolean, on
             delay(CLOCK_TICK_MS)
         }
     }
-    Column(
-        Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).safeDrawingPadding().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        if (backup) {
-            Text(stringResource(R.string.backup_ringing), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.error)
+    val sun = MaterialTheme.colorScheme.primary
+    Box(Modifier.fillMaxSize().background(RING_GROUND)) {
+        Canvas(Modifier.fillMaxSize()) {
+            val center = Offset(size.width / 2, size.height + SUN_DROP.toPx())
+            drawCircle(sun.copy(alpha = HALO_FAR), radius = (SUN_RADIUS + HALO_STEP * 2).toPx(), center = center, style = Stroke(2.dp.toPx()))
+            drawCircle(sun.copy(alpha = HALO_NEAR), radius = (SUN_RADIUS + HALO_STEP).toPx(), center = center, style = Stroke(2.dp.toPx()))
+            drawCircle(sun, radius = SUN_RADIUS.toPx(), center = center)
         }
-        Text(
-            DateFormat.getTimeFormat(context).format(Date(now)),
-            fontSize = 96.sp,
-            fontWeight = FontWeight.Light,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        if (title.isNotBlank()) {
-            Text(title, style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onBackground)
-        }
-        Spacer(Modifier.height(72.dp))
-        if (canSnooze) {
-            FilledTonalButton(onClick = onSnooze, modifier = Modifier.fillMaxWidth().heightIn(min = 72.dp)) {
-                Text(stringResource(R.string.ringing_snooze), fontSize = 22.sp)
+        Column(
+            Modifier.fillMaxSize().safeDrawingPadding().padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(Modifier.height(72.dp))
+            if (backup) {
+                Text(stringResource(R.string.backup_ringing), style = MaterialTheme.typography.titleLarge, color = RING_SOFT, textAlign = TextAlign.Center)
             }
-            Spacer(Modifier.height(24.dp))
+            val locale = LocalConfiguration.current.locales[0]
+            val pattern = DateFormat.getBestDateTimePattern(locale, "EEEEdMMMM")
+            Text(
+                DateFormat.format(pattern, now).toString().replaceFirstChar { it.titlecase(locale) },
+                style = MaterialTheme.typography.titleMedium,
+                color = RING_SOFT
+            )
+            Text(DateFormat.getTimeFormat(context).format(Date(now)), style = timeStyle(TIME_SIZE), color = RING_TEXT, modifier = Modifier.padding(top = 8.dp))
+            if (title.isNotBlank()) {
+                Text(
+                    title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = RING_TEXT,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 10.dp)
+                )
+            }
+            Spacer(Modifier.weight(1f))
+            if (canSnooze) {
+                Button(
+                    onClick = onSnooze,
+                    colors = ButtonDefaults.buttonColors(containerColor = RING_TEXT, contentColor = RING_GROUND),
+                    modifier = Modifier.fillMaxWidth().heightIn(min = TRACK_HEIGHT)
+                ) {
+                    Icon(Icons.Outlined.Snooze, contentDescription = null, modifier = Modifier.size(24.dp))
+                    Spacer(Modifier.width(10.dp))
+                    Text(stringResource(R.string.ringing_snooze), style = MaterialTheme.typography.titleLarge)
+                }
+                Spacer(Modifier.height(16.dp))
+            }
+            SwipeToDismiss(onDismiss)
+            Spacer(Modifier.height(48.dp))
         }
-        SwipeToDismiss(onDismiss)
     }
 }
 
@@ -179,7 +221,9 @@ private fun SwipeToDismiss(onDismiss: () -> Unit) {
     val label = stringResource(R.string.swipe_to_dismiss)
     val dismissLabel = stringResource(R.string.ringing_dismiss)
     BoxWithConstraints(
-        Modifier.fillMaxWidth().height(TRACK_HEIGHT).background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(50))
+        Modifier.fillMaxWidth().height(TRACK_HEIGHT)
+            .background(RING_GROUND.copy(alpha = TRACK_ALPHA), CircleShape)
+            .border(2.dp, RING_TEXT.copy(alpha = BORDER_ALPHA), CircleShape)
             .semantics {
                 contentDescription = label
                 onClick(dismissLabel) {
@@ -191,21 +235,35 @@ private fun SwipeToDismiss(onDismiss: () -> Unit) {
         val density = LocalDensity.current
         val max = with(density) { (maxWidth - TRACK_HEIGHT).toPx() }
         val offset = remember { Animatable(0f) }
-        Text(label, Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(label, Modifier.align(Alignment.Center).padding(start = TRACK_HEIGHT), style = MaterialTheme.typography.titleMedium, color = RING_TEXT)
         Box(
             Modifier.offset { IntOffset(offset.value.roundToInt(), 0) }.size(TRACK_HEIGHT).padding(6.dp)
-                .background(MaterialTheme.colorScheme.primary, CircleShape)
+                .background(RING_TEXT, CircleShape)
                 .draggable(
                     orientation = Orientation.Horizontal,
                     state = rememberDraggableState { delta -> scope.launch { offset.snapTo((offset.value + delta).coerceIn(0f, max)) } },
                     onDragStopped = {
                         if (offset.value > max * DISMISS_FRACTION) onDismiss() else scope.launch { offset.animateTo(0f) }
                     }
-                )
-        )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(Icons.Outlined.WbSunny, contentDescription = null, tint = RING_GROUND, modifier = Modifier.size(26.dp))
+        }
     }
 }
 
+private val RING_GROUND = Color(0xFF1E1108)
+private val RING_TEXT = Color(0xFFFFF3E6)
+private val RING_SOFT = Color(0xFFFFD9B8)
+private val SUN_RADIUS = 320.dp
+private val SUN_DROP = 10.dp
+private val HALO_STEP = 80.dp
+private const val HALO_NEAR = 0.3f
+private const val HALO_FAR = 0.15f
+private const val TRACK_ALPHA = 0.55f
+private const val BORDER_ALPHA = 0.35f
+private const val TIME_SIZE = 112
 private val TRACK_HEIGHT = 72.dp
 private const val DISMISS_FRACTION = 0.8f
 private const val CLOCK_TICK_MS = 1_000L
