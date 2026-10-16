@@ -4,6 +4,18 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [1.0.0-rc5]
+
+New look ("Amanecer").
+
+### Added
+- Settings → Appearance: system, light or dark mode, and the colour (orange, raspberry, plum, indigo, teal, mustard, or your wallpaper's).
+- The next alarm leads the list as a large card; days an alarm will not ring (holiday, vacation, skipped) get their own notice.
+- The time is set with scroll wheels, or typed with the keyboard button.
+
+### Changed
+- New typefaces (Bricolage Grotesque, DM Sans), warm colours, rounded cards, day pills and a sun-rise ringing screen.
+
 ## [1.0.0-rc4]
 
 Fourth release candidate.
