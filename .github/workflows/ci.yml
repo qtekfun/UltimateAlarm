@@ -48,7 +48,7 @@ jobs:
         run: ./gradlew check assembleDebug assembleRelease
 
       - name: Verify there are no Google dependencies (GMS, Firebase, ML Kit)
-        run: scripts/check-no-google.sh app/build/outputs/apk/debug/app-debug.apk
+        run: scripts/check-no-google.sh app/build/outputs/apk/release/app-universal-release.apk
 
       - name: Verify the shrunk APK keeps every manufacturer guide text
         run: scripts/check-oem-strings.sh app/build/outputs/apk/release/app-universal-release.apk
