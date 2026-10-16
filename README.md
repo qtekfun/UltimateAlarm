@@ -9,7 +9,7 @@ a backup alarm, challenges to dismiss, timer, stopwatch and local + Nextcloud ba
 - Kotlin, Jetpack Compose, Material 3 Expressive. App in English and Spanish.
 - GPL-3.0-or-later.
 
-**Status:** 0.5.0 — alarms, shifts, exceptions, vacations, ringing, holidays (local too) and sounds work; sounds, holidays, challenges, clock and backup arrive phase by phase. The specification lives in [`docs/spec/`](docs/spec/README.md) (in Spanish),
+**Status:** 0.6.0 — alarms, shifts, exceptions, vacations, ringing with challenges, holidays (local too) and sounds work; sounds, holidays, challenges, clock and backup arrive phase by phase. The specification lives in [`docs/spec/`](docs/spec/README.md) (in Spanish),
 deviations from it in [`docs/spec/DECISIONS.md`](docs/spec/DECISIONS.md).
 
 Download: [releases](https://github.com/qtekfun/UltimateAlarm/releases). How releases are made: [RELEASING.md](RELEASING.md).

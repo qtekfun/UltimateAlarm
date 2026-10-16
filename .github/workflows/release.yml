@@ -68,11 +68,16 @@ jobs:
           ./gradlew check assembleRelease
           rm -f "$RUNNER_TEMP/release.jks"
 
+      - name: Normalise APK names (tags built before ABI splits produce a single app-release.apk)
+        run: |
+          cd app/build/outputs/apk/release
+          [ -f app-universal-release.apk ] || cp app-release.apk app-universal-release.apk
+
       - name: Verify the signing certificate
         run: |
           apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
           echo "Using $apksigner"
-          if ! certs=$("$apksigner" verify --print-certs app/build/outputs/apk/release/app-release.apk 2>&1); then
+          if ! certs=$("$apksigner" verify --print-certs app/build/outputs/apk/release/app-universal-release.apk 2>&1); then
             echo "$certs" >&2
             echo "apksigner could not verify the APK" >&2
             exit 1
@@ -84,7 +89,7 @@ jobs:
           fi
 
       - name: Verify there are no Google dependencies (GMS, Firebase, ML Kit)
-        run: scripts/check-no-google.sh app/build/outputs/apk/release/app-release.apk
+        run: scripts/check-no-google.sh app/build/outputs/apk/release/app-universal-release.apk
 
       - name: Publish the GitHub Release
         env:
@@ -102,18 +107,28 @@ jobs:
             prerelease=true
             printf '\n> **UNSIGNED-DEBUG:** this APK is signed with the debug key because no release signing key is configured. It is installable for testing, but it is not a distribution build.\n' >> notes.md
           fi
-          cp app/build/outputs/apk/release/app-release.apk "$apk"
-          sha256sum "$apk" > SHA256SUMS.txt
+          # Universal APK (the one F-Droid and most users want) plus one per ABI.
+          suffix=""
+          [ "$SIGNED" = "debug" ] && suffix="-UNSIGNED-DEBUG"
+          cp app/build/outputs/apk/release/app-universal-release.apk "$apk"
+          assets=("$apk")
+          for abi in arm64-v8a armeabi-v7a x86 x86_64; do
+            [ -f "app/build/outputs/apk/release/app-$abi-release.apk" ] || continue
+            out="UltimateAlarm-$version-$abi$suffix.apk"
+            cp "app/build/outputs/apk/release/app-$abi-release.apk" "$out"
+            assets+=("$out")
+          done
+          sha256sum "${assets[@]}" > SHA256SUMS.txt
           cat SHA256SUMS.txt
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
             # Rebuild: drop the old APKs, then upload and update in place.
             for old in $(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' | grep '\.apk$'); do
               gh release delete-asset "$TAG" "$old" --repo "$GITHUB_REPOSITORY" --yes
             done
-            gh release upload "$TAG" "$apk" SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --clobber
+            gh release upload "$TAG" "${assets[@]}" SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --clobber
             gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title "$title" --notes-file notes.md --prerelease="$prerelease"
           else
             flags=()
             [ "$prerelease" = true ] && flags+=(--prerelease)
-            gh release create "$TAG" "$apk" SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --title "$title" --notes-file notes.md "${flags[@]}"
+            gh release create "$TAG" "${assets[@]}" SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --title "$title" --notes-file notes.md "${flags[@]}"
           fi

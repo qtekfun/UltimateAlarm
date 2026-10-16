@@ -1,0 +1,1 @@
+Retos para apagar: matemáticas, un código QR/de barras o una etiqueta NFC registrados; matemáticas si falta el hardware. También APK por tipo de procesador.
