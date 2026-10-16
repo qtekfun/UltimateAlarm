@@ -1,0 +1,1 @@
+Timers (several at once, presets, full screen when done), stopwatch with laps that keeps running when closed, and a bedtime reminder before your first alarm.

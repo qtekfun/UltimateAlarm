@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="timer_default_label">Timer</string>
+  <string name="timer_pause">Pause</string>
+  <string name="timer_resume">Resume</string>
+  <string name="timer_reset">Reset</string>
+  <string name="timer_plus_minute">+1 min</string>
+  <string name="timer_paused">Paused, %1$s left</string>
+  <string name="timer_channel">Running timers</string>
+  <string name="timer_done_channel">Finished timers</string>
+  <string name="timer_done">%1$s finished</string>
+  <string name="timer_stop">Stop</string>
+  <string name="timer_presets">Quick timers</string>
+  <string name="timer_minutes">%1$d min</string>
+  <string name="timer_hours">h</string>
+  <string name="timer_min">min</string>
+  <string name="timer_sec">s</string>
+  <string name="timer_label">Label (optional)</string>
+  <string name="timer_start">Start</string>
+  <string name="timer_delete">Delete timer</string>
+  <string name="stopwatch_channel">Stopwatch</string>
+  <string name="stopwatch_title">Stopwatch</string>
+  <string name="stopwatch_lap">Lap</string>
+  <string name="stopwatch_start">Start</string>
+  <string name="stopwatch_lap_n">Lap %1$d</string>
+</resources>

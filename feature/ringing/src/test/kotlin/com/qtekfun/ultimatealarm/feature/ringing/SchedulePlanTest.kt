@@ -73,4 +73,14 @@ class SchedulePlanTest {
         assertNull(planSchedule(listOf(weekly), rules, now, emptySet(), null).eve)
         assertNull(planSchedule(listOf(weekly.copy(respectHolidays = false)), rules, now, emptySet(), LocalTime.of(20, 0)).eve)
     }
+
+    @Test
+    fun `bedtime eight hours before the first alarm of the next ringing day`() {
+        val early = weekly.copy(id = 2, time = LocalTime.of(6, 30))
+        // Friday 08:00: next ringing day is Monday; its first alarm is 06:30, reminder Sunday 22:30.
+        val plan = planSchedule(listOf(weekly, early), RuleSet(), now, emptySet(), bedtimeHours = 8)
+        assertEquals(Bedtime(millis(2026, 10, 18, 22) + 30 * 60_000, millis(2026, 10, 19, 6) + 30 * 60_000), plan.bedtime)
+        assertNull(planSchedule(listOf(weekly), RuleSet(), now, emptySet()).bedtime)
+        assertNull(planSchedule(listOf(weekly.copy(enabled = false)), RuleSet(), now, emptySet(), bedtimeHours = 8).bedtime)
+    }
 }

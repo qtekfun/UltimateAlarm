@@ -1,0 +1,1 @@
+Temporizadores (varios a la vez, rápidos, pantalla completa al terminar), cronómetro con vueltas que sigue con la app cerrada y recordatorio para acostarte.

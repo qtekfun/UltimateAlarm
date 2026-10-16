@@ -4,6 +4,15 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [0.7.0]
+
+Phase 9: clock.
+
+### Added
+- Timers: several at once, quick presets (1–30 min) and custom durations with a label; a notification counts down; when one ends it rings with its own tone and a full screen with Stop and +1 min.
+- Stopwatch with laps; it keeps running with the app closed and shows its time in a notification.
+- Bedtime reminder some hours (8 by default, 6–10) before the first alarm of the next day; not shown if nothing rings; can be turned off in Settings.
+
 ## [0.6.0]
 
 Phase 8: challenges to dismiss.
