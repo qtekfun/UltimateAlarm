@@ -270,7 +270,9 @@ class RingingService : Service() {
         val audio = getSystemService(AudioManager::class.java)
         runCatching {
             savedAlarmVolume = audio.getStreamVolume(AudioManager.STREAM_ALARM)
-            audio.setStreamVolume(AudioManager.STREAM_ALARM, audio.getStreamMaxVolume(AudioManager.STREAM_ALARM), 0)
+            val max = audio.getStreamMaxVolume(AudioManager.STREAM_ALARM)
+            audio.setStreamVolume(AudioManager.STREAM_ALARM, max, 0)
+            DiagnosticLog.log(this, "VOLUME", "alarm_stream=${audio.getStreamVolume(AudioManager.STREAM_ALARM)}/$max was=$savedAlarmVolume")
         }.onFailure { DiagnosticLog.log(this, "ERROR", "alarm stream volume: ${it.javaClass.simpleName}: ${it.message}") }
     }
 

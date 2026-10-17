@@ -10,12 +10,18 @@ class RingPolicyTest {
     private val alarm = Alarm(maxVolume = 80, rampSeconds = 30, maxSnoozes = 2, backupAfterMinutes = 5)
 
     @Test
-    fun `ramp starts barely audible and reaches the maximum volume`() {
-        assertEquals(0.8f * 0.02f, RingPolicy.gain(0, 30, 80), 1e-4f)
+    fun `ramp starts soft but audible and reaches the maximum volume`() {
+        assertEquals(0.8f * 0.1f, RingPolicy.gain(0, 30, 80), 1e-4f)
         assertEquals(0.8f, RingPolicy.gain(30_000, 30, 80), 1e-4f)
         assertEquals(0.8f, RingPolicy.gain(90_000, 30, 80), 1e-4f)
-        val half = RingPolicy.gain(15_000, 30, 80)
-        assertTrue(half > 0.8f * 0.02f && half < 0.8f * 0.5f)
+        assertEquals(0.8f * 0.55f, RingPolicy.gain(15_000, 30, 80), 1e-4f)
+    }
+
+    @Test
+    fun `ramp is already loud a few seconds in`() {
+        // The 2026-10-17 report: snoozed after 12 s of a 30 s ramp that was still at 18 %.
+        assertTrue(RingPolicy.gain(12_000, 30, 100) >= 0.45f)
+        assertTrue(RingPolicy.gain(3_000, 30, 100) >= 0.18f)
     }
 
     @Test

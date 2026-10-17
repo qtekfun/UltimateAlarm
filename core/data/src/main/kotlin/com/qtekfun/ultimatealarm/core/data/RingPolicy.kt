@@ -18,15 +18,16 @@ data class RingState(
 /** The rules of a ringing alarm, without Android, so they can be tested (RF-R2, RF-R3, RF-R4, RF-R8). */
 object RingPolicy {
     /**
-     * Gain 0..1 applied to the tone [elapsedMs] after the ring started: from silence to [maxVolume] % in [rampSeconds],
-     * quadratic so the start is gentle to the ear. Backup rings skip the ramp and use full volume.
+     * Gain 0..1 applied to the tone [elapsedMs] after the ring started: from a soft but clearly audible start (a tenth of
+     * [maxVolume] %, -20 dB) up to [maxVolume] % in [rampSeconds], linear. A quadratic curve from 2 % left a 30 s ramp
+     * almost inaudible for its first half, so people slept through it. Backup rings skip the ramp and use full volume.
      */
     fun gain(elapsedMs: Long, rampSeconds: Int, maxVolume: Int, mode: RingMode = RingMode.NORMAL): Float {
         if (mode == RingMode.BACKUP) return 1f
         val target = maxVolume.coerceIn(1, PERCENT) / PERCENT.toFloat()
         if (rampSeconds <= 0) return target
         val progress = min(1f, elapsedMs.coerceAtLeast(0) / (rampSeconds * MS_PER_SECOND.toFloat()))
-        return target * MIN_RAMP_GAIN.coerceAtMost(target).let { floor -> floor + (1f - floor) * progress * progress }
+        return target * MIN_RAMP_GAIN.coerceAtMost(target).let { floor -> floor + (1f - floor) * progress }
     }
 
     /** Whether one more snooze is allowed after [snoozeCount] snoozes (RF-R3). */
@@ -65,6 +66,6 @@ object RingPolicy {
     private const val MS_PER_SECOND = 1_000
     private const val MS_PER_MINUTE = 60_000L
 
-    /** Start of the ramp: barely audible rather than true silence, so the first seconds are not wasted. */
-    private const val MIN_RAMP_GAIN = 0.02f
+    /** Start of the ramp, relative to the maximum: soft, but enough to wake someone up from the first seconds. */
+    private const val MIN_RAMP_GAIN = 0.1f
 }
