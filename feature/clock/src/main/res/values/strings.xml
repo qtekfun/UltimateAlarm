@@ -10,7 +10,6 @@
   <string name="timer_done_channel">Finished timers</string>
   <string name="timer_done">%1$s finished</string>
   <string name="timer_stop">Stop</string>
-  <string name="timer_presets">Quick timers</string>
   <string name="timer_minutes">%1$d min</string>
   <string name="timer_hours">h</string>
   <string name="timer_min">min</string>
@@ -23,4 +22,8 @@
   <string name="stopwatch_lap">Lap</string>
   <string name="stopwatch_start">Start</string>
   <string name="stopwatch_lap_n">Lap %1$d</string>
+  <string name="timer_new">New timer</string>
+  <string name="timer_of">of %1$s</string>
+  <string name="timer_cancel">Cancel</string>
+  <string name="timer_backspace">Delete digit</string>
 </resources>

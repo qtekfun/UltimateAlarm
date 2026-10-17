@@ -63,4 +63,28 @@ class ClockModelTest {
         assertEquals(listOf(1L, 2L, 3L, 45L), clockParts(3_600_000 + 2 * 60_000 + 3_450))
         assertEquals(listOf(0L, 0L, 0L, 0L), clockParts(-5))
     }
+
+    @Test
+    fun `elapsed times show hundredths`() {
+        assertEquals("0:03.45", formatElapsed(3_450))
+        assertEquals("1:02:03.45", formatElapsed(3_600_000 + 2 * 60_000 + 3_450))
+    }
+
+    @Test
+    fun `keypad fills from the right like a microwave`() {
+        var digits = ""
+        "0130".forEach { digits = TimerKeypad.type(digits, it.toString()) }
+        assertEquals("130", digits)
+        assertEquals(listOf(0, 1, 30), TimerKeypad.parts(digits))
+        assertEquals(90_000L, TimerKeypad.durationMs(digits))
+        assertEquals("13000", TimerKeypad.type(digits, "00"))
+        assertEquals("", TimerKeypad.type("", "00"))
+        assertEquals("123456", TimerKeypad.type("123456", "7"))
+        assertEquals("123456", TimerKeypad.type("12345", "67"))
+        assertEquals("12", TimerKeypad.delete("123"))
+        assertEquals("", TimerKeypad.delete(""))
+        assertEquals((12 * 3_600L + 34 * 60 + 56) * 1_000, TimerKeypad.durationMs("123456"))
+        assertEquals(90_000L, TimerKeypad.durationMs("90"))
+        assertEquals(0L, TimerKeypad.durationMs(""))
+    }
 }
