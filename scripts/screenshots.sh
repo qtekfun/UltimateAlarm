@@ -36,7 +36,10 @@ for LOCALE in en-US es-ES; do
   tap_id save_alarm 3
   shot 02_alarms
   tap_text '^(Timer|Temporizador)$' 3
+  for key in 1 3 0; do tap_text "^$key\$" 1; done
+  shot 11_timer_keypad
   tap_text '^(5 min)$' 2
+  tap_text '^(New timer|Nuevo temporizador)$' 2
   tap_text '^(10 min)$' 2
   shot 04_timer
   tap_text '^(Stopwatch|Cronómetro)$' 3
@@ -62,7 +65,7 @@ for LOCALE in en-US es-ES; do
   adb shell am force-stop "$PKG"
 done
 
-# Dark mode (Settings → Appearance follows the system by default), Spanish: list, editor and settings.
+# Dark mode (Settings → Appearance follows the system by default), Spanish: list, editor, settings, timer, stopwatch.
 LOCALE=es-ES
 adb shell cmd uimode night yes
 adb shell am start -n "$PKG/com.qtekfun.ultimatealarm.MainActivity" > /dev/null
@@ -73,6 +76,11 @@ shot 09_editor_dark
 back
 tap_text '^(Ajustes)$' 3
 shot 10_settings_dark
+back
+tap_text '^(Temporizador)$' 3
+shot 12_timer_dark
+tap_text '^(Cronómetro)$' 3
+shot 13_stopwatch_dark
 adb shell cmd uimode night no
 adb shell am force-stop "$PKG"
 ls -R "$OUT"

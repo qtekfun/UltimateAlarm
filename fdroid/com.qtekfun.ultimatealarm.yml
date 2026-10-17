@@ -15,8 +15,8 @@ Repo: https://github.com/qtekfun/UltimateAlarm.git
 Binaries: https://github.com/qtekfun/UltimateAlarm/releases/download/v%v/UltimateAlarm-%v.apk
 
 Builds:
-  - versionName: 1.0.0-rc6
-    versionCode: 1000006
+  - versionName: 1.0.0-rc7
+    versionCode: 1000007
     commit: TODO_RELEASE_TAG_COMMIT
     subdir: app
     sudo:
@@ -31,5 +31,5 @@ AllowedAPKSigningKeys: f618cc0383408f1332cf9021450c39256b20e4865a65e043f27efee31
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags ^v[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$
-CurrentVersion: 1.0.0-rc6
-CurrentVersionCode: 1000006
+CurrentVersion: 1.0.0-rc7
+CurrentVersionCode: 1000007

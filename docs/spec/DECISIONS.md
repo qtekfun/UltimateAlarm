@@ -151,7 +151,8 @@ scheme built in `AmanecerPalette`, so every screen follows it; `PaletteTest` kee
 both modes. The choice lives in device-protected preferences so the ringing screen can use it before the first unlock.
 Rolled out screen by screen (theme and settings, alarm list, editor, ringing). Secondary and tertiary colours are shades
 of the chosen accent (not a fixed indigo/teal), and the ringing screen is tinted by it; the sections are swipeable pages
-behind a floating pill navigation (1.0.0-rc6).
+behind a floating pill navigation (1.0.0-rc6). Timer and stopwatch follow in 1.0.0-rc7: a keypad that fills hh mm ss from the right instead of three
+text fields, timers as cards with a ring, the stopwatch inside a ring that turns once a minute.
 
 
 ## D-20 · Louder tones and a ramp that is audible from the start (product owner, 2026-10-17)
