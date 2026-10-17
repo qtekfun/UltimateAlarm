@@ -4,6 +4,11 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [1.0.0-rc7]
+
+### Changed
+- Louder alarm tones (+6 dB), and the volume ramp starts clearly audible and rises evenly instead of staying almost silent for its first half.
+
 ## [1.0.0-rc6]
 
 ### Added
