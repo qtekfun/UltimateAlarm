@@ -1,0 +1,1 @@
+Louder tones and a volume ramp that is audible from the start. Timer and stopwatch redesigned: large keypad, quick presets and a progress ring.
