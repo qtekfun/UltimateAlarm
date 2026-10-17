@@ -3,7 +3,7 @@
 Every file is **original work of the UltimateAlarm project**, synthesised from scratch by
 [`tools/sounds/generate.py`](../../../../../../tools/sounds/generate.py) (no samples, no third-party recordings), and is
 licensed like the rest of the project, **GPL-3.0-or-later**. Regenerate with `python3 tools/sounds/generate.py`
-(numpy + ffmpeg with libopus): the output is deterministic. Loudness: −16 LUFS (wake-up, notification), −12 LUFS (backup).
+(numpy + ffmpeg with libopus): the output is deterministic. Loudness: −10 LUFS (wake-up, notification), −8 LUFS (backup), reached with a peak limiter; the two plucked tones stop at +20 dB of gain, a little under.
 
 | File | Category | Origin | Author | Licence |
 |---|---|---|---|---|
