@@ -60,3 +60,36 @@ fun clockParts(ms: Long): List<Long> {
     val total = ms.coerceAtLeast(0)
     return listOf(total / 3_600_000, total / 60_000 % 60, total / 1_000 % 60, total / 10 % 100)
 }
+
+/** h:mm:ss.cc or m:ss.cc, for elapsed times (stopwatch, laps): rounded down. */
+fun formatElapsed(ms: Long): String {
+    val parts = clockParts(ms)
+    val (h, m, s) = parts
+    return if (h > 0) "%d:%02d:%02d.%02d".format(h, m, s, parts[3]) else "%d:%02d.%02d".format(m, s, parts[3])
+}
+
+/**
+ * RF-E2: the timer keypad. Digits typed from the right fill hh mm ss, as on a microwave ("130" is 1 min 30 s); leading
+ * zeros are dropped and keys beyond six digits ignored. Minutes or seconds over 59 count as they read ("90" s is 1:30).
+ */
+object TimerKeypad {
+    const val MAX_DIGITS = 6
+
+    fun type(digits: String, key: String): String = key.fold(digits) { typed, digit ->
+        when {
+            !digit.isDigit() || typed.length >= MAX_DIGITS -> typed
+            typed.isEmpty() && digit == '0' -> typed
+            else -> typed + digit
+        }
+    }
+
+    fun delete(digits: String): String = digits.dropLast(1)
+
+    /** Hours, minutes and seconds as typed. */
+    fun parts(digits: String): List<Int> = digits.padStart(MAX_DIGITS, '0').chunked(2).map(String::toInt)
+
+    fun durationMs(digits: String): Long {
+        val (h, m, s) = parts(digits)
+        return (h * 3_600L + m * 60L + s) * 1_000L
+    }
+}

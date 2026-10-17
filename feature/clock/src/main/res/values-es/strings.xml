@@ -10,7 +10,6 @@
   <string name="timer_done_channel">Temporizadores terminados</string>
   <string name="timer_done">%1$s terminado</string>
   <string name="timer_stop">Parar</string>
-  <string name="timer_presets">Temporizadores rápidos</string>
   <string name="timer_minutes">%1$d min</string>
   <string name="timer_hours">h</string>
   <string name="timer_min">min</string>
@@ -23,4 +22,8 @@
   <string name="stopwatch_lap">Vuelta</string>
   <string name="stopwatch_start">Iniciar</string>
   <string name="stopwatch_lap_n">Vuelta %1$d</string>
+  <string name="timer_new">Nuevo temporizador</string>
+  <string name="timer_of">de %1$s</string>
+  <string name="timer_cancel">Cancelar</string>
+  <string name="timer_backspace">Borrar cifra</string>
 </resources>

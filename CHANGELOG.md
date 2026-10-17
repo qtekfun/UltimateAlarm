@@ -7,6 +7,7 @@ for F-Droid.
 ## [1.0.0-rc7]
 
 ### Changed
+- Timer and stopwatch redesigned in the new style: a large keypad that fills from the right, quick timers that start at once, running timers with a ring and a big pause button; the stopwatch inside a ring with large round buttons and laps with hundredths.
 - Louder alarm tones (+6 dB), and the volume ramp starts clearly audible and rises evenly instead of staying almost silent for its first half.
 
 ## [1.0.0-rc6]
