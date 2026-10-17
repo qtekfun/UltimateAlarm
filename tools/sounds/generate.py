@@ -2,7 +2,7 @@
 """Generates UltimateAlarm's bundled sound pack (docs/spec/02-diseno.md §7).
 
 Every tone is synthesised here from scratch (no samples), so the pack is original work under the project's licence.
-Deterministic: a fixed seed and fixed parameters give the same WAV every time; ffmpeg then normalises loudness and
+Deterministic: a fixed seed and fixed parameters give the same WAV every time; ffmpeg then brings it to its loudness and
 encodes OGG Opus with bit-exact flags. Loops are seamless: note tails that run past the end are wrapped to the start.
 
 Usage: python3 tools/sounds/generate.py OUT_DIR      (needs numpy and ffmpeg with libopus)
@@ -110,20 +110,20 @@ def tones():
     """id -> (category, samples, target LUFS). Categories: gentle, energetic, backup, notification."""
     c_major = ["C5", "E5", "G5", "C6", "G5", "E5"]
     pent = ["D5", "E5", "G5", "A5", "B5", "A5", "G5", "E5"]
-    yield "dawn_marimba", "gentle", melody(marimba, c_major, 0.5, 24.0, repeats_gap=1.0), -16
-    yield "morning_bells", "gentle", melody(bell, ["E5", "B4", "", "G#5", "", "E5", "", ""], 1.0, 32.0), -16
+    yield "dawn_marimba", "gentle", melody(marimba, c_major, 0.5, 24.0, repeats_gap=1.0), -10
+    yield "morning_bells", "gentle", melody(bell, ["E5", "B4", "", "G#5", "", "E5", "", ""], 1.0, 32.0), -10
     yield "soft_pad", "gentle", sequence([(i * 8.0, pad([note(a), note(b), note(c)], 10.0)) for i, (a, b, c) in
-                                          enumerate([("C4", "E4", "G4"), ("A3", "C4", "E4"), ("F3", "A3", "C4"), ("G3", "B3", "D4")])], 32.0), -16
-    yield "music_box", "gentle", melody(pluck, ["E6", "G6", "C7", "B6", "G6", "E6", "D6", "", ""], 0.4, 28.8), -16
-    yield "gentle_chimes", "gentle", melody(bell, ["C6", "", "G5", "", "A5", "", "E5", "", "", ""], 0.6, 30.0), -16
-    yield "bright_marimba", "energetic", melody(marimba, pent, 0.25, 24.0, bright=1.8), -16
-    yield "sunrise_arpeggio", "energetic", melody(marimba, ["C5", "E5", "G5", "C6", "E6", "G6", "E6", "C6"], 0.18, 23.04, bright=1.4), -16
-    yield "wake_pluck", "energetic", melody(pluck, ["A4", "A4", "E5", "A5", "", "G5", "E5", "D5"], 0.25, 24.0), -16
-    yield "rise_bells", "energetic", melody(bell, ["G5", "B5", "D6", "G6"], 0.35, 22.4, repeats_gap=0.6), -16
-    yield "backup_pulse", "backup", melody(square_pulse, ["A5", "", "A5", "", "A5", "", "", ""], 0.12, 20.16, length=0.1), -12
-    yield "backup_two_tone", "backup", melody(square_pulse, ["E6", "C6"], 0.3, 20.4, length=0.28), -12
-    yield "eve_chime", "notification", sequence([(0.0, bell(note("G5"))), (0.25, bell(note("E6")))], 4.0), -16
-    yield "timer_done", "notification", melody(marimba, ["C6", "E6", "G6", "", "C6", "E6", "G6", "", "", "", "", ""], 0.15, 3.6, bright=1.5), -16
+                                          enumerate([("C4", "E4", "G4"), ("A3", "C4", "E4"), ("F3", "A3", "C4"), ("G3", "B3", "D4")])], 32.0), -10
+    yield "music_box", "gentle", melody(pluck, ["E6", "G6", "C7", "B6", "G6", "E6", "D6", "", ""], 0.4, 28.8), -10
+    yield "gentle_chimes", "gentle", melody(bell, ["C6", "", "G5", "", "A5", "", "E5", "", "", ""], 0.6, 30.0), -10
+    yield "bright_marimba", "energetic", melody(marimba, pent, 0.25, 24.0, bright=1.8), -10
+    yield "sunrise_arpeggio", "energetic", melody(marimba, ["C5", "E5", "G5", "C6", "E6", "G6", "E6", "C6"], 0.18, 23.04, bright=1.4), -10
+    yield "wake_pluck", "energetic", melody(pluck, ["A4", "A4", "E5", "A5", "", "G5", "E5", "D5"], 0.25, 24.0), -10
+    yield "rise_bells", "energetic", melody(bell, ["G5", "B5", "D6", "G6"], 0.35, 22.4, repeats_gap=0.6), -10
+    yield "backup_pulse", "backup", melody(square_pulse, ["A5", "", "A5", "", "A5", "", "", ""], 0.12, 20.16, length=0.1), -8
+    yield "backup_two_tone", "backup", melody(square_pulse, ["E6", "C6"], 0.3, 20.4, length=0.28), -8
+    yield "eve_chime", "notification", sequence([(0.0, bell(note("G5"))), (0.25, bell(note("E6")))], 4.0), -10
+    yield "timer_done", "notification", melody(marimba, ["C6", "E6", "G6", "", "C6", "E6", "G6", "", "", "", "", ""], 0.15, 3.6, bright=1.5), -10
 
 
 def write_wav(path, samples):
@@ -136,6 +136,29 @@ def write_wav(path, samples):
         w.writeframes(pcm.tobytes())
 
 
+# Alarm tones must be loud: the target is reached with a peak limiter (a gain pushed into it), not by loudnorm, whose
+# dynamic mode undershoots on plucked and percussive tones. A few passes converge on the target within 0.3 LU. Opus can
+# overshoot sharp attacks past the limiter, so a tone whose decoded peak clips is redone with a lower ceiling.
+LIMITS = (0.8, 0.67, 0.56, 0.47)
+MAX_DECODED_PEAK_DB = -0.5
+# Beyond this the limiter flattens a plucked tone into a buzz; such a tone stays a little under its target.
+MAX_GAIN_DB = 20.0
+
+
+def chain(gain_db, limit):
+    return f"lowpass=f=11000,volume={gain_db:.2f}dB,alimiter=limit={limit}:attack=1:release=60:level=false"
+
+
+def measure(path, filters, key):
+    out = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", path, "-af", filters, "-f", "null", "-"],
+                         check=True, capture_output=True, text=True).stderr
+    return float(out.rsplit(key, 1)[1].split()[0])
+
+
+def loudness(wav, gain_db, limit):
+    return measure(wav, chain(gain_db, limit) + ",ebur128", " I:")
+
+
 def main(out_dir):
     os.makedirs(out_dir, exist_ok=True)
     with tempfile.TemporaryDirectory() as tmp:
@@ -143,14 +166,23 @@ def main(out_dir):
             wav = os.path.join(tmp, tone_id + ".wav")
             write_wav(wav, samples)
             ogg = os.path.join(out_dir, tone_id + ".ogg")
-            subprocess.run([
-                "ffmpeg", "-loglevel", "error", "-y", "-i", wav,
-                "-af", f"loudnorm=I={lufs}:TP=-1.5:LRA=11",
-                "-ar", "48000", "-ac", "1", "-c:a", "libopus", "-b:a", "64k",
-                "-map_metadata", "-1", "-fflags", "+bitexact", "-flags:a", "+bitexact", ogg,
-            ], check=True)
-            print(f"{category:12} {tone_id}  {len(samples) / RATE:.1f}s  {lufs} LUFS")
-
+            for limit in LIMITS:
+                gain = 0.0
+                for _ in range(6):
+                    miss = lufs - loudness(wav, gain, limit)
+                    if abs(miss) < 0.3 or (miss > 0 and gain >= MAX_GAIN_DB):
+                        break
+                    gain = min(gain + miss, MAX_GAIN_DB)
+                subprocess.run([
+                    "ffmpeg", "-loglevel", "error", "-y", "-i", wav,
+                    "-af", chain(gain, limit),
+                    "-ar", "48000", "-ac", "1", "-c:a", "libopus", "-b:a", "64k",
+                    "-map_metadata", "-1", "-fflags", "+bitexact", "-flags:a", "+bitexact", ogg,
+                ], check=True)
+                peak = measure(ogg, "volumedetect", "max_volume:")
+                if peak <= MAX_DECODED_PEAK_DB:
+                    break
+            print(f"{category:12} {tone_id}  {len(samples) / RATE:.1f}s  {lufs} LUFS  gain {gain:+.1f} dB  peak {peak} dB")
 
 if __name__ == "__main__":
     main(sys.argv[1] if len(sys.argv) > 1 else "feature/sounds/src/main/assets/sounds")
