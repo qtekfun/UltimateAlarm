@@ -153,3 +153,12 @@ Rolled out screen by screen (theme and settings, alarm list, editor, ringing). S
 of the chosen accent (not a fixed indigo/teal), and the ringing screen is tinted by it; the sections are swipeable pages
 behind a floating pill navigation (1.0.0-rc6).
 
+
+## D-20 · Louder tones and a ramp that is audible from the start (product owner, 2026-10-17)
+
+The product owner found the tones too soft. The bundled pack moves from the −16 / −12 LUFS of 02-diseno §7 to **−10 LUFS**
+(wake-up, notification) and **−8 LUFS** (backup), reached with a peak limiter instead of `loudnorm`, whose dynamic mode
+fell short on percussive tones; the two plucked tones stop at +20 dB of gain (about −13 LUFS) so they do not turn into a
+buzz. The volume ramp (RF-R2) starts at a tenth of the maximum (−20 dB) and rises linearly, instead of quadratically from
+2 %: the event log showed a snooze 12 s into a 30 s ramp, when the old curve was still at 18 %. Each ring now logs the
+alarm stream volume it set (`VOLUME`).
