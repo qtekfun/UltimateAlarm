@@ -157,7 +157,7 @@ class RingingService : Service() {
     /** RF-R7 also when the ringing screen is not in front (see [VolumeKeys]). A failure only loses the shortcut. */
     private fun listenToVolumeKeys(alarmId: Long) {
         if (volumeKeys != null) return
-        volumeKeys = runCatching { VolumeKeys(this) { handler.post { onVolumeKey() } } }
+        volumeKeys = runCatching { VolumeKeys(this, handler) { handler.post { onVolumeKey() } } }
             .onFailure { DiagnosticLog.log(this, "ERROR", "volume keys: ${it.javaClass.simpleName}: ${it.message}", alarmId) }
             .getOrNull()
     }
@@ -375,8 +375,10 @@ class RingingService : Service() {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setOngoing(true)
             .setContentIntent(screen)
-            .setFullScreenIntent(screen, true)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+        // The system lights the screen to show a full-screen intent: without RF-R1's screen-on, the ringing screen opens
+        // from the notification instead, which still offers Snooze and Dismiss on the lock screen.
+        if (RingStore(this).turnScreenOn) builder.setFullScreenIntent(screen, true)
         if (canSnooze) builder.addAction(0, getString(R.string.ringing_snooze), actionIntent(this, ACTION_SNOOZE, alarmId))
         if (canDismiss) builder.addAction(0, getString(R.string.ringing_dismiss), actionIntent(this, ACTION_DISMISS, alarmId))
         return builder.build()

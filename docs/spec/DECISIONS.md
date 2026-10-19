@@ -172,4 +172,5 @@ screen stayed dark and the volume keys changed the volume. While ringing, the se
 with a remote volume provider, which the system hands the volume keys to (also with the screen off); they run the
 chosen action and never lower the alarm. Turning the screen on becomes a setting (on by default): the service lights the
 screen with a short bright wake lock (`ACQUIRE_CAUSES_WAKEUP`, plus `TURN_SCREEN_ON`) besides `setTurnScreenOn`. Off,
-the alarm still rings and its screen waits behind the lock screen. Checked on CI emulators with the screen off.
+the alarm still rings, but its notification carries no full-screen intent (the system lights the screen to show one):
+the ringing screen opens from the notification, which keeps Snooze and Dismiss on the lock screen. Checked on CI emulators with the screen off.

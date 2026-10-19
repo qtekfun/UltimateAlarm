@@ -53,7 +53,7 @@ class RingStore(context: Context) {
         get() = VolumeButtonAction.entries.firstOrNull { it.name == prefs.getString(KEY_VOLUME_BUTTONS, null) } ?: VolumeButtonAction.SNOOZE
         set(value) = prefs.edit { putString(KEY_VOLUME_BUTTONS, value.name) }
 
-    /** RF-R1: whether a ring turns the screen on by itself. Off, the alarm rings and its screen waits behind the lock screen. */
+    /** RF-R1: whether a ring turns the screen on by itself. Off, the alarm rings and its screen opens from the notification. */
     var turnScreenOn: Boolean
         get() = prefs.getBoolean(KEY_TURN_SCREEN_ON, true)
         set(value) = prefs.edit { putBoolean(KEY_TURN_SCREEN_ON, value) }
