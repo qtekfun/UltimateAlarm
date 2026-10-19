@@ -79,4 +79,21 @@ class RingPolicyTest {
         assertFalse(RingPolicy.isResumable(state, 1_000_000 + 61 * 60_000))
         assertFalse(RingPolicy.isResumable(state, 999_000))
     }
+
+    @Test
+    fun volumeKeySnoozesOnlyWhileASnoozeIsLeft() {
+        assertEquals(VolumeButtonAction.SNOOZE, RingPolicy.volumeKeyCommand(VolumeButtonAction.SNOOZE, canSnooze = true, hasChallenge = true))
+        assertNull(RingPolicy.volumeKeyCommand(VolumeButtonAction.SNOOZE, canSnooze = false, hasChallenge = false))
+    }
+
+    @Test
+    fun volumeKeyNeverDismissesPastAChallenge() {
+        assertEquals(VolumeButtonAction.DISMISS, RingPolicy.volumeKeyCommand(VolumeButtonAction.DISMISS, canSnooze = false, hasChallenge = false))
+        assertNull(RingPolicy.volumeKeyCommand(VolumeButtonAction.DISMISS, canSnooze = true, hasChallenge = true))
+    }
+
+    @Test
+    fun volumeKeySetToNothingDoesNothing() {
+        assertNull(RingPolicy.volumeKeyCommand(VolumeButtonAction.NOTHING, canSnooze = true, hasChallenge = false))
+    }
 }

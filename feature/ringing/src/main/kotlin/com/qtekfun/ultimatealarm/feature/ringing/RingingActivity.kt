@@ -71,6 +71,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.qtekfun.ultimatealarm.core.data.DiagnosticLog
 import com.qtekfun.ultimatealarm.core.data.RingMode
+import com.qtekfun.ultimatealarm.core.data.RingPolicy
 import com.qtekfun.ultimatealarm.core.data.RingStore
 import com.qtekfun.ultimatealarm.core.data.VolumeButtonAction
 import com.qtekfun.ultimatealarm.core.designsystem.UltimateAlarmTheme
@@ -82,14 +83,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * The alarm screen over the lock screen, turning the screen on (RF-R1): huge time, label, Snooze and a swipe to dismiss.
+ * The alarm screen over the lock screen, turning the screen on unless the user turned that off (RF-R1): huge time, label, Snooze and a swipe to dismiss.
  * Dark, legible at a distance (§10). The volume buttons do what the user chose (RF-R7).
  */
 class RingingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setShowWhenLocked(true)
-        setTurnScreenOn(true)
+        setTurnScreenOn(RingStore(this).turnScreenOn)
         val ringing = RingingState.current.value
         if (ringing == null) {
             finish()
@@ -130,11 +131,12 @@ class RingingActivity : ComponentActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode != KeyEvent.KEYCODE_VOLUME_UP && keyCode != KeyEvent.KEYCODE_VOLUME_DOWN) return super.onKeyDown(keyCode, event)
-        when (RingStore(this).volumeButtons) {
-            VolumeButtonAction.SNOOZE -> if (RingingState.current.value?.canSnooze == true) send(RingingService.ACTION_SNOOZE)
-            // With a challenge, the volume buttons cannot dismiss (RF-R5): the swipe opens the challenge.
-            VolumeButtonAction.DISMISS -> if (RingingState.current.value?.challenge == null) send(RingingService.ACTION_DISMISS)
-            VolumeButtonAction.NOTHING -> Unit
+        val ringing = RingingState.current.value ?: return true
+        // With a challenge, the volume buttons cannot dismiss (RF-R5): the swipe opens the challenge.
+        when (RingPolicy.volumeKeyCommand(RingStore(this).volumeButtons, ringing.canSnooze, ringing.challenge != null)) {
+            VolumeButtonAction.SNOOZE -> send(RingingService.ACTION_SNOOZE)
+            VolumeButtonAction.DISMISS -> send(RingingService.ACTION_DISMISS)
+            VolumeButtonAction.NOTHING, null -> Unit
         }
         // Consumed either way: the volume keys must not lower the alarm.
         return true

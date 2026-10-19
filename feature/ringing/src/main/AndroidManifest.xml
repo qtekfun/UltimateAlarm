@@ -8,6 +8,8 @@
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- RF-R1: the ringing service lights the screen with a wake lock; some systems ask for this to honour it. -->
+    <uses-permission android:name="android.permission.TURN_SCREEN_ON" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
@@ -84,7 +86,6 @@
             android:launchMode="singleTask"
             android:showWhenLocked="true"
             android:taskAffinity="com.qtekfun.ultimatealarm.ringing"
-            android:theme="@style/Theme.UltimateAlarm.Ringing"
-            android:turnScreenOn="true" />
+            android:theme="@style/Theme.UltimateAlarm.Ringing" />
     </application>
 </manifest>

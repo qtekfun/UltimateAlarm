@@ -61,7 +61,7 @@ import com.qtekfun.ultimatealarm.feature.sounds.soundName
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
-/** Global ringing settings: volume buttons (RF-R7) and auto-silence (RF-R8). More sections arrive with their phases. */
+/** Global ringing settings: turning the screen on (RF-R1), volume buttons (RF-R7) and auto-silence (RF-R8). More sections arrive with their phases. */
 @Composable
 fun SettingsScreen(onHolidays: () -> Unit, onBackup: () -> Unit, onAssistant: () -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -140,6 +140,21 @@ fun SettingsScreen(onHolidays: () -> Unit, onBackup: () -> Unit, onAssistant: ()
                     steps = 3
                 )
             }
+        }
+        var screenOn by remember { mutableStateOf(store.turnScreenOn) }
+        Row(Modifier.fillMaxWidth().heightIn(min = 56.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(stringResource(R.string.settings_turn_screen_on), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    stringResource(R.string.settings_turn_screen_on_summary),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Switch(checked = screenOn, onCheckedChange = {
+                screenOn = it
+                store.turnScreenOn = it
+            })
         }
         Group(stringResource(R.string.settings_volume_buttons)) {
             listOf(

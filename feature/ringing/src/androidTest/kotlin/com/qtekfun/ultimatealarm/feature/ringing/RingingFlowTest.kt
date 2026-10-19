@@ -2,13 +2,17 @@ package com.qtekfun.ultimatealarm.feature.ringing
 
 import android.app.AlarmManager
 import android.content.Context
+import android.os.ParcelFileDescriptor
+import android.os.PowerManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.qtekfun.ultimatealarm.core.data.Alarm
 import com.qtekfun.ultimatealarm.core.data.Challenge
 import com.qtekfun.ultimatealarm.core.data.DiagnosticLog
 import com.qtekfun.ultimatealarm.core.data.RingMode
 import com.qtekfun.ultimatealarm.core.data.RingStore
+import com.qtekfun.ultimatealarm.core.data.VolumeButtonAction
 import com.qtekfun.ultimatealarm.core.scheduling.AlarmKind
 import com.qtekfun.ultimatealarm.feature.ringing.challenge.hasNfc
 import java.time.LocalDate
@@ -36,6 +40,62 @@ class RingingFlowTest {
         waitFor(5_000) { RingingState.current.value == null }
         repository.alarms().forEach { repository.delete(it.id) }
         RingStore(context).state = null
+        RingStore(context).turnScreenOn = true
+        RingStore(context).volumeButtons = VolumeButtonAction.SNOOZE
+        shell("input keyevent KEYCODE_WAKEUP")
+    }
+
+    @Test
+    fun volumeKeySnoozesWithTheScreenOff() = runBlocking {
+        RingStore(context).turnScreenOn = false
+        val id = repository.save(Alarm(time = LocalTime.of(3, 0), backupAfterMinutes = null))
+        ring(id)
+        screenOff()
+        // With the screen off the ringing screen gets no keys: the service's media session must take them.
+        shell("input keyevent KEYCODE_VOLUME_DOWN")
+        assertNotNull("volume key did not snooze", waitFor(5_000) { RingStore(context).snoozedUntil[id] })
+        assertNull(RingingState.current.value)
+    }
+
+    @Test
+    fun volumeKeySetToNothingKeepsRinging() = runBlocking {
+        RingStore(context).turnScreenOn = false
+        RingStore(context).volumeButtons = VolumeButtonAction.NOTHING
+        val id = repository.save(Alarm(time = LocalTime.of(3, 0), backupAfterMinutes = null))
+        ring(id)
+        screenOff()
+        shell("input keyevent KEYCODE_VOLUME_DOWN")
+        Thread.sleep(1_000)
+        assertEquals(id, RingingState.current.value?.alarmId)
+        assertNull(RingStore(context).snoozedUntil[id])
+    }
+
+    @Test
+    fun ringTurnsTheScreenOnOnlyWhenChosen() = runBlocking {
+        val power = context.getSystemService(PowerManager::class.java)
+        RingStore(context).turnScreenOn = false
+        screenOff()
+        ring(repository.save(Alarm(time = LocalTime.of(3, 0), backupAfterMinutes = null)))
+        Thread.sleep(2_000)
+        assertTrue("screen turned on although disabled", !power.isInteractive)
+        clean()
+
+        RingStore(context).turnScreenOn = true
+        screenOff()
+        ring(repository.save(Alarm(time = LocalTime.of(4, 0), backupAfterMinutes = null)))
+        assertNotNull("screen did not turn on", waitFor(5_000) { if (power.isInteractive) Unit else null })
+    }
+
+    private fun screenOff() {
+        shell("input keyevent KEYCODE_SLEEP")
+        val power = context.getSystemService(PowerManager::class.java)
+        assertNotNull("screen did not go off", waitFor(5_000) { if (power.isInteractive) null else Unit })
+    }
+
+    private fun shell(command: String) {
+        // Reading the output waits for the command to finish.
+        ParcelFileDescriptor.AutoCloseInputStream(InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(command)).use { it.readBytes() }
+        Thread.sleep(SHELL_SETTLE_MS)
     }
 
     @Test
@@ -144,5 +204,6 @@ class RingingFlowTest {
 
     private companion object {
         const val POLL_MS = 200L
+        const val SHELL_SETTLE_MS = 500L
     }
 }

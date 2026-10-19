@@ -32,6 +32,8 @@
   <string name="accent_teal">Verde azulado</string>
   <string name="accent_mustard">Mostaza</string>
   <string name="accent_dynamic">Según tu fondo de pantalla</string>
+  <string name="settings_turn_screen_on">Encender la pantalla</string>
+  <string name="settings_turn_screen_on_summary">Encender la pantalla y mostrar la alarma al sonar. Desactivado, suena con la pantalla apagada y se abre desde su notificación</string>
   <string name="settings_volume_buttons">Botones de volumen al sonar</string>
   <string name="settings_volume_snooze">Posponer</string>
   <string name="settings_volume_dismiss">Descartar</string>

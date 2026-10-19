@@ -163,3 +163,14 @@ fell short on percussive tones; the two plucked tones stop at +20 dB of gain (ab
 buzz. The volume ramp (RF-R2) starts at a tenth of the maximum (−20 dB) and rises linearly, instead of quadratically from
 2 %: the event log showed a snooze 12 s into a 30 s ramp, when the old curve was still at 18 %. Each ring now logs the
 alarm stream volume it set (`VOLUME`).
+
+## D-21 · Volume keys and screen-on outside the ringing screen (product owner, 2026-10-19)
+
+RF-R7 only worked while the ringing screen had focus, and RF-R1 relied on the full-screen intent alone: with the
+screen off, with a heads-up instead of the full screen, or with the full-screen permission denied (Android 14+), the
+screen stayed dark and the volume keys changed the volume. While ringing, the service now holds an active media session
+with a remote volume provider, which the system hands the volume keys to (also with the screen off); they run the
+chosen action and never lower the alarm. Turning the screen on becomes a setting (on by default): the service lights the
+screen with a short bright wake lock (`ACQUIRE_CAUSES_WAKEUP`, plus `TURN_SCREEN_ON`) besides `setTurnScreenOn`. Off,
+the alarm still rings, but its notification carries no full-screen intent (the system lights the screen to show one):
+the ringing screen opens from the notification, which keeps Snooze and Dismiss on the lock screen. Checked on CI emulators with the screen off.

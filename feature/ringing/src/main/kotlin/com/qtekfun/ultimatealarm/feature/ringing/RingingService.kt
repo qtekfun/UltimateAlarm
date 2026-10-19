@@ -25,6 +25,7 @@ import com.qtekfun.ultimatealarm.core.data.RingMode
 import com.qtekfun.ultimatealarm.core.data.RingPolicy
 import com.qtekfun.ultimatealarm.core.data.RingState
 import com.qtekfun.ultimatealarm.core.data.RingStore
+import com.qtekfun.ultimatealarm.core.data.VolumeButtonAction
 import com.qtekfun.ultimatealarm.core.scheduling.AlarmKind
 import com.qtekfun.ultimatealarm.feature.ringing.challenge.hasCamera
 import com.qtekfun.ultimatealarm.feature.ringing.challenge.hasNfc
@@ -35,8 +36,9 @@ import kotlinx.coroutines.launch
 
 /**
  * Foreground service that rings (02-diseno §5): full-screen notification opening [RingingActivity] over the lock screen,
- * the alarm sound with its ramp, vibration, the backup tone (RF-R4) with a safety alarm, snooze limits (RF-R3) and
- * auto-silence (RF-R8). The ring is persisted in [RingStore] so it resumes if the process dies (§5.4).
+ * the alarm sound with its ramp, vibration, the backup tone (RF-R4) with a safety alarm, snooze limits (RF-R3),
+ * auto-silence (RF-R8), the volume keys (RF-R7) and, if chosen, turning the screen on (RF-R1). The ring is persisted
+ * in [RingStore] so it resumes if the process dies (§5.4).
  *
  * Order matters: foreground and sound start before anything that reads the database, so nothing slow or failing can
  * delay the alarm; the alarm's own settings are applied a moment later.
@@ -46,6 +48,7 @@ class RingingService : Service() {
     private var player: TonePlayer? = null
     private var vibrator: AlarmVibrator? = null
     private var wakeLock: PowerManager.WakeLock? = null
+    private var volumeKeys: VolumeKeys? = null
     private var session: Session? = null
     private var savedAlarmVolume: Int? = null
 
@@ -107,6 +110,8 @@ class RingingService : Service() {
         maximizeAlarmStream()
 
         val store = RingStore(this)
+        if (store.turnScreenOn) wakeScreen(alarmId)
+        listenToVolumeKeys(alarmId)
         val snoozes = when (purpose) {
             AlarmPurpose.SNOOZE -> store.snoozesOf(alarmId).also {
                 store.setSnoozedUntil(alarmId, null)
@@ -130,6 +135,42 @@ class RingingService : Service() {
             RingPolicy.silenceAt(firedAt, Alarm(backupAfterMinutes = null), store.silenceAfterMinutes) - System.currentTimeMillis()
         )
         ringingScope.launch { applyAlarm(alarmId) }
+    }
+
+    /**
+     * RF-R1 without relying on the full-screen intent alone: denied on Android 14+, or held back by some systems, it would
+     * leave the screen dark. A short bright wake lock lights it; then it follows the usual screen timeout.
+     */
+    @Suppress("DEPRECATION") // A service has no window: a screen wake lock is the only way for it to light the screen.
+    private fun wakeScreen(alarmId: Long) {
+        runCatching {
+            getSystemService(PowerManager::class.java)
+                .newWakeLock(
+                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP or PowerManager.ON_AFTER_RELEASE,
+                    "UltimateAlarm:screen"
+                )
+                .acquire(SCREEN_WAKE_MS)
+            DiagnosticLog.log(this, "SCREEN_ON", "", alarmId)
+        }.onFailure { DiagnosticLog.log(this, "ERROR", "screen wake lock: ${it.javaClass.simpleName}: ${it.message}", alarmId) }
+    }
+
+    /** RF-R7 also when the ringing screen is not in front (see [VolumeKeys]). A failure only loses the shortcut. */
+    private fun listenToVolumeKeys(alarmId: Long) {
+        if (volumeKeys != null) return
+        volumeKeys = runCatching { VolumeKeys(this, handler) { handler.post { onVolumeKey() } } }
+            .onFailure { DiagnosticLog.log(this, "ERROR", "volume keys: ${it.javaClass.simpleName}: ${it.message}", alarmId) }
+            .getOrNull()
+    }
+
+    private fun onVolumeKey() {
+        val ringing = RingingState.current.value ?: return
+        val command = RingPolicy.volumeKeyCommand(RingStore(this).volumeButtons, ringing.canSnooze, ringing.challenge != null)
+        DiagnosticLog.log(this, "VOLUME_KEY", command?.name ?: "ignored", ringing.alarmId)
+        when (command) {
+            VolumeButtonAction.SNOOZE -> snooze(ringing.alarmId)
+            VolumeButtonAction.DISMISS -> dismiss(ringing.alarmId)
+            VolumeButtonAction.NOTHING, null -> Unit
+        }
     }
 
     private fun startPlayer(alarmId: Long, chain: List<SoundRef>, gain: Float): TonePlayer =
@@ -254,6 +295,8 @@ class RingingService : Service() {
         RingStore(this).state = null
         RingingState.set(null)
         restoreAlarmStream()
+        volumeKeys?.release()
+        volumeKeys = null
         wakeLock?.takeIf { it.isHeld }?.release()
         wakeLock = null
     }
@@ -332,8 +375,10 @@ class RingingService : Service() {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setOngoing(true)
             .setContentIntent(screen)
-            .setFullScreenIntent(screen, true)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+        // The system lights the screen to show a full-screen intent: without RF-R1's screen-on, the ringing screen opens
+        // from the notification instead, which still offers Snooze and Dismiss on the lock screen.
+        if (RingStore(this).turnScreenOn) builder.setFullScreenIntent(screen, true)
         if (canSnooze) builder.addAction(0, getString(R.string.ringing_snooze), actionIntent(this, ACTION_SNOOZE, alarmId))
         if (canDismiss) builder.addAction(0, getString(R.string.ringing_dismiss), actionIntent(this, ACTION_DISMISS, alarmId))
         return builder.build()
@@ -352,6 +397,7 @@ class RingingService : Service() {
         player?.stop()
         vibrator?.stop()
         restoreAlarmStream()
+        volumeKeys?.release()
         wakeLock?.takeIf { it.isHeld }?.release()
         super.onDestroy()
     }
@@ -369,6 +415,7 @@ class RingingService : Service() {
         private const val MS_PER_SECOND = 1_000L
         private const val MS_PER_MINUTE = 60_000L
         private const val RAMP_TICK_MS = 250L
+        private const val SCREEN_WAKE_MS = 10_000L
         private const val DEFAULT_SNOOZE_MINUTES = 10
 
         /** One-shot alarms are deleted on dismiss, with a 10 s undo (RF-P5, §5.6); recurring ones are already re-scheduled. */
