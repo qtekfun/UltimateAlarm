@@ -53,6 +53,11 @@ class RingStore(context: Context) {
         get() = VolumeButtonAction.entries.firstOrNull { it.name == prefs.getString(KEY_VOLUME_BUTTONS, null) } ?: VolumeButtonAction.SNOOZE
         set(value) = prefs.edit { putString(KEY_VOLUME_BUTTONS, value.name) }
 
+    /** RF-R1: whether a ring turns the screen on by itself. Off, the alarm rings and its screen waits behind the lock screen. */
+    var turnScreenOn: Boolean
+        get() = prefs.getBoolean(KEY_TURN_SCREEN_ON, true)
+        set(value) = prefs.edit { putBoolean(KEY_TURN_SCREEN_ON, value) }
+
     /** RF-S5: global backup tone (encoded SoundRef), `null` = the pack's. */
     var backupSound: String?
         get() = prefs.getString(KEY_BACKUP_SOUND, null)
@@ -81,6 +86,7 @@ class RingStore(context: Context) {
         const val KEY_SNOOZED_PREFIX = "snoozed_"
         const val KEY_UNTIL_PREFIX = "snoozed_until_"
         const val KEY_VOLUME_BUTTONS = "volume_buttons"
+        const val KEY_TURN_SCREEN_ON = "turn_screen_on"
         const val KEY_SILENCE = "silence_after"
         const val KEY_BACKUP_SOUND = "backup_sound"
         const val KEY_BEDTIME = "bedtime"

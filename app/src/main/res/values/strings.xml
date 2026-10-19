@@ -33,6 +33,8 @@
   <string name="accent_teal">Teal</string>
   <string name="accent_mustard">Mustard</string>
   <string name="accent_dynamic">From your wallpaper</string>
+  <string name="settings_turn_screen_on">Turn the screen on</string>
+  <string name="settings_turn_screen_on_summary">When an alarm rings, light the screen by itself</string>
   <string name="settings_volume_buttons">Volume buttons while ringing</string>
   <string name="settings_volume_snooze">Snooze</string>
   <string name="settings_volume_dismiss">Dismiss</string>

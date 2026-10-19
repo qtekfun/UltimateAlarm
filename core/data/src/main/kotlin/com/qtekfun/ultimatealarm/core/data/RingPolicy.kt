@@ -57,6 +57,16 @@ object RingPolicy {
         return firedAt + min(minutes, HARD_LIMIT_MINUTES) * MS_PER_MINUTE
     }
 
+    /**
+     * What a volume key does while ringing (RF-R7): the chosen [action], unless the alarm cannot be snoozed any more or a
+     * challenge guards the dismissal (RF-R5). `null` = nothing, but the key is still swallowed so it cannot lower the alarm.
+     */
+    fun volumeKeyCommand(action: VolumeButtonAction, canSnooze: Boolean, hasChallenge: Boolean): VolumeButtonAction? = when (action) {
+        VolumeButtonAction.SNOOZE -> action.takeIf { canSnooze }
+        VolumeButtonAction.DISMISS -> action.takeIf { !hasChallenge }
+        VolumeButtonAction.NOTHING -> null
+    }
+
     /** A persisted ring older than this is not resumed after a reboot or process death: it would only be noise. */
     fun isResumable(state: RingState, now: Long): Boolean = now - state.firedAt in 0 until HARD_LIMIT_MINUTES * MS_PER_MINUTE
 

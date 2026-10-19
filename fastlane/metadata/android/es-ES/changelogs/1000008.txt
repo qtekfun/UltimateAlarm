@@ -1,0 +1,1 @@
+Los botones de volumen posponen o descartan también con la pantalla apagada. Nuevo ajuste para que la alarma encienda la pantalla sola.

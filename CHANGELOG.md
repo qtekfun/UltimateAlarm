@@ -4,6 +4,15 @@ All notable changes to UltimateAlarm. The format follows [Keep a Changelog](http
 versions follow [SemVer](https://semver.org/); the same text is kept under `fastlane/metadata/android/*/changelogs`
 for F-Droid.
 
+## [1.0.0-rc8]
+
+### Added
+- Settings → Turn the screen on: choose whether a ringing alarm lights the screen by itself (on by default).
+
+### Fixed
+- The volume buttons now snooze or dismiss (as chosen in Settings) also with the screen off or when the alarm screen is not in front, and never lower the alarm.
+- A ringing alarm turns the screen on even when the system does not open the full-screen alarm.
+
 ## [1.0.0-rc7]
 
 ### Changed

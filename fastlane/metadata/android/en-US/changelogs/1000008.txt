@@ -1,0 +1,1 @@
+The volume buttons snooze or dismiss also with the screen off. New setting to let the alarm turn the screen on by itself.
