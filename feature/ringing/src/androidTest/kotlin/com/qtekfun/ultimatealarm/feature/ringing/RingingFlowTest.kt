@@ -2,6 +2,7 @@ package com.qtekfun.ultimatealarm.feature.ringing
 
 import android.app.AlarmManager
 import android.content.Context
+import android.media.AudioManager
 import android.os.ParcelFileDescriptor
 import android.os.PowerManager
 import androidx.test.core.app.ApplicationProvider
@@ -52,7 +53,7 @@ class RingingFlowTest {
         ring(id)
         screenOff()
         // With the screen off the ringing screen gets no keys: the service's media session must take them.
-        shell("input keyevent KEYCODE_VOLUME_DOWN")
+        pressVolumeDown()
         assertNotNull("volume key did not snooze", waitFor(5_000) { RingStore(context).snoozedUntil[id] })
         assertNull(RingingState.current.value)
     }
@@ -64,7 +65,7 @@ class RingingFlowTest {
         val id = repository.save(Alarm(time = LocalTime.of(3, 0), backupAfterMinutes = null))
         ring(id)
         screenOff()
-        shell("input keyevent KEYCODE_VOLUME_DOWN")
+        pressVolumeDown()
         Thread.sleep(1_000)
         assertEquals(id, RingingState.current.value?.alarmId)
         assertNull(RingStore(context).snoozedUntil[id])
@@ -90,6 +91,16 @@ class RingingFlowTest {
         shell("input keyevent KEYCODE_SLEEP")
         val power = context.getSystemService(PowerManager::class.java)
         assertNotNull("screen did not go off", waitFor(5_000) { if (power.isInteractive) null else Unit })
+    }
+
+    /**
+     * A hardware volume key with the screen off is not dispatched to any window: the system hands it straight to the
+     * media sessions, as [AudioManager.adjustVolume] does. `input keyevent` would not do: an injected key is dispatched
+     * even with the screen off, and on API 31 the stopped ringing screen, focused but without a focused window, then
+     * gets an ANR that kills the test process.
+     */
+    private fun pressVolumeDown() {
+        context.getSystemService(AudioManager::class.java).adjustVolume(AudioManager.ADJUST_LOWER, 0)
     }
 
     private fun shell(command: String) {
