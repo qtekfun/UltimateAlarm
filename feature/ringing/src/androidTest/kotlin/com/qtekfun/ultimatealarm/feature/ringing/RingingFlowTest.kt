@@ -55,7 +55,8 @@ class RingingFlowTest {
         // With the screen off the ringing screen gets no keys: the service's media session must take them.
         pressVolumeDown()
         assertNotNull("volume key did not snooze", waitFor(5_000) { RingStore(context).snoozedUntil[id] })
-        assertNull(RingingState.current.value)
+        // The snooze is stored just before the ring stops.
+        assertNotNull("still ringing after the snooze", waitFor(5_000) { if (RingingState.current.value == null) Unit else null })
     }
 
     @Test
