@@ -28,7 +28,7 @@ turbine = "1.2.1"
 serialization = "1.11.0"
 camerax = "1.6.2"
 zxing = "3.5.4"
-okhttp = "5.5.0"
+okhttp = "5.5.1"
 bouncycastle = "1.86"
 
 [libraries]
