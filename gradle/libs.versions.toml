@@ -29,7 +29,7 @@ serialization = "1.11.0"
 camerax = "1.6.2"
 zxing = "3.5.4"
 okhttp = "5.5.0"
-bouncycastle = "1.86"
+bouncycastle = "1.87"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
